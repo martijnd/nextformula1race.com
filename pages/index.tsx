@@ -50,7 +50,7 @@ const Home: NextPage = () => {
       {nextF1Race ? <main className={styles.main}>
         <h1 className={styles.title}>In {duration}</h1>
         <h2>{format(formattedRaceTime, 'dd MMMM Y, HH:mm')}</h2>
-        <h3>{nextF1Race?.raceName}</h3>
+        <h3>{nextF1Race?.raceName}, at the {nextF1Race?.Circuit.circuitName}</h3>
 
         
       </main> : 
