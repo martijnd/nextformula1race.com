@@ -15,7 +15,7 @@ export default function RaceTime() {
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
 
   const { data, error } = useSWR<RacesResponse>(
-    "http://ergast.com/api/f1/current.json",
+    "https://ergast.com/api/f1/current.json",
     fetcher
   );
 
