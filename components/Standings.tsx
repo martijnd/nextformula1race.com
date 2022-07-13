@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Standings() {
   const { data, error } = useSWR<StandingsResponse>(
-    "http://ergast.com/api/f1/current/driverStandings.json",
+    "https://ergast.com/api/f1/current/driverStandings.json",
     useFetcher()
   );
 
@@ -18,9 +18,11 @@ export default function Standings() {
 
       <table className="text-left table-auto w-full max-w-screen-md">
         <thead className="uppercase text-gray-400">
-          <th className="px-4"></th>
-          <th className="px-4">Name</th>
-          <th className="text-right px-4">Points</th>
+          <tr>
+            <th className="px-4"></th>
+            <th className="px-4">Name</th>
+            <th className="text-right px-4">Points</th>
+          </tr>
         </thead>
         <tbody className="text-slate-700 font-semibold">
           {data.MRData.StandingsTable.StandingsLists[0].DriverStandings.slice(
