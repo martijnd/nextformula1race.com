@@ -14,7 +14,7 @@ export default function Standings() {
 
   return (
     <>
-      <h2 className="text-6xl font-bold my-8">Current standings</h2>
+      <h2 className="text-6xl font-bold my-8">Standings</h2>
 
       <table className="text-left table-auto w-full max-w-screen-md">
         <thead className="uppercase text-gray-400">
