@@ -27,7 +27,7 @@ export default function Standings() {
             0,
             20
           ).map(({ Driver, position, points }, index) => (
-            <tr className={`${index % 2 === 1 ? "bg-slate-300" : ""}`}>
+            <tr key={position} className={`${index % 2 === 1 ? "bg-slate-300" : ""}`}>
               <td className="p-4">{position}</td>
               <td className="p-4 font-bold"><Link href={Driver.url} target="_blank">{`${Driver.givenName} ${Driver.familyName}`}</Link></td>
               <td className="text-right p-4">{points}</td>
