@@ -20,7 +20,7 @@ export default function Standings({ show }: { show: boolean }) {
     >
       <h2 className="text-6xl font-bold my-8">Standings</h2>
 
-      <table className={`text-left table-auto w-full max-w-screen-md`}>
+      <table className={`text-left table-auto w-full max-w-screen-md mx-auto`}>
         <thead className="uppercase text-gray-400">
           <tr>
             <th className="px-4"></th>
