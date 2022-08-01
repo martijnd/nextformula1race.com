@@ -75,10 +75,11 @@ export default function RaceTime() {
       <div className="flex space-x-2 justify-center">
         {RACE_TYPES.map((currRaceType) => (
           <button
+            key={currRaceType}
             className={`p-2 rounded text-xl ${
               raceType === currRaceType ? "text-red-600 font-bold" : ""
             }`}
-            onClick={(e) => setRaceType(currRaceType)}
+            onClick={() => setRaceType(currRaceType)}
           >
             {currRaceType}
           </button>
