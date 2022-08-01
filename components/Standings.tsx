@@ -44,6 +44,7 @@ export default function Standings({ show }: { show: boolean }) {
                 <a
                   href={Driver.url}
                   target="_blank"
+                  rel="noreferrer"
                 >{`${Driver.givenName} ${Driver.familyName}`}</a>
               </td>
               <td className="text-right p-4">{points}</td>

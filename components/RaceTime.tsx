@@ -76,7 +76,7 @@ export default function RaceTime() {
       <h3 className="text-xl md:text-4xl font-semibold">{formattedRaceTime}</h3>
       <h3 className="text-lg md:text-2xl">
         <span className="font-bold">{nextF1Race.raceName}</span>, at{" "}
-        <a className="hover:underline" target="_blank" href={nextF1Race.Circuit.url}>{nextF1Race.Circuit.circuitName}</a>
+        <a className="hover:underline" target="_blank" rel="noreferrer" href={nextF1Race.Circuit.url}>{nextF1Race.Circuit.circuitName}</a>
       </h3>
       <div className="flex space-x-2 justify-center">
         {RACE_TYPES.map((currRaceType) => (
