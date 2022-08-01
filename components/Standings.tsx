@@ -1,7 +1,6 @@
 import useFetcher from "@/utils/useFetcher";
 import useSWR from "swr";
 import { StandingsResponse } from "@/types/standings";
-import { useEffect, useRef, useState } from "react";
 
 export default function Standings({ show }: { show: boolean }) {
   const { data, error } = useSWR<StandingsResponse>(
