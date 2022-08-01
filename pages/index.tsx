@@ -2,11 +2,30 @@ import RaceTime from "@/components/RaceTime";
 import Standings from "@/components/Standings";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Home: NextPage = () => {
+  const target = useRef(null);
+  const [showStandings, setShowStandings] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowStandings(true);
+        }
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+    if (target.current) {
+      observer.observe(target.current);
+    }
+  }, [target]);
+
   return (
-    <div>
+    <>
       <Head>
         <title>When is the next F1 race?</title>
         <meta name="description" content="When is the next F1 race?" />
@@ -17,11 +36,11 @@ const Home: NextPage = () => {
           <RaceTime />
         </section>
 
-        <section className="bg-slate-200 -mt-16">
-          <Standings />
+        <section className="bg-white -mt-16" ref={target}>
+          <Standings show={showStandings} />
         </section>
       </main>
-    </div>
+    </>
   );
 };
 

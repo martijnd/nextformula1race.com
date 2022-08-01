@@ -1,9 +1,9 @@
 import useFetcher from "@/utils/useFetcher";
 import useSWR from "swr";
 import { StandingsResponse } from "@/types/standings";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
-export default function Standings() {
+export default function Standings({ show }: { show: boolean }) {
   const { data, error } = useSWR<StandingsResponse>(
     "https://ergast.com/api/f1/current/driverStandings.json",
     useFetcher()
@@ -13,10 +13,14 @@ export default function Standings() {
   if (error) return <h2>An error occured loading data.</h2>;
 
   return (
-    <>
+    <div
+      className={`w-full duration-1000 transition-opacity ${
+        show ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <h2 className="text-6xl font-bold my-8">Standings</h2>
 
-      <table className="text-left table-auto w-full max-w-screen-md">
+      <table className={`text-left table-auto w-full max-w-screen-md`}>
         <thead className="uppercase text-gray-400">
           <tr>
             <th className="px-4"></th>
@@ -29,14 +33,24 @@ export default function Standings() {
             0,
             20
           ).map(({ Driver, position, points }, index) => (
-            <tr key={position} className={`${index % 2 === 1 ? "bg-slate-300" : ""}`}>
+            <tr
+              key={position}
+              className={`border-b border-gray-300 ${
+                index % 2 === 1 ? "bg-slate-100" : ""
+              }`}
+            >
               <td className="p-4">{position}</td>
-              <td className="p-4 font-bold"><Link href={Driver.url} target="_blank">{`${Driver.givenName} ${Driver.familyName}`}</Link></td>
+              <td className="p-4 font-bold">
+                <a
+                  href={Driver.url}
+                  target="_blank"
+                >{`${Driver.givenName} ${Driver.familyName}`}</a>
+              </td>
               <td className="text-right p-4">{points}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
