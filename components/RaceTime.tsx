@@ -8,11 +8,15 @@ import {
 } from "date-fns";
 import { useEffect, useState } from "react";
 import useFetcher from "@/utils/useFetcher";
-import { RacesResponse } from "@/types/races";
+import { Race, RacesResponse } from "@/types/races";
+
+const RACE_TYPES = ["main", "qualy", "FP1", "FP2", "FP3"] as const;
+type RaceType = typeof RACE_TYPES[number];
 
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
+  const [raceType, setRaceType] = useState<RaceType>("main");
 
   const { data, error } = useSWR<RacesResponse>(
     "https://ergast.com/api/f1/current.json",
@@ -28,24 +32,35 @@ export default function RaceTime() {
   if (error) return <h2>An error occured loading data.</h2>;
   if (!data) return <h2></h2>;
 
+  function getRace(raceType: RaceType, race: Race) {
+    return {
+      main: race,
+      qualy: race.Qualifying,
+      FP1: race.FirstPractice,
+      FP2: race.SecondPractice,
+      FP3: race.ThirdPractice,
+    }[raceType];
+  }
 
-  const nextF1Race = data?.MRData.RaceTable.Races.find((race: any) => {
+  const nextF1Race = data?.MRData.RaceTable.Races.find((race) => {
     return isAfter(parseISO(`${race.date}T${race.time}`), new Date());
   });
 
-  if (! nextF1Race) return <h1 className="text-6xl font-bold">No more races this season!</h1>;
+  if (!nextF1Race)
+    return <h1 className="text-6xl font-bold">No more races this season!</h1>;
+  const event = getRace(raceType, nextF1Race);
 
-  const nextF1RaceDateTime = parseISO(`${nextF1Race?.date}T${nextF1Race?.time}`);
+  const nextF1RaceDateTime = parseISO(`${event?.date}T${event?.time}`);
 
   const duration = formatDuration(
-        intervalToDuration({
-          start: currentTime,
-          end: nextF1RaceDateTime,
-        }),
-        {
-          delimiter: ", ",
-        }
-      );
+    intervalToDuration({
+      start: currentTime,
+      end: nextF1RaceDateTime,
+    }),
+    {
+      delimiter: ", ",
+    }
+  );
 
   const formattedRaceTime = format(nextF1RaceDateTime, "dd MMMM Y, HH:mm");
 
@@ -54,8 +69,21 @@ export default function RaceTime() {
       <h2 className="text-2xl md:text-6xl font-bold">In {duration}</h2>
       <h3 className="text-xl md:text-4xl font-semibold">{formattedRaceTime}</h3>
       <h3 className="text-lg md:text-2xl">
-        <span className="font-bold">{nextF1Race.raceName}</span>, at {nextF1Race.Circuit.circuitName}
+        <span className="font-bold">{nextF1Race.raceName}</span>, at{" "}
+        {nextF1Race.Circuit.circuitName}
       </h3>
+      <div className="flex space-x-2 justify-center">
+        {RACE_TYPES.map((currRaceType) => (
+          <button
+            className={`p-2 rounded text-xl ${
+              raceType === currRaceType ? "text-red-600 font-bold" : ""
+            }`}
+            onClick={(e) => setRaceType(currRaceType)}
+          >
+            {currRaceType}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

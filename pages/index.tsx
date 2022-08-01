@@ -2,6 +2,7 @@ import RaceTime from "@/components/RaceTime";
 import Standings from "@/components/Standings";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   return (
