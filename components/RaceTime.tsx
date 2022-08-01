@@ -10,13 +10,13 @@ import { useEffect, useState } from "react";
 import useFetcher from "@/utils/useFetcher";
 import { Race, RacesResponse } from "@/types/races";
 
-const RACE_TYPES = ["main", "qualy", "FP1", "FP2", "FP3"] as const;
+const RACE_TYPES = ["race", "qualy", "FP1", "FP2", "FP3"] as const;
 type RaceType = typeof RACE_TYPES[number];
 
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
-  const [raceType, setRaceType] = useState<RaceType>("main");
+  const [raceType, setRaceType] = useState<RaceType>("race");
 
   const { data, error } = useSWR<RacesResponse>(
     "https://ergast.com/api/f1/current.json",
@@ -24,7 +24,7 @@ export default function RaceTime() {
   );
 
   useEffect(() => {
-    setRaceType(localStorage.raceType ?? "main");
+    setRaceType(localStorage.raceType ?? "race");
     setInterval(() => {
       setCurrentTime(new Date().getTime());
     }, 1000);
@@ -35,7 +35,7 @@ export default function RaceTime() {
 
   function getRace(raceType: RaceType, race: Race) {
     return {
-      main: race,
+      race: race,
       qualy: race.Qualifying,
       FP1: race.FirstPractice,
       FP2: race.SecondPractice,

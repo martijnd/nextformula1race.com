@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import RaceTime from "@/components/RaceTime";
 import Standings from "@/components/Standings";
 import type { NextPage } from "next";
@@ -40,6 +41,7 @@ const Home: NextPage = () => {
           <Standings show={showStandings} />
         </section>
       </main>
+      <Footer />
     </>
   );
 };

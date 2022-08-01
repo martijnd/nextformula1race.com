@@ -35,7 +35,7 @@ export default function Standings({ show }: { show: boolean }) {
           ).map(({ Driver, position, points }, index) => (
             <tr
               key={position}
-              className={`border-b border-gray-300 ${
+              className={`border-b border-gray-300 hover:bg-slate-200 ${
                 index % 2 === 1 ? "bg-slate-100" : ""
               }`}
             >
