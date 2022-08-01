@@ -64,6 +64,11 @@ export default function RaceTime() {
 
   const formattedRaceTime = format(nextF1RaceDateTime, "dd MMMM Y, HH:mm");
 
+  function onClickRaceType(raceType: RaceType) {
+    setRaceType(raceType);
+    localStorage.raceType = raceType;
+  }
+
   return (
     <div className="space-y-2 md:space-y-4">
       <h2 className="text-2xl md:text-6xl font-bold">In {duration}</h2>
@@ -74,15 +79,18 @@ export default function RaceTime() {
       </h3>
       <div className="flex space-x-2 justify-center">
         {RACE_TYPES.map((currRaceType) => (
-          <button
-            key={currRaceType}
-            className={`p-2 rounded text-xl ${
-              raceType === currRaceType ? "text-red-600 font-bold" : ""
-            }`}
-            onClick={() => setRaceType(currRaceType)}
-          >
-            {currRaceType}
-          </button>
+          <div className="w-16" key={currRaceType}>
+            <button
+              className={`p-2 rounded text-xl font-bold hover:text-red-200 transition-colors duration-75 ${
+                raceType === currRaceType
+                  ? "text-red-600 hover:text-red-700"
+                  : ""
+              }`}
+              onClick={() => onClickRaceType(currRaceType)}
+            >
+              {currRaceType}
+            </button>
+          </div>
         ))}
       </div>
     </div>
