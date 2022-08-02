@@ -3,10 +3,10 @@ import RaceTime from "@/components/RaceTime";
 import Standings from "@/components/Standings";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { Ref, RefObject, useEffect, useRef, useState } from "react";
 
 const Home: NextPage = () => {
-  const target = useRef(null);
+  const target = useRef<HTMLElement>(null);
   const [showStandings, setShowStandings] = useState(false);
 
   useEffect(() => {
@@ -25,6 +25,12 @@ const Home: NextPage = () => {
     }
   }, [target]);
 
+  function scrollToStandings(target: RefObject<HTMLElement>) {
+    target.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }
+
   return (
     <>
       <Head>
@@ -32,12 +38,18 @@ const Home: NextPage = () => {
         <meta name="description" content="When is the next F1 race?" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <section className="bg-[#15151E] text-white">
+      <main className="text-gray-200">
+        <section className="bg-neutral-900 relative">
           <RaceTime />
+          <button
+            className="absolute bottom-6 font-semibold text-neutral-400"
+            onClick={() => scrollToStandings(target)}
+          >
+            Current standings &darr;
+          </button>
         </section>
 
-        <section className="bg-white -mt-16" ref={target}>
+        <section className="bg-white" ref={target}>
           <Standings show={showStandings} />
         </section>
       </main>
