@@ -3,7 +3,7 @@ import RaceTime from "@/components/RaceTime";
 import Standings from "@/components/Standings";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Ref, RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 const Home: NextPage = () => {
   const target = useRef<HTMLElement>(null);

@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import useFetcher from "@/utils/useFetcher";
 import { Race, RacesResponse } from "@/types/races";
+import Link from "next/link";
 
 const RACE_TYPES = ["FP1", "FP2", "FP3", "qualy", "race"] as const;
 type RaceType = typeof RACE_TYPES[number];
@@ -84,6 +85,9 @@ export default function RaceTime() {
         >
           {nextF1Race.Circuit.circuitName}
         </a>
+        {/* <Link href={`/circuits/${nextF1Race.Circuit.circuitId}`}>
+          <a className="hover:underline">{nextF1Race.Circuit.circuitName}</a>
+        </Link> */}
       </h3>
       <div className="flex space-x-2 justify-center">
         {RACE_TYPES.map((currRaceType) => (
