@@ -5,6 +5,7 @@ import {
   isAfter,
   intervalToDuration,
   formatDuration,
+  isBefore,
 } from "date-fns";
 import { useEffect, useState } from "react";
 import useFetcher from "@/utils/useFetcher";
@@ -64,6 +65,12 @@ export default function RaceTime() {
     }
   );
 
+  const durationString = isBefore(nextF1RaceDateTime, currentTime) ? (
+    <span className="text-red-300">Started {duration} ago</span>
+  ) : (
+    `In ${duration}`
+  );
+
   const formattedRaceTime = format(nextF1RaceDateTime, "dd MMMM Y, HH:mm");
 
   function onClickRaceType(raceType: RaceType) {
@@ -73,9 +80,13 @@ export default function RaceTime() {
 
   return (
     <div className="space-y-2 md:space-y-4">
-      <h2 className="text-2xl md:text-6xl font-bold">In {duration}</h2>
-      <h3 className="text-xl md:text-4xl font-semibold">{formattedRaceTime}</h3>
-      <h3 className="text-lg md:text-2xl">
+      <h2 className="hover:opacity-[0.8] transition-opacity duration-300 text-2xl md:text-6xl font-bold">
+        {durationString}
+      </h2>
+      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold">
+        {formattedRaceTime}
+      </h3>
+      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl">
         <span className="font-bold">{nextF1Race.raceName}</span>, at{" "}
         <a
           className="hover:underline"
@@ -91,7 +102,7 @@ export default function RaceTime() {
       </h3>
       <div className="flex space-x-2 justify-center">
         {RACE_TYPES.map((currRaceType) => (
-          <div className="w-16" key={currRaceType}>
+          <div key={currRaceType}>
             <button
               className={`p-2 rounded text-xl font-bold hover:text-red-200 transition-colors duration-75 ${
                 raceType === currRaceType
