@@ -30,6 +30,8 @@ const HOURS_TO_ADD: Record<RaceTypes, number> = {
   [RaceTypes.Race]: 2,
 };
 
+const ONE_SECOND = 1000;
+
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
@@ -44,11 +46,19 @@ export default function RaceTime() {
     setRaceType(localStorage.raceType ?? RaceTypes.Race);
     setInterval(() => {
       setCurrentTime(new Date().getTime());
-    }, 1000);
+    }, ONE_SECOND);
   }, []);
 
   if (error) return <h2>An error occured loading data.</h2>;
-  if (!raceData) return <h2>f</h2>;
+  if (!raceData) return <h2></h2>;
+
+  const nextF1Race = raceData.MRData.RaceTable.Races.find((race) => {
+    return isAfter(parseISO(`${race.date}T${race.time}`), new Date());
+  });
+
+  if (!nextF1Race) {
+    return <h1 className="text-6xl font-bold">No more races this season!</h1>;
+  }
 
   function getRace(raceType: RaceTypes, race: Race) {
     return {
@@ -58,14 +68,6 @@ export default function RaceTime() {
       [RaceTypes.FP2]: race.SecondPractice,
       [RaceTypes.FP3]: race.ThirdPractice,
     }[raceType];
-  }
-
-  const nextF1Race = raceData.MRData.RaceTable.Races.find((race) => {
-    return isAfter(parseISO(`${race.date}T${race.time}`), new Date());
-  });
-
-  if (!nextF1Race) {
-    return <h1 className="text-6xl font-bold">No more races this season!</h1>;
   }
 
   const event = getRace(raceType, nextF1Race);
