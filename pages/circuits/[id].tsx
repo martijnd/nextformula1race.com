@@ -1,8 +1,8 @@
-import { Circuit, circuits } from "@/data/circuits";
-import { GetStaticPaths, GetStaticProps } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
+import { Circuit, circuits } from '@/data/circuits';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Circuit: React.FC<{ circuit: Circuit; otherCircuits: Circuit[] }> = ({
   circuit,
@@ -37,7 +37,10 @@ const Circuit: React.FC<{ circuit: Circuit; otherCircuits: Circuit[] }> = ({
             <h2 className="font-semibold text-2xl mb-2">Other circuits</h2>
             <ul>
               {otherCircuits.map((otherCircuit) => (
-                <li key={otherCircuit.id} className="list-disc list-inside hover:underline">
+                <li
+                  key={otherCircuit.id}
+                  className="list-disc list-inside hover:underline"
+                >
                   <Link href={`/circuits/${otherCircuit.id}`}>
                     <a>{otherCircuit.name}</a>
                   </Link>

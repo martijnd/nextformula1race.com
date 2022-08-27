@@ -1,10 +1,10 @@
-import useFetcher from "@/utils/useFetcher";
-import useSWR from "swr";
-import { StandingsResponse } from "@/types/standings";
+import useFetcher from '@/utils/useFetcher';
+import useSWR from 'swr';
+import { StandingsResponse } from '@/types/standings';
 
 export default function Standings({ show }: { show: boolean }) {
   const { data, error } = useSWR<StandingsResponse>(
-    "https://ergast.com/api/f1/current/driverStandings.json",
+    'https://ergast.com/api/f1/current/driverStandings.json',
     useFetcher()
   );
 
@@ -14,7 +14,7 @@ export default function Standings({ show }: { show: boolean }) {
   return (
     <div
       className={`w-full duration-1000 transition-opacity ${
-        show ? "opacity-100" : "opacity-0"
+        show ? 'opacity-100' : 'opacity-0'
       }`}
     >
       <h2 className="text-6xl font-bold my-8 text-gray-800">Standings</h2>
@@ -35,7 +35,7 @@ export default function Standings({ show }: { show: boolean }) {
             <tr
               key={position}
               className={`border-b border-gray-300 hover:bg-slate-200 ${
-                index % 2 === 1 ? "bg-slate-100" : ""
+                index % 2 === 1 ? 'bg-slate-100' : ''
               }`}
             >
               <td className="p-4">{position}</td>
