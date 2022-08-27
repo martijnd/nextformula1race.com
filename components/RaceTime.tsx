@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import {
   format,
   parseISO,
@@ -14,43 +14,49 @@ import useFetcher from '@/utils/useFetcher';
 import { Race, RacesResponse } from '@/types/races';
 import Link from 'next/link';
 
-type RaceType = typeof RACE_TYPES[number];
-const RACE_TYPES = ['FP1', 'FP2', 'FP3', 'qualy', 'race'] as const;
-const HOURS_TO_ADD: Record<RaceType, number> = {
-  FP1: 1,
-  FP2: 1,
-  FP3: 1,
-  qualy: 1,
-  race: 2,
+enum RaceTypes {
+  FP1 = 'FP1',
+  FP2 = 'FP2',
+  FP3 = 'FP3',
+  Qualy = 'qualy',
+  Race = 'race',
+}
+
+const HOURS_TO_ADD: Record<RaceTypes, number> = {
+  [RaceTypes.FP1]: 1,
+  [RaceTypes.FP2]: 1,
+  [RaceTypes.FP3]: 1,
+  [RaceTypes.Qualy]: 1,
+  [RaceTypes.Race]: 2,
 };
 
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
-  const [raceType, setRaceType] = useState<RaceType>('race');
+  const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
 
-  const { data: raceData, error } = useSWR<RacesResponse>(
+  const { data: raceData, error } = useSWRImmutable<RacesResponse>(
     'https://ergast.com/api/f1/current.json',
     fetcher
   );
 
   useEffect(() => {
-    setRaceType(localStorage.raceType ?? 'race');
+    setRaceType(localStorage.raceType ?? RaceTypes.Race);
     setInterval(() => {
       setCurrentTime(new Date().getTime());
     }, 1000);
   }, []);
 
   if (error) return <h2>An error occured loading data.</h2>;
-  if (!raceData) return <h2></h2>;
+  if (!raceData) return <h2>f</h2>;
 
-  function getRace(raceType: RaceType, race: Race) {
+  function getRace(raceType: RaceTypes, race: Race) {
     return {
-      race: race,
-      qualy: race.Qualifying,
-      FP1: race.FirstPractice,
-      FP2: race.SecondPractice,
-      FP3: race.ThirdPractice,
+      [RaceTypes.Race]: race,
+      [RaceTypes.Qualy]: race.Qualifying,
+      [RaceTypes.FP1]: race.FirstPractice,
+      [RaceTypes.FP2]: race.SecondPractice,
+      [RaceTypes.FP3]: race.ThirdPractice,
     }[raceType];
   }
 
@@ -104,7 +110,7 @@ export default function RaceTime() {
 
   const formattedRaceTime = format(nextF1RaceDateTime, 'dd MMMM Y, HH:mm');
 
-  function onClickRaceType(raceType: RaceType) {
+  function onClickRaceType(raceType: RaceTypes) {
     setRaceType(raceType);
     localStorage.raceType = raceType;
   }
@@ -132,7 +138,7 @@ export default function RaceTime() {
         </Link> */}
       </h3>
       <div className="flex space-x-2 justify-center">
-        {RACE_TYPES.map((type) => (
+        {Object.values(RaceTypes).map((type) => (
           <RaceTypeButton
             key={type}
             type={type}
@@ -147,7 +153,7 @@ export default function RaceTime() {
 
 interface RaceTypeButtonProps {
   active: boolean;
-  type: RaceType;
+  type: RaceTypes;
   onClick: () => void;
 }
 

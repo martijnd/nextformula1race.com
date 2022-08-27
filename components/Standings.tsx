@@ -1,9 +1,9 @@
 import useFetcher from '@/utils/useFetcher';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { StandingsResponse } from '@/types/standings';
 
 export default function Standings({ show }: { show: boolean }) {
-  const { data, error } = useSWR<StandingsResponse>(
+  const { data, error } = useSWRImmutable<StandingsResponse>(
     'https://ergast.com/api/f1/current/driverStandings.json',
     useFetcher()
   );
