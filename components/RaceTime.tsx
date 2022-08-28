@@ -34,7 +34,10 @@ const ONE_SECOND = 1000;
 
 export default function RaceTime() {
   const fetcher = useFetcher();
-  const [currentTime, setCurrentTime] = useState(new Date().getTime());
+  const [currentTime, setCurrentTime] = useState(
+    new Date('29 December 2022 14:59:59').getTime()
+    // new Date().getTime()
+  );
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
 
   const { data: raceData, error } = useSWRImmutable<RacesResponse>(
@@ -45,7 +48,7 @@ export default function RaceTime() {
   useEffect(() => {
     setRaceType(localStorage.raceType ?? RaceTypes.Race);
     setInterval(() => {
-      setCurrentTime(new Date().getTime());
+      // setCurrentTime(new Date().getTime());
     }, ONE_SECOND);
   }, []);
 
@@ -53,7 +56,11 @@ export default function RaceTime() {
   if (!raceData) return <h2></h2>;
 
   const nextF1Race = raceData.MRData.RaceTable.Races.find((race) => {
-    return isAfter(parseISO(`${race.date}T${race.time}`), new Date());
+    const raceDateTime = parseISO(`${race.date}T${race.time}`);
+    return (
+      isAfter(raceDateTime, currentTime) ||
+      isCurrentlyLive(raceDateTime, raceType)
+    );
   });
 
   if (!nextF1Race) {
@@ -84,12 +91,19 @@ export default function RaceTime() {
     }
   );
 
-  function getDurationString() {
-    const currentlyLive = isWithinInterval(currentTime, {
-      start: nextF1RaceDateTime,
-      end: addHours(nextF1RaceDateTime, HOURS_TO_ADD[raceType]),
+  function isCurrentlyLive(date: Date, raceType: RaceTypes) {
+    return isWithinInterval(currentTime, {
+      start: date,
+      end: addHours(date, HOURS_TO_ADD[raceType]),
     });
+  }
 
+  const currentlyLive = isWithinInterval(currentTime, {
+    start: nextF1RaceDateTime,
+    end: addHours(nextF1RaceDateTime, HOURS_TO_ADD[raceType]),
+  });
+
+  function getDurationString() {
     if (currentlyLive) {
       return (
         <a
