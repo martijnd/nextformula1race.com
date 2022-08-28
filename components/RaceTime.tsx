@@ -35,8 +35,8 @@ const ONE_SECOND = 1000;
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(
-    new Date('1 January 2023 14:59:59').getTime()
-    // new Date().getTime()
+    // new Date('1 January 2023 14:59:59').getTime()
+    new Date().getTime()
   );
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
 
@@ -48,7 +48,7 @@ export default function RaceTime() {
   useEffect(() => {
     setRaceType(localStorage.raceType ?? RaceTypes.Race);
     setInterval(() => {
-      // setCurrentTime(new Date().getTime());
+      setCurrentTime(new Date().getTime());
     }, ONE_SECOND);
   }, []);
 
