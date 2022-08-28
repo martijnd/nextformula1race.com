@@ -14,7 +14,7 @@ import useFetcher from '@/utils/useFetcher';
 import { Race, RacesResponse } from '@/types/races';
 import Link from 'next/link';
 
-enum RaceTypes {
+export enum RaceTypes {
   FP1 = 'FP1',
   FP2 = 'FP2',
   FP3 = 'FP3',
