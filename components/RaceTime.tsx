@@ -35,7 +35,7 @@ const ONE_SECOND = 1000;
 export default function RaceTime() {
   const fetcher = useFetcher();
   const [currentTime, setCurrentTime] = useState(
-    new Date('29 December 2022 14:59:59').getTime()
+    new Date('1 January 2023 14:59:59').getTime()
     // new Date().getTime()
   );
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
@@ -64,7 +64,23 @@ export default function RaceTime() {
   });
 
   if (!nextF1Race) {
-    return <h1 className="text-6xl font-bold">No more races this season!</h1>;
+    const currentYear = new Date(currentTime).getFullYear();
+    const stillInCurrentSeasonYear =
+      raceData.MRData.RaceTable.season === currentYear.toString();
+    // If we're still in 2022 and referencing 2023 season, add 1 to the current year
+    // Otherwise, add nothing
+    const nextYearsSeason = stillInCurrentSeasonYear
+      ? currentYear + 1
+      : currentYear;
+
+    return (
+      <>
+        <h1 className="text-6xl font-bold">No more races this season!</h1>
+        <h2 className="mt-2 italic md:text-2xl">
+          See you in {nextYearsSeason}!
+        </h2>
+      </>
+    );
   }
 
   function getRace(raceType: RaceTypes, race: Race) {
