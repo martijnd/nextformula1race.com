@@ -137,7 +137,7 @@ export default function RaceTime() {
       return <span className="text-red-300">Started {duration} ago</span>;
     }
 
-    return <span>Starting in {duration}</span>;
+    return <span>In {duration}</span>;
   }
 
   const formattedRaceTime = format(nextF1RaceDateTime, 'dd MMMM Y, HH:mm');
