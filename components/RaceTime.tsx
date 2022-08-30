@@ -204,8 +204,8 @@ function NoRaceDisplay({
 function RaceTypeButton({ active, onClick, type }: RaceTypeButtonProps) {
   return (
     <button
-      className={`p-2 rounded text-xl font-bold hover:text-red-200 transition-colors duration-75 ${
-        active ? 'text-red-600 hover:text-red-700' : ''
+      className={`p-2 rounded text-xl font-bold hover:text-red-900 dark:hover:text-red-200 transition-colors duration-75 ${
+        active ? 'text-red-600 hover:text-red-900 dark:hover:text-red-700' : ''
       }`}
       onClick={onClick}
     >
