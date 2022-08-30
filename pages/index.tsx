@@ -6,8 +6,10 @@ import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { getCurrentYearRaces, transform } from '@/api/ergast';
+import { ergastApi } from '@/api/ergast';
 import { RacesResponse } from '@/types/races';
+
+const { getCurrentYearRaces, transform } = ergastApi();
 
 export async function getServerSideProps() {
   const data = await getCurrentYearRaces();

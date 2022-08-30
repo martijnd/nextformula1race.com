@@ -6,15 +6,8 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 
 export const CURRENT_YEAR_RACES_URL = 'https://ergast.com/api/f1/current.json';
 
-export async function getCurrentYearRaces() {
-  try {
-    const res = await fetch(CURRENT_YEAR_RACES_URL);
-    const data = (await res.json()) as RacesResponse;
-
-    return { data, error: false };
-  } catch (e) {
-    return { data: null, error: true };
-  }
+interface RaceEvent {
+  dateTime: `${string}T${string}`;
 }
 
 export interface Race {
@@ -22,10 +15,10 @@ export interface Race {
   name: string;
   circuitName: string;
   circuitUrl: string;
-  qualifying: Event;
-  FP1: Event;
-  FP2: Event;
-  FP3: Event;
+  qualifying: RaceEvent;
+  FP1: RaceEvent;
+  FP2: RaceEvent;
+  FP3: RaceEvent;
   hasSprint: boolean;
   isCurrentlyLive: (
     currentTime: number,
@@ -36,50 +29,70 @@ export interface Race {
   hasHappened: (raceDateTime: number, currentTime: number) => boolean;
 }
 
-interface Event {
-  dateTime: string;
-}
-
 export interface Payload {
   season: string;
   races: Race[];
 }
 
-function hasHappened(raceDateTime: number, currentTime: number) {
-  return isAfter(raceDateTime, currentTime);
-}
+export function ergastApi() {
+  async function getCurrentYearRaces() {
+    try {
+      const res = await fetch(CURRENT_YEAR_RACES_URL);
+      const data = (await res.json()) as RacesResponse;
 
-function isCurrentlyLive(
-  currentTime: number,
-  date: Date,
-  raceType: RaceTypes,
-  hoursToAdd: Record<RaceTypes, number>
-) {
-  return isWithinInterval(currentTime, {
-    start: date,
-    end: addHours(date, hoursToAdd[raceType]),
-  });
-}
+      return { data, error: false };
+    } catch (e) {
+      return { data: null, error: true };
+    }
+  }
 
-export function transform(data: RacesResponse): Payload {
-  function connect({ date, time }: { date: string; time: string }): Event {
-    return { dateTime: `${date}T${time}` };
+  function hasHappened(raceDateTime: number, currentTime: number) {
+    return isAfter(raceDateTime, currentTime);
+  }
+
+  function isCurrentlyLive(
+    currentTime: number,
+    date: Date,
+    raceType: RaceTypes,
+    hoursToAdd: Record<RaceTypes, number>
+  ) {
+    return isWithinInterval(currentTime, {
+      start: date,
+      end: addHours(date, hoursToAdd[raceType]),
+    });
+  }
+
+  function transform(data: RacesResponse): Payload {
+    function connect({
+      date,
+      time,
+    }: {
+      date: string;
+      time: string;
+    }): RaceEvent {
+      return { dateTime: `${date}T${time}` };
+    }
+
+    return {
+      season: data.MRData.RaceTable.season,
+      races: data.MRData.RaceTable.Races.map((race) => ({
+        dateTime: connect(race).dateTime,
+        name: race.raceName,
+        circuitUrl: race.Circuit.url,
+        circuitName: race.Circuit.circuitName,
+        qualifying: connect(race.Qualifying),
+        FP1: connect(race.FirstPractice),
+        FP2: connect(race.SecondPractice),
+        FP3: connect(race.ThirdPractice ? race.ThirdPractice : race.Sprint),
+        hasSprint: Boolean(race.Sprint),
+        hasHappened,
+        isCurrentlyLive,
+      })),
+    };
   }
 
   return {
-    season: data.MRData.RaceTable.season,
-    races: data.MRData.RaceTable.Races.map((race) => ({
-      dateTime: `${race.date}T${race.time}`,
-      name: race.raceName,
-      circuitUrl: race.Circuit.url,
-      circuitName: race.Circuit.circuitName,
-      qualifying: connect(race.Qualifying),
-      FP1: connect(race.FirstPractice),
-      FP2: connect(race.SecondPractice),
-      FP3: connect(race.ThirdPractice ? race.ThirdPractice : race.Sprint),
-      hasSprint: Boolean(race.Sprint),
-      hasHappened,
-      isCurrentlyLive,
-    })),
+    getCurrentYearRaces,
+    transform,
   };
 }
