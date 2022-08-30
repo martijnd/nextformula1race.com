@@ -157,7 +157,9 @@ export default function RaceTime({ data }: { data: Payload }) {
       <div className="flex justify-center space-x-2">
         {Object.values(RaceTypes)
           .filter((type) =>
-            nextF1Race.hasSprint ? type === 'FP3' : type !== 'FP3'
+            nextF1Race.hasSprint
+              ? type !== RaceTypes.FP3
+              : type !== RaceTypes.Sprint
           )
           .map((type) => (
             <RaceTypeButton
