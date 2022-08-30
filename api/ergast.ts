@@ -9,9 +9,7 @@ export const CURRENT_YEAR_RACES_URL = 'https://ergast.com/api/f1/current.json';
 export async function getCurrentYearRaces() {
   try {
     const res = await fetch(CURRENT_YEAR_RACES_URL);
-    const rawData = await res.json();
-
-    const data = transformer(rawData);
+    const data = (await res.json()) as RacesResponse;
 
     return { data, error: false };
   } catch (e) {
@@ -19,11 +17,16 @@ export async function getCurrentYearRaces() {
   }
 }
 
-interface Race {
+export interface Race {
   dateTime: `${string}T${string}`;
   name: string;
   circuitName: string;
   circuitUrl: string;
+  qualifying: Event;
+  FP1: Event;
+  FP2: Event;
+  FP3: Event;
+  hasSprint: boolean;
   isCurrentlyLive: (
     currentTime: number,
     date: Date,
@@ -33,7 +36,11 @@ interface Race {
   hasHappened: (raceDateTime: number, currentTime: number) => boolean;
 }
 
-interface Payload {
+interface Event {
+  dateTime: string;
+}
+
+export interface Payload {
   season: string;
   races: Race[];
 }
@@ -54,7 +61,11 @@ function isCurrentlyLive(
   });
 }
 
-function transformer(data: RacesResponse): Payload {
+export function transform(data: RacesResponse): Payload {
+  function connect({ date, time }: { date: string; time: string }): Event {
+    return { dateTime: `${date}T${time}` };
+  }
+
   return {
     season: data.MRData.RaceTable.season,
     races: data.MRData.RaceTable.Races.map((race) => ({
@@ -62,6 +73,11 @@ function transformer(data: RacesResponse): Payload {
       name: race.raceName,
       circuitUrl: race.Circuit.url,
       circuitName: race.Circuit.circuitName,
+      qualifying: connect(race.Qualifying),
+      FP1: connect(race.FirstPractice),
+      FP2: connect(race.SecondPractice),
+      FP3: connect(race.ThirdPractice ? race.ThirdPractice : race.Sprint),
+      hasSprint: Boolean(race.Sprint),
       hasHappened,
       isCurrentlyLive,
     })),

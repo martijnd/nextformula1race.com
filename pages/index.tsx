@@ -6,8 +6,25 @@ import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
+import { getCurrentYearRaces, transform } from '@/api/ergast';
+import { RacesResponse } from '@/types/races';
 
-const Home: NextPage = () => {
+export async function getServerSideProps() {
+  const data = await getCurrentYearRaces();
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+const Home: NextPage<{
+  data: {
+    data: RacesResponse;
+    error: boolean;
+  };
+}> = ({ data }) => {
   const target = useRef<HTMLElement>(null);
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
@@ -65,7 +82,7 @@ const Home: NextPage = () => {
               </svg>
             )}
           </button>
-          <RaceTime />
+          {data && <RaceTime data={transform(data.data)} />}
           <button
             className="absolute font-semibold bottom-6 text-neutral-400"
             onClick={() => scrollToStandings(target)}
