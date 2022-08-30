@@ -140,7 +140,7 @@ export default function RaceTime() {
     return <span>In {duration}</span>;
   }
 
-  const formattedRaceTime = format(nextF1RaceDateTime, 'dd MMMM Y, HH:mm');
+  const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm');
 
   function onClickRaceType(raceType: RaceTypes) {
     setRaceType(raceType);
