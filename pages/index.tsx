@@ -1,6 +1,8 @@
 import Footer from '@/components/Footer';
 import RaceTime from '@/components/RaceTime';
 import Standings from '@/components/Standings';
+import { useDarkMode } from '@/hooks/dark-mode';
+import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
@@ -8,46 +10,17 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 const Home: NextPage = () => {
   const target = useRef<HTMLElement>(null);
   const [showStandings, setShowStandings] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
-  function initDarkMode() {
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
-      setIsDarkMode(true);
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }
-
-  function toggleDarkMode() {
-    localStorage.theme = localStorage.theme === 'light' ? 'dark' : 'light';
-    setIsDarkMode(!isDarkMode);
-    initDarkMode();
-  }
+  const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
+  const observe = useObserver(target, () => {
+    setShowStandings(true);
+  });
 
   useEffect(() => {
     // Set dark mode
     initDarkMode();
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowStandings(true);
-        }
-      },
-      {
-        threshold: 0.1,
-      }
-    );
-    if (target.current) {
-      observer.observe(target.current);
-    }
-  }, [target]);
+    observe();
+  }, [target, initDarkMode, observe]);
 
   function scrollToStandings(target: RefObject<HTMLElement>) {
     target.current?.scrollIntoView({
