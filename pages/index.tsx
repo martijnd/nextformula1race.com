@@ -9,24 +9,27 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { ergastApi } from '@/api/ergast';
 import { RacesResponse } from '@/types/races';
 
-const { getCurrentYearRaces, transform } = ergastApi();
+const { getCurrentYearRaces, transform, getDriverStandings } = ergastApi();
 
 export async function getServerSideProps() {
   const data = await getCurrentYearRaces();
+  const standings = await getDriverStandings();
 
   return {
     props: {
       data,
+      standings,
     },
   };
 }
 
 const Home: NextPage<{
+  standings: any;
   data: {
     data: RacesResponse;
     error: boolean;
   };
-}> = ({ data }) => {
+}> = ({ data, standings }) => {
   const target = useRef<HTMLElement>(null);
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
@@ -94,7 +97,7 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          <Standings show={showStandings} />
+          <Standings show={showStandings} data={standings.data} />
         </section>
       </main>
       <Footer />

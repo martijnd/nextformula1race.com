@@ -5,6 +5,8 @@ import isAfter from 'date-fns/isAfter';
 import isWithinInterval from 'date-fns/isWithinInterval';
 
 export const CURRENT_YEAR_RACES_URL = 'https://ergast.com/api/f1/current.json';
+export const DRIVER_STANDINGS_URL =
+  'https://ergast.com/api/f1/current/driverStandings.json';
 
 interface RaceEvent {
   dateTime: `${string}T${string}`;
@@ -38,6 +40,17 @@ export function ergastApi() {
   async function getCurrentYearRaces() {
     try {
       const res = await fetch(CURRENT_YEAR_RACES_URL);
+      const data = (await res.json()) as RacesResponse;
+
+      return { data, error: false };
+    } catch (e) {
+      return { data: null, error: true };
+    }
+  }
+
+  async function getDriverStandings() {
+    try {
+      const res = await fetch(DRIVER_STANDINGS_URL);
       const data = (await res.json()) as RacesResponse;
 
       return { data, error: false };
@@ -93,6 +106,7 @@ export function ergastApi() {
 
   return {
     getCurrentYearRaces,
+    getDriverStandings,
     transform,
   };
 }

@@ -1,15 +1,13 @@
-import useFetcher from '@/utils/useFetcher';
-import useSWRImmutable from 'swr/immutable';
 import { StandingsResponse } from '@/types/standings';
 
-export default function Standings({ show }: { show: boolean }) {
-  const { data, error } = useSWRImmutable<StandingsResponse>(
-    'https://ergast.com/api/f1/current/driverStandings.json',
-    useFetcher()
-  );
-
+export default function Standings({
+  show,
+  data,
+}: {
+  show: boolean;
+  data: StandingsResponse;
+}) {
   if (!data) return <h2>Loading...</h2>;
-  if (error) return <h2>An error occured loading data.</h2>;
 
   return (
     <div
