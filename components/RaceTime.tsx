@@ -64,22 +64,11 @@ export default function RaceTime() {
   });
 
   if (!nextF1Race) {
-    const currentYear = new Date(currentTime).getFullYear();
-    const stillInCurrentSeasonYear =
-      raceData.MRData.RaceTable.season === currentYear.toString();
-    // If we're still in 2022 and referencing 2023 season, add 1 to the current year
-    // Otherwise, add nothing
-    const nextYearsSeason = stillInCurrentSeasonYear
-      ? currentYear + 1
-      : currentYear;
-
     return (
-      <>
-        <h1 className="text-6xl font-bold">No more races this season!</h1>
-        <h2 className="mt-2 italic md:text-2xl">
-          See you in {nextYearsSeason}!
-        </h2>
-      </>
+      <NoRaceDisplay
+        currentTime={currentTime}
+        season={raceData.MRData.RaceTable.season}
+      />
     );
   }
 
@@ -123,7 +112,7 @@ export default function RaceTime() {
     if (currentlyLive) {
       return (
         <a
-          className="hover:underline text-red-600 text-4xl md:text-6xl"
+          className="text-4xl text-red-600 hover:underline md:text-6xl"
           href="https://f1tv.formula1.com/"
           target="_blank"
           rel="noreferrer"
@@ -155,7 +144,7 @@ export default function RaceTime() {
       <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold">
         {formattedRaceTime}
       </h3>
-      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl">
+      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold">
         <span className="font-bold">{nextF1Race.raceName}</span>, at{' '}
         <a
           className="hover:underline"
@@ -169,7 +158,7 @@ export default function RaceTime() {
           <a className="hover:underline">{nextF1Race.Circuit.circuitName}</a>
         </Link> */}
       </h3>
-      <div className="flex space-x-2 justify-center">
+      <div className="flex justify-center space-x-2">
         {Object.values(RaceTypes).map((type) => (
           <RaceTypeButton
             key={type}
@@ -187,6 +176,29 @@ interface RaceTypeButtonProps {
   active: boolean;
   type: RaceTypes;
   onClick: () => void;
+}
+
+function NoRaceDisplay({
+  currentTime,
+  season,
+}: {
+  currentTime: number;
+  season: string;
+}) {
+  const currentYear = new Date(currentTime).getFullYear();
+  const stillInCurrentSeasonYear = season === currentYear.toString();
+  // If we're still in 2022 and referencing 2023 season, add 1 to the current year
+  // Otherwise, add nothing
+  const nextYearsSeason = stillInCurrentSeasonYear
+    ? currentYear + 1
+    : currentYear;
+
+  return (
+    <>
+      <h1 className="text-6xl font-bold">No more races this season!</h1>
+      <h2 className="mt-2 italic md:text-2xl">See you in {nextYearsSeason}!</h2>
+    </>
+  );
 }
 
 function RaceTypeButton({ active, onClick, type }: RaceTypeButtonProps) {
