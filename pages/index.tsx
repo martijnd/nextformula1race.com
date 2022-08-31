@@ -12,15 +12,18 @@ import {
   raceTransformer,
   standingsTransformer,
 } from '@/api/ergast/transformers';
-import { getCurrentYearRaces, getDriverStandings } from '@/api/ergast/fetchers';
+import {
+  fetchCurrentYearRaces,
+  fetchDriverStandings,
+} from '@/api/ergast/fetchers';
 
 export async function getServerSideProps() {
-  const data = await getCurrentYearRaces();
-  const standings = await getDriverStandings();
+  const races = await fetchCurrentYearRaces();
+  const standings = await fetchDriverStandings();
 
   return {
     props: {
-      data,
+      races,
       standings,
     },
   };
@@ -31,11 +34,11 @@ const Home: NextPage<{
     data: StandingsResponse;
     error: boolean;
   };
-  data: {
+  races: {
     data: RacesResponse;
     error: boolean;
   };
-}> = ({ data, standings }) => {
+}> = ({ races, standings }) => {
   const target = useRef<HTMLElement>(null);
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
@@ -93,7 +96,7 @@ const Home: NextPage<{
               </svg>
             )}
           </button>
-          {data && <RaceTime data={raceTransformer(data.data)} />}
+          {races && <RaceTime data={raceTransformer(races.data)} />}
           <button
             className="absolute font-semibold bottom-6 text-neutral-400"
             onClick={() => scrollToStandings(target)}
@@ -103,10 +106,12 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          <Standings
-            show={showStandings}
-            data={standingsTransformer(standings.data)}
-          />
+          {standings && (
+            <Standings
+              show={showStandings}
+              data={standingsTransformer(standings.data)}
+            />
+          )}
         </section>
       </main>
       <Footer />

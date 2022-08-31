@@ -5,7 +5,7 @@ export const CURRENT_YEAR_RACES_URL = 'https://ergast.com/api/f1/current.json';
 export const DRIVER_STANDINGS_URL =
   'https://ergast.com/api/f1/current/driverStandings.json';
 
-export async function getCurrentYearRaces() {
+export async function fetchCurrentYearRaces() {
   try {
     const res = await fetch(CURRENT_YEAR_RACES_URL);
     const data = (await res.json()) as RacesResponse;
@@ -16,7 +16,7 @@ export async function getCurrentYearRaces() {
   }
 }
 
-export async function getDriverStandings() {
+export async function fetchDriverStandings() {
   try {
     const res = await fetch(DRIVER_STANDINGS_URL);
     const data = (await res.json()) as StandingsResponse;
