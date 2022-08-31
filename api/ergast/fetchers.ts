@@ -6,23 +6,15 @@ export const DRIVER_STANDINGS_URL =
   'https://ergast.com/api/f1/current/driverStandings.json';
 
 export async function fetchCurrentYearRaces() {
-  try {
-    const res = await fetch(CURRENT_YEAR_RACES_URL);
-    const data = (await res.json()) as RacesResponse;
+  const res = await fetch(CURRENT_YEAR_RACES_URL);
+  const data = (await res.json()) as RacesResponse;
 
-    return { data, error: false };
-  } catch (e) {
-    return { data: null, error: true };
-  }
+  return data;
 }
 
 export async function fetchDriverStandings() {
-  try {
-    const res = await fetch(DRIVER_STANDINGS_URL);
-    const data = (await res.json()) as StandingsResponse;
+  const res = await fetch(DRIVER_STANDINGS_URL);
+  const data = (await res.json()) as StandingsResponse;
 
-    return { data, error: false };
-  } catch (e) {
-    return { data: null, error: true };
-  }
+  return data;
 }
