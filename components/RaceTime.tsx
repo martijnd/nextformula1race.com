@@ -1,4 +1,4 @@
-import useSWRImmutable from 'swr/immutable';
+import { RacesTransformerResult } from '@/api/ergast/types/transformers';
 import {
   format,
   parseISO,
@@ -10,53 +10,52 @@ import {
   addHours,
 } from 'date-fns';
 import { useEffect, useState } from 'react';
-import useFetcher from '@/utils/useFetcher';
-import { Race, RacesResponse } from '@/types/races';
-import Link from 'next/link';
 
 export enum RaceTypes {
   FP1 = 'FP1',
   FP2 = 'FP2',
   FP3 = 'FP3',
-  Qualy = 'qualy',
-  Race = 'race',
+  Qualy = 'QUALY',
+  Sprint = 'SPRINT',
+  Race = 'RACE',
 }
 
 const HOURS_TO_ADD: Record<RaceTypes, number> = {
   [RaceTypes.FP1]: 1,
   [RaceTypes.FP2]: 1,
   [RaceTypes.FP3]: 1,
+  [RaceTypes.Sprint]: 1,
   [RaceTypes.Qualy]: 1,
   [RaceTypes.Race]: 2,
 };
 
 const ONE_SECOND = 1000;
 
-export default function RaceTime() {
-  const fetcher = useFetcher();
+export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   const [currentTime, setCurrentTime] = useState(
     // new Date('1 January 2023 14:59:59').getTime()
     new Date().getTime()
   );
+  const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
-
-  const { data: raceData, error } = useSWRImmutable<RacesResponse>(
-    'https://ergast.com/api/f1/current.json',
-    fetcher
-  );
 
   useEffect(() => {
     setRaceType(localStorage.raceType ?? RaceTypes.Race);
     setInterval(() => {
       setCurrentTime(new Date().getTime());
     }, ONE_SECOND);
+    setHydrated(true);
   }, []);
 
-  if (error) return <h2>An error occured loading data.</h2>;
-  if (!raceData) return <h2></h2>;
-
-  const nextF1Race = raceData.MRData.RaceTable.Races.find((race) => {
-    const raceDateTime = parseISO(`${race.date}T${race.time}`);
+  if (!hydrated) {
+    // Returns null on first render, so the client and server match
+    return null;
+  }
+  if (!data?.races) {
+    return <h2></h2>;
+  }
+  const nextF1Race = data.races.find((race) => {
+    const raceDateTime = parseISO(race.dateTime);
     return (
       isAfter(raceDateTime, currentTime) ||
       isCurrentlyLive(raceDateTime, raceType)
@@ -64,27 +63,23 @@ export default function RaceTime() {
   });
 
   if (!nextF1Race) {
-    return (
-      <NoRaceDisplay
-        currentTime={currentTime}
-        season={raceData.MRData.RaceTable.season}
-      />
-    );
+    return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
   }
 
-  function getRace(raceType: RaceTypes, race: Race) {
+  function getRace(raceType: RaceTypes, race: RacesTransformerResult['races'][number]) {
     return {
       [RaceTypes.Race]: race,
-      [RaceTypes.Qualy]: race.Qualifying,
-      [RaceTypes.FP1]: race.FirstPractice,
-      [RaceTypes.FP2]: race.SecondPractice,
-      [RaceTypes.FP3]: race.ThirdPractice,
+      [RaceTypes.Qualy]: race.qualifying,
+      [RaceTypes.FP1]: race.FP1,
+      [RaceTypes.FP2]: race.FP2,
+      [RaceTypes.FP3]: race.FP3,
+      [RaceTypes.Sprint]: race.FP3,
     }[raceType];
   }
 
   const event = getRace(raceType, nextF1Race);
 
-  const nextF1RaceDateTime = parseISO(`${event?.date}T${event?.time}`);
+  const nextF1RaceDateTime = parseISO(event.dateTime);
 
   const duration = formatDuration(
     intervalToDuration({
@@ -145,28 +140,34 @@ export default function RaceTime() {
         {formattedRaceTime}
       </h3>
       <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold">
-        <span className="font-bold">{nextF1Race.raceName}</span>, at{' '}
+        <span className="font-bold">{nextF1Race.name}</span>, at{' '}
         <a
           className="hover:underline"
           target="_blank"
           rel="noreferrer"
-          href={nextF1Race.Circuit.url}
+          href={nextF1Race.circuitUrl}
         >
-          {nextF1Race.Circuit.circuitName}
+          {nextF1Race.circuitName}
         </a>
         {/* <Link href={`/circuits/${nextF1Race.Circuit.circuitId}`}>
           <a className="hover:underline">{nextF1Race.Circuit.circuitName}</a>
         </Link> */}
       </h3>
       <div className="flex justify-center space-x-2">
-        {Object.values(RaceTypes).map((type) => (
-          <RaceTypeButton
-            key={type}
-            type={type}
-            active={raceType === type}
-            onClick={() => onClickRaceType(type)}
-          />
-        ))}
+        {Object.values(RaceTypes)
+          .filter((type) =>
+            nextF1Race.hasSprint
+              ? type !== RaceTypes.FP3
+              : type !== RaceTypes.Sprint
+          )
+          .map((type) => (
+            <RaceTypeButton
+              key={type}
+              type={type}
+              active={raceType === type}
+              onClick={() => onClickRaceType(type)}
+            />
+          ))}
       </div>
     </div>
   );

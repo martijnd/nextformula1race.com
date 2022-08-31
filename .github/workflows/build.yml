@@ -1,4 +1,4 @@
-name: Build Next.js
+name: Build App
 
 on:
   push:
@@ -24,8 +24,11 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install
+      - name: Install dependencies
         run: pnpm i
 
       - name: Lint
         run: pnpm run lint
+
+      - name: Build
+        run: pnpm run build
