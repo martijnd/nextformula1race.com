@@ -6,10 +6,13 @@ import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { ergastApi } from '@/api/ergast';
-import { RacesResponse } from '@/types/races';
-
-const { getCurrentYearRaces, transform, getDriverStandings } = ergastApi();
+import { RacesResponse } from '@/api/ergast/types/races';
+import { StandingsResponse } from '@/api/ergast/types/standings';
+import {
+  raceTransformer,
+  standingsTransformer,
+} from '@/api/ergast/transformers';
+import { getCurrentYearRaces, getDriverStandings } from '@/api/ergast/fetchers';
 
 export async function getServerSideProps() {
   const data = await getCurrentYearRaces();
@@ -24,7 +27,10 @@ export async function getServerSideProps() {
 }
 
 const Home: NextPage<{
-  standings: any;
+  standings: {
+    data: StandingsResponse;
+    error: boolean;
+  };
   data: {
     data: RacesResponse;
     error: boolean;
@@ -87,7 +93,7 @@ const Home: NextPage<{
               </svg>
             )}
           </button>
-          {data && <RaceTime data={transform(data.data)} />}
+          {data && <RaceTime data={raceTransformer(data.data)} />}
           <button
             className="absolute font-semibold bottom-6 text-neutral-400"
             onClick={() => scrollToStandings(target)}
@@ -97,7 +103,10 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          <Standings show={showStandings} data={standings.data} />
+          <Standings
+            show={showStandings}
+            data={standingsTransformer(standings.data)}
+          />
         </section>
       </main>
       <Footer />

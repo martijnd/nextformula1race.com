@@ -1,3 +1,4 @@
+import { RacesTransformerResult } from '@/api/ergast/types/transformers';
 import {
   format,
   parseISO,
@@ -9,16 +10,14 @@ import {
   addHours,
 } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { Race } from '@/api/ergast';
-import { Payload } from '@/api/ergast';
 
 export enum RaceTypes {
   FP1 = 'FP1',
   FP2 = 'FP2',
   FP3 = 'FP3',
-  Qualy = 'qualy',
-  Sprint = 'sprint',
-  Race = 'race',
+  Qualy = 'QUALY',
+  Sprint = 'SPRINT',
+  Race = 'RACE',
 }
 
 const HOURS_TO_ADD: Record<RaceTypes, number> = {
@@ -32,7 +31,7 @@ const HOURS_TO_ADD: Record<RaceTypes, number> = {
 
 const ONE_SECOND = 1000;
 
-export default function RaceTime({ data }: { data: Payload }) {
+export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   const [currentTime, setCurrentTime] = useState(
     // new Date('1 January 2023 14:59:59').getTime()
     new Date().getTime()
@@ -67,7 +66,7 @@ export default function RaceTime({ data }: { data: Payload }) {
     return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
   }
 
-  function getRace(raceType: RaceTypes, race: Race) {
+  function getRace(raceType: RaceTypes, race: RacesTransformerResult['races'][number]) {
     return {
       [RaceTypes.Race]: race,
       [RaceTypes.Qualy]: race.qualifying,

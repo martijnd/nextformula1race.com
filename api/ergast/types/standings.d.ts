@@ -49,5 +49,3 @@ export interface MRData {
 export interface StandingsResponse {
   MRData: MRData;
 }
-
-

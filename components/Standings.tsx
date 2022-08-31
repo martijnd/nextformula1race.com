@@ -1,11 +1,11 @@
-import { StandingsResponse } from '@/types/standings';
+import { StandingsTransformerResult } from '@/api/ergast/types/transformers';
 
 export default function Standings({
   show,
   data,
 }: {
   show: boolean;
-  data: StandingsResponse;
+  data: StandingsTransformerResult;
 }) {
   if (!data) return <h2>Loading...</h2>;
 
@@ -26,28 +26,29 @@ export default function Standings({
           </tr>
         </thead>
         <tbody className="text-slate-700 font-semibold">
-          {data.MRData.StandingsTable.StandingsLists[0].DriverStandings.slice(
-            0,
-            20
-          ).map(({ Driver, position, points }, index) => (
-            <tr
-              key={position}
-              className={`border-b border-gray-300 hover:bg-slate-200 ${
-                index % 2 === 1 ? 'bg-slate-100' : ''
-              }`}
-            >
-              <td className="p-4">{position}</td>
-              <td className="p-4 font-bold">
-                <a
-                  href={Driver.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:underline"
-                >{`${Driver.givenName} ${Driver.familyName}`}</a>
-              </td>
-              <td className="text-right p-4">{points}</td>
-            </tr>
-          ))}
+          {data.drivers
+            .slice(0, 20)
+            .map(({ name, position, points, url }, index) => (
+              <tr
+                key={position}
+                className={`border-b border-gray-300 hover:bg-slate-200 ${
+                  index % 2 === 1 ? 'bg-slate-100' : ''
+                }`}
+              >
+                <td className="p-4">{position}</td>
+                <td className="p-4 font-bold">
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:underline"
+                  >
+                    {name}
+                  </a>
+                </td>
+                <td className="text-right p-4">{points}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
