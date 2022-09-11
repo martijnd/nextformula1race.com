@@ -19,8 +19,15 @@ import { RacesResponse } from '@/api/ergast/types/races';
 import { StandingsResponse } from '@/api/ergast/types/standings';
 
 export async function getServerSideProps() {
+  const startTime = performance.now();
   const races = await fetchCurrentYearRaces();
+  const racesEndTime = performance.now();
   const standings = await fetchDriverStandings();
+  const totalEndTime = performance.now();
+
+  log.debug(`Time to load races: ${racesEndTime - startTime}ms`);
+  log.debug(`Time to load drivers: ${totalEndTime - racesEndTime}ms`);
+  log.debug(`Total time to load: ${totalEndTime - startTime}ms`);
 
   return {
     props: {
@@ -34,9 +41,6 @@ const Home: NextPage<{
   standings: StandingsResponse;
   races: RacesResponse;
 }> = ({ races, standings }) => {
-  log.debug('Loading user', {
-    info: window?.navigator ? window.navigator?.userAgent : null,
-  });
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
