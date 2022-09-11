@@ -25,9 +25,9 @@ export async function getServerSideProps() {
   const standings = await fetchDriverStandings();
   const totalEndTime = performance.now();
 
-  log.debug(`Time to load races: ${racesEndTime - startTime}ms`);
-  log.debug(`Time to load drivers: ${totalEndTime - racesEndTime}ms`);
-  log.debug(`Total time to load: ${totalEndTime - startTime}ms`);
+  log.info(`Time to load races: ${racesEndTime - startTime}ms`);
+  log.info(`Time to load drivers: ${totalEndTime - racesEndTime}ms`);
+  log.info(`Total time to load: ${totalEndTime - startTime}ms`);
 
   return {
     props: {
