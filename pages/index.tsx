@@ -3,6 +3,7 @@ import RaceTime from '@/components/RaceTime';
 import Standings from '@/components/Standings';
 import { useDarkMode } from '@/hooks/dark-mode';
 import { useObserver } from '@/hooks/observer';
+import { log } from 'next-axiom';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
@@ -33,6 +34,7 @@ const Home: NextPage<{
   standings: StandingsResponse;
   races: RacesResponse;
 }> = ({ races, standings }) => {
+  log.debug('Loading user', { info: navigator?.userAgent });
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
