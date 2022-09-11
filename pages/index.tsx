@@ -34,7 +34,9 @@ const Home: NextPage<{
   standings: StandingsResponse;
   races: RacesResponse;
 }> = ({ races, standings }) => {
-  log.debug('Loading user', { info: navigator ? navigator?.userAgent : null });
+  log.debug('Loading user', {
+    info: window?.navigator ? window.navigator?.userAgent : null,
+  });
   const [showStandings, setShowStandings] = useState(false);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
