@@ -20,13 +20,12 @@ import { StandingsResponse } from '@/api/ergast/types/standings';
 
 export async function getServerSideProps() {
   const startTime = performance.now();
-  const races = await fetchCurrentYearRaces();
-  const racesEndTime = performance.now();
-  const standings = await fetchDriverStandings();
+  const [races, standings] = await Promise.all([
+    fetchCurrentYearRaces(),
+    fetchDriverStandings(),
+  ]);
   const totalEndTime = performance.now();
 
-  log.info(`Time to load races: ${racesEndTime - startTime}ms`);
-  log.info(`Time to load drivers: ${totalEndTime - racesEndTime}ms`);
   log.info(`Total time to load: ${totalEndTime - startTime}ms`);
 
   return {
