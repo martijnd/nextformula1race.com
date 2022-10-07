@@ -18,8 +18,6 @@ import {
   fetchDriverStandings,
 } from '@/api/ergast/fetchers';
 import { RacesResponse } from '@/api/ergast/types/races';
-import { StandingsResponse } from '@/api/ergast/types/standings';
-import Spinner from '@/components/Spinner';
 
 export async function getServerSideProps() {
   const startTime = performance.now();
