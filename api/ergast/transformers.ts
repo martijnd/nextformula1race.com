@@ -48,8 +48,11 @@ export function raceTransformer(data: RacesResponse): RacesTransformerResult {
 }
 
 export function standingsTransformer(
-  data: StandingsResponse
-): StandingsTransformerResult {
+  data: StandingsResponse | undefined
+): StandingsTransformerResult | undefined {
+  if (!data) {
+    return undefined;
+  }
   return {
     drivers: data.MRData.StandingsTable.StandingsLists[0].DriverStandings.map(
       (driver) => {

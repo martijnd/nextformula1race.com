@@ -1,3 +1,5 @@
+import useSWR from 'swr';
+
 import Footer from '@/components/Footer';
 import RaceTime from '@/components/RaceTime';
 import Standings from '@/components/Standings';
@@ -17,13 +19,11 @@ import {
 } from '@/api/ergast/fetchers';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { StandingsResponse } from '@/api/ergast/types/standings';
+import Spinner from '@/components/Spinner';
 
 export async function getServerSideProps() {
   const startTime = performance.now();
-  const [races, standings] = await Promise.all([
-    fetchCurrentYearRaces(),
-    fetchDriverStandings(),
-  ]);
+  const [races] = await Promise.all([fetchCurrentYearRaces()]);
   const totalEndTime = performance.now();
 
   log.info(`Total time to load: ${totalEndTime - startTime}ms`);
@@ -31,16 +31,15 @@ export async function getServerSideProps() {
   return {
     props: {
       races,
-      standings,
     },
   };
 }
 
 const Home: NextPage<{
-  standings: StandingsResponse;
   races: RacesResponse;
-}> = ({ races, standings }) => {
+}> = ({ races }) => {
   const [showStandings, setShowStandings] = useState(false);
+  const { data: standingsData } = useSWR('standings', fetchDriverStandings);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
   const observe = useObserver(target, () => {
@@ -107,12 +106,10 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          {standings && (
-            <Standings
-              show={showStandings}
-              data={standingsTransformer(standings)}
-            />
-          )}
+          <Standings
+            show={showStandings}
+            data={standingsTransformer(standingsData)}
+          />
         </section>
       </main>
       <Footer />
