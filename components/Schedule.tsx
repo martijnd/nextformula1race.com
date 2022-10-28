@@ -63,7 +63,7 @@ export default function Schedule({
                     }`}
                   >
                     {nextF1Race?.raceName === race.raceName && (
-                      <div className="absolute text-8xl font-bold -top-8 -right-4 text-blue-400/30">
+                      <div className="absolute font-bold text-7xl md:text-8xl -top-6 md:-top-8 -right-3 md:-right-4 text-blue-400/30">
                         Next race
                       </div>
                     )}
