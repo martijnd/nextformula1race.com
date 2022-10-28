@@ -29,7 +29,7 @@ export class RaceEvent {
 
 const HOURS_TO_ADD: Record<RaceTypes, number> = {
   [RaceTypes.FP1]: 1,
-  [RaceTypes.FP2]: 1,
+  [RaceTypes.FP2]: 1.5,
   [RaceTypes.FP3]: 1,
   [RaceTypes.Sprint]: 1,
   [RaceTypes.Qualy]: 1,
