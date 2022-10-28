@@ -3,6 +3,7 @@ import { Race } from '@/classes/race';
 import { RaceResult } from '@/classes/race-result';
 import format from 'date-fns/format';
 import { useState } from 'react';
+import { RaceTypes } from './RaceTime';
 
 export default function Schedule({
   show,
@@ -10,10 +11,14 @@ export default function Schedule({
   remaining,
 }: {
   show: boolean;
-  data?: ResultsTransformerResult;
+  data: ResultsTransformerResult;
   remaining: Race[];
 }) {
   const [showAllRaces, setShowAllRaces] = useState(false);
+  const nextF1Race = remaining.find((race) => {
+    return !race.hasHappened() || race.isCurrentlyLive(RaceTypes.Race);
+  });
+
   return (
     <div
       className={`w-full duration-1000 transition-opacity p-4 ${
@@ -36,17 +41,27 @@ export default function Schedule({
         <div className="max-w-md mx-auto space-y-4">
           {data
             ? [
-                ...data.races.filter((race, index) =>
+                ...data.races.filter((_, index) =>
                   showAllRaces ? true : index + 1 >= data.races.length - 1
                 ),
                 ...remaining,
               ].map((race: Race | RaceResult, index, races) => (
                 <div key={race.raceName}>
                   <div
-                    className={`text-black rounded-lg shadow hover:shadow-2xl transition-shadow p-8 overflow-hidden relative ${
+                    className={`${
+                      nextF1Race?.raceName === race.raceName
+                        ? 'bg-gradient-to-tr from-blue-300 to-blue-700 text-white shadow-lg p-24 text-2xl'
+                        : 'bg-white'
+                    } text-black rounded-lg shadow hover:shadow-2xl transition-shadow p-8 overflow-hidden relative ${
                       race.hasHappened() ? 'bg-green-600 text-white' : ''
                     }`}
                   >
+                    {nextF1Race?.raceName === race.raceName && (
+                      <div className="absolute text-8xl font-bold -top-8 -right-4 text-blue-400/30">
+                        Next race
+                      </div>
+                    )}
+
                     {race.hasHappened() && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
