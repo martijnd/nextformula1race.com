@@ -28,7 +28,11 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
 
   useEffect(() => {
-    setRaceType(localStorage.raceType ?? RaceTypes.Race);
+    setRaceType(
+      localStorage.raceType && localStorage.raceType in Object.values(RaceTypes)
+        ? localStorage.raceType
+        : RaceTypes.Race
+    );
     setInterval(() => {
       setCurrentTime(new Date().getTime());
     }, ONE_SECOND);
