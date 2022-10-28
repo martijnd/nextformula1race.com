@@ -51,8 +51,8 @@ export default function Schedule({
                     className={`${
                       nextF1Race?.raceName === race.raceName
                         ? 'bg-gradient-to-tr from-blue-300 to-blue-700 text-white shadow-lg p-24 text-2xl'
-                        : 'bg-white'
-                    } text-black rounded-lg shadow hover:shadow-2xl transition-shadow p-8 overflow-hidden relative ${
+                        : 'bg-white text-black p-8'
+                    }  rounded-lg shadow hover:shadow-2xl transition-shadow overflow-hidden relative ${
                       race.hasHappened() ? 'bg-green-600 text-white' : ''
                     }`}
                   >
