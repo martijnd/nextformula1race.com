@@ -107,7 +107,7 @@ const Home: NextPage<{
         <section className="bg-white" ref={target}>
           <Schedule show={showSchedule} data={raceTransformer(races)} />
         </section>
-
+        <hr />
         <section className="bg-white">
           <Standings
             show={showSchedule}
