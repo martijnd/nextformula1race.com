@@ -1,4 +1,5 @@
 import { StandingsTransformerResult } from '@/api/ergast/types/transformers';
+import { Trophy } from './Trophy';
 
 export default function Standings({
   show,
@@ -52,15 +53,18 @@ export default function Standings({
             ? data.drivers
                 .slice(0, 20)
                 .map(({ name, position, points, url }, index) => (
-                  <tr key={position} className={` hover:bg-slate-200 `}>
+                  <tr key={position} className="hover:bg-gray-100/40">
                     <td className="p-4 w-5">{position}</td>
                     <td className="p-4 font-semibold">
                       <a
                         href={url}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:underline"
+                        className="hover:underline flex items-center gap-2"
                       >
+                        {position === '1' && <Trophy color="text-orange-400" />}
+                        {position === '2' && <Trophy color="text-gray-300" />}
+                        {position === '3' && <Trophy color="text-yellow-800" />}
                         {name}
                       </a>
                     </td>
@@ -70,7 +74,7 @@ export default function Standings({
             : [...Array(20)].map((e, i) => (
                 <tr
                   key={i}
-                  className={`hover:bg-slate-200 animate-pulse ${
+                  className={`hover:bg-slate-100 animate-pulse ${
                     i % 2 === 1 ? 'bg-slate-100' : ''
                   }`}
                 >
