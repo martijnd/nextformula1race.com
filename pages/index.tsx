@@ -18,6 +18,7 @@ import {
   fetchDriverStandings,
 } from '@/api/ergast/fetchers';
 import { RacesResponse } from '@/api/ergast/types/races';
+import Schedule from '@/components/Schedule';
 
 export async function getServerSideProps() {
   const startTime = performance.now();
@@ -36,12 +37,12 @@ export async function getServerSideProps() {
 const Home: NextPage<{
   races: RacesResponse;
 }> = ({ races }) => {
-  const [showStandings, setShowStandings] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
   const { data: standingsData } = useSWR('standings', fetchDriverStandings);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
   const observe = useObserver(target, () => {
-    setShowStandings(true);
+    setShowSchedule(true);
   });
 
   useEffect(() => {
@@ -99,13 +100,17 @@ const Home: NextPage<{
             className="absolute font-semibold bottom-6 text-neutral-400"
             onClick={() => scrollToStandings(target)}
           >
-            Current standings &darr;
+            Schedule &darr;
           </button>
         </section>
 
         <section className="bg-white" ref={target}>
+          <Schedule show={showSchedule} data={raceTransformer(races)} />
+        </section>
+
+        <section className="bg-white">
           <Standings
-            show={showStandings}
+            show={showSchedule}
             data={standingsTransformer(standingsData)}
           />
         </section>

@@ -2,12 +2,9 @@ import { RacesTransformerResult } from '@/api/ergast/types/transformers';
 import {
   format,
   parseISO,
-  isAfter,
   intervalToDuration,
   formatDuration,
   isBefore,
-  isWithinInterval,
-  addHours,
 } from 'date-fns';
 import { useEffect, useState } from 'react';
 
@@ -19,15 +16,6 @@ export enum RaceTypes {
   Sprint = 'SPRINT',
   Race = 'RACE',
 }
-
-const HOURS_TO_ADD: Record<RaceTypes, number> = {
-  [RaceTypes.FP1]: 1,
-  [RaceTypes.FP2]: 1,
-  [RaceTypes.FP3]: 1,
-  [RaceTypes.Sprint]: 1,
-  [RaceTypes.Qualy]: 1,
-  [RaceTypes.Race]: 2,
-};
 
 const ONE_SECOND = 1000;
 
@@ -55,31 +43,30 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
     return <h2></h2>;
   }
   const nextF1Race = data.races.find((race) => {
-    const raceDateTime = parseISO(race.dateTime);
-    return (
-      isAfter(raceDateTime, currentTime) ||
-      isCurrentlyLive(raceDateTime, raceType)
-    );
+    return !race.hasHappened() || race.isCurrentlyLive(raceType);
   });
 
   if (!nextF1Race) {
     return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
   }
 
-  function getRace(raceType: RaceTypes, race: RacesTransformerResult['races'][number]) {
+  function getRaceEvent(
+    raceType: RaceTypes,
+    race: RacesTransformerResult['races'][number]
+  ) {
     return {
       [RaceTypes.Race]: race,
-      [RaceTypes.Qualy]: race.qualifying,
-      [RaceTypes.FP1]: race.FP1,
-      [RaceTypes.FP2]: race.FP2,
-      [RaceTypes.FP3]: race.FP3,
-      [RaceTypes.Sprint]: race.FP3,
+      [RaceTypes.Qualy]: race.Qualifying,
+      [RaceTypes.FP1]: race.FirstPractice,
+      [RaceTypes.FP2]: race.SecondPractice,
+      [RaceTypes.FP3]: race.SpecialEvent,
+      [RaceTypes.Sprint]: race.SpecialEvent,
     }[raceType];
   }
 
-  const event = getRace(raceType, nextF1Race);
+  const event = getRaceEvent(raceType, nextF1Race);
 
-  const nextF1RaceDateTime = parseISO(event.dateTime);
+  const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
 
   const duration = formatDuration(
     intervalToDuration({
@@ -91,20 +78,8 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
     }
   );
 
-  function isCurrentlyLive(date: Date, raceType: RaceTypes) {
-    return isWithinInterval(currentTime, {
-      start: date,
-      end: addHours(date, HOURS_TO_ADD[raceType]),
-    });
-  }
-
-  const currentlyLive = isWithinInterval(currentTime, {
-    start: nextF1RaceDateTime,
-    end: addHours(nextF1RaceDateTime, HOURS_TO_ADD[raceType]),
-  });
-
   function getDurationString() {
-    if (currentlyLive) {
+    if (event.isCurrentlyLive()) {
       return (
         <a
           className="text-4xl text-red-600 hover:underline md:text-6xl"
@@ -140,14 +115,14 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
         {formattedRaceTime}
       </h3>
       <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold">
-        <span className="font-bold">{nextF1Race.name}</span>, at{' '}
+        <span className="font-bold">{nextF1Race.raceName}</span>, at{' '}
         <a
           className="hover:underline"
           target="_blank"
           rel="noreferrer"
-          href={nextF1Race.circuitUrl}
+          href={nextF1Race.Circuit.url}
         >
-          {nextF1Race.circuitName}
+          {nextF1Race.Circuit.circuitName}
         </a>
         {/* <Link href={`/circuits/${nextF1Race.Circuit.circuitId}`}>
           <a className="hover:underline">{nextF1Race.Circuit.circuitName}</a>

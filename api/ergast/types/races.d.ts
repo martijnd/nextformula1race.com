@@ -12,29 +12,10 @@ export interface Circuit {
   Location: Location;
 }
 
-export interface FirstPractice {
+export interface RaceEvent {
   date: string;
   time: string;
-}
-
-export interface SecondPractice {
-  date: string;
-  time: string;
-}
-
-export interface ThirdPractice {
-  date: string;
-  time: string;
-}
-
-export interface Qualifying {
-  date: string;
-  time: string;
-}
-
-export interface Sprint {
-  date: string;
-  time: string;
+  dateTime: Date;
 }
 
 export interface Race {
@@ -45,11 +26,11 @@ export interface Race {
   Circuit: Circuit;
   date: string;
   time: string;
-  FirstPractice: FirstPractice;
-  SecondPractice: SecondPractice;
-  ThirdPractice: ThirdPractice;
-  Qualifying: Qualifying;
-  Sprint: Sprint;
+  FirstPractice: RaceEvent;
+  SecondPractice: RaceEvent;
+  ThirdPractice: RaceEvent;
+  Qualifying: RaceEvent;
+  Sprint: RaceEvent;
 }
 
 export interface RaceTable {

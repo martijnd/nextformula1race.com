@@ -1,4 +1,6 @@
-interface RaceEvent {
+import { RaceClass } from '../transformers';
+
+interface FormattedRaceEvent {
   dateTime: `${string}T${string}`;
 }
 
@@ -23,7 +25,7 @@ interface Race {
 
 export interface RacesTransformerResult {
   season: string;
-  races: Race[];
+  races: RaceClass[];
 }
 
 export interface StandingsTransformerResult {
