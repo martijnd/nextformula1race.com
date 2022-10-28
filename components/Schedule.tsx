@@ -50,11 +50,14 @@ export default function Schedule({
                   <div
                     className={`${
                       nextF1Race?.raceName === race.raceName
-                        ? 'bg-gradient-to-tr from-blue-300 to-blue-700 text-white shadow-lg p-24 text-2xl'
+                        ? 'bg-gradient-to-tr from-blue-300 to-blue-700 shadow-lg p-24 text-2xl'
                         : 'bg-white p-8'
                     }  rounded-lg shadow hover:shadow-2xl transition-shadow overflow-hidden relative ${
+                      race.hasHappened() ? 'bg-green-600' : ''
+                    } ${
+                      nextF1Race?.raceName === race.raceName ||
                       race.hasHappened()
-                        ? 'bg-green-600 text-white'
+                        ? 'text-white'
                         : 'text-black'
                     }`}
                   >
