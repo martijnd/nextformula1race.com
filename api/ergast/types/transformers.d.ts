@@ -1,31 +1,8 @@
-import { RaceClass } from '../transformers';
-
-interface FormattedRaceEvent {
-  dateTime: `${string}T${string}`;
-}
-
-interface Race {
-  dateTime: `${string}T${string}`;
-  name: string;
-  circuitName: string;
-  circuitUrl: string;
-  qualifying: RaceEvent;
-  FP1: RaceEvent;
-  FP2: RaceEvent;
-  FP3: RaceEvent;
-  hasSprint: boolean;
-  isCurrentlyLive: (
-    currentTime: number,
-    date: Date,
-    raceType: RaceTypes,
-    hoursToAdd: Record<RaceTypes, number>
-  ) => boolean;
-  hasHappened: (raceDateTime: number, currentTime: number) => boolean;
-}
+import { Race } from '@/classes/race';
 
 export interface RacesTransformerResult {
   season: string;
-  races: RaceClass[];
+  races: Race[];
 }
 
 export interface StandingsTransformerResult {
@@ -35,4 +12,9 @@ export interface StandingsTransformerResult {
     position: string;
     points: string;
   }[];
+}
+
+export interface ResultsTransformerResult {
+  season: string;
+  races: RaceResult[];
 }

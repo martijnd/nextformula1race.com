@@ -11,11 +11,13 @@ import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import {
   raceTransformer,
+  resultsTransformer,
   standingsTransformer,
 } from '@/api/ergast/transformers';
 import {
   fetchCurrentYearRaces,
   fetchDriverStandings,
+  fetchRaceResults,
 } from '@/api/ergast/fetchers';
 import { RacesResponse } from '@/api/ergast/types/races';
 import Schedule from '@/components/Schedule';
@@ -39,6 +41,7 @@ const Home: NextPage<{
 }> = ({ races }) => {
   const [showSchedule, setShowSchedule] = useState(false);
   const { data: standingsData } = useSWR('standings', fetchDriverStandings);
+  const { data: resultsData } = useSWR('results', fetchRaceResults);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
   const target = useRef<HTMLElement>(null);
   const observe = useObserver(target, () => {
@@ -105,7 +108,15 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          <Schedule show={showSchedule} data={raceTransformer(races)} />
+          {resultsData && (
+            <Schedule
+              show={showSchedule}
+              data={resultsTransformer(resultsData)}
+              remaining={raceTransformer(races).races.filter(
+                (race) => !race.hasHappened()
+              )}
+            />
+          )}
         </section>
         <hr />
         <section className="bg-white">

@@ -47,19 +47,14 @@ export default function Standings({
             <th className="text-right px-4">Points</th>
           </tr>
         </thead>
-        <tbody className="text-slate-700 font-semibold">
+        <tbody className="text-slate-700">
           {data
             ? data.drivers
                 .slice(0, 20)
                 .map(({ name, position, points, url }, index) => (
-                  <tr
-                    key={position}
-                    className={`border-b border-gray-300 hover:bg-slate-200 ${
-                      index % 2 === 1 ? 'bg-slate-100' : ''
-                    }`}
-                  >
+                  <tr key={position} className={` hover:bg-slate-200 `}>
                     <td className="p-4 w-5">{position}</td>
-                    <td className="p-4 font-bold">
+                    <td className="p-4 font-semibold">
                       <a
                         href={url}
                         target="_blank"
