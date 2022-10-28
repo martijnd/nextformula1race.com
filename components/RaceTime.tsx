@@ -79,7 +79,7 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   );
 
   function getDurationString() {
-    if (event.isCurrentlyLive()) {
+    if (event.isCurrentlyLive(raceType)) {
       return (
         <a
           className="text-4xl text-red-600 hover:underline md:text-6xl"

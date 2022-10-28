@@ -2,6 +2,7 @@ import { ResultsTransformerResult } from '@/api/ergast/types/transformers';
 import { Race } from '@/classes/race';
 import { RaceResult } from '@/classes/race-result';
 import format from 'date-fns/format';
+import { useState } from 'react';
 
 export default function Schedule({
   show,
@@ -12,18 +13,34 @@ export default function Schedule({
   data?: ResultsTransformerResult;
   remaining: Race[];
 }) {
+  const [showAllRaces, setShowAllRaces] = useState(false);
   return (
     <div
       className={`w-full duration-1000 transition-opacity p-4 ${
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h2 className="text-6xl font-bold my-8 text-gray-800">Schedule</h2>
+      <h2 className="my-8 text-6xl font-bold text-gray-800">Schedule</h2>
 
-      <div className="mx-auto max-w-md space-y-4">
-        {data
-          ? [...data.races, ...remaining].map(
-              (race: Race | RaceResult, index, races) => (
+      <div className={`relative ${!showAllRaces ? 'pt-12' : ''}`}>
+        {!showAllRaces && (
+          <div className="absolute z-10 w-full h-96 bg-gradient-to-b from-white to-white/0 -top-px">
+            <button
+              onClick={() => setShowAllRaces(true)}
+              className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
+            >
+              &uarr; Show all races
+            </button>
+          </div>
+        )}
+        <div className="max-w-md mx-auto space-y-4">
+          {data
+            ? [
+                ...data.races.filter((race, index) =>
+                  showAllRaces ? true : index + 1 >= data.races.length - 1
+                ),
+                ...remaining,
+              ].map((race: Race | RaceResult, index, races) => (
                 <div key={race.raceName}>
                   <div
                     className={`text-black rounded-lg shadow hover:shadow-2xl transition-shadow p-8 overflow-hidden relative ${
@@ -37,7 +54,7 @@ export default function Schedule({
                         viewBox="0 0 24 24"
                         strokeWidth="1.5"
                         stroke="currentColor"
-                        className="w-32 h-32 -top-10 -right-10 absolute text-green-500/30"
+                        className="absolute w-32 h-32 -top-10 -right-10 text-green-500/30"
                       >
                         <path
                           strokeLinecap="round"
@@ -46,23 +63,21 @@ export default function Schedule({
                         />
                       </svg>
                     )}
-
                     <h2 className="font-bold">{race.Circuit.circuitName}</h2>
-
                     <h3>
                       {format(new Date(race.dateTime), 'd MMMM Y, HH:mm')}
                     </h3>
                     {race.hasHappened() && race instanceof RaceResult && (
-                      <div className="grid grid-cols-4 grid-rows-2 gap-2 mt-4 max-w-xs mx-auto">
-                        <div className="col-start-2 col-span-2 flex justify-center gap-1 items-center font-semibold">
+                      <div className="grid max-w-xs grid-cols-4 grid-rows-2 gap-2 mx-auto mt-4">
+                        <div className="flex items-center justify-center col-span-2 col-start-2 gap-1 font-semibold">
                           <Trophy color="text-orange-400" />
                           {race.getDriverAtPosition(1)?.familyName}
                         </div>
-                        <div className="row-start-2 col-start-1 col-span-2 flex justify-center gap-1 items-center">
+                        <div className="flex items-center justify-center col-span-2 col-start-1 row-start-2 gap-1">
                           <Trophy color="text-gray-200" />
                           {race.getDriverAtPosition(2)?.familyName}
                         </div>
-                        <div className="row-start-2 col-start-3 col-span-2 flex justify-center gap-1 items-center">
+                        <div className="flex items-center justify-center col-span-2 col-start-3 row-start-2 gap-1">
                           <Trophy color="text-yellow-800" />
                           {race.getDriverAtPosition(3)?.familyName}
                         </div>
@@ -92,9 +107,9 @@ export default function Schedule({
                     </div>
                   )}
                 </div>
-              )
-            )
-          : 'loading...'}
+              ))
+            : 'loading...'}
+        </div>
       </div>
     </div>
   );

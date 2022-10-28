@@ -17,7 +17,7 @@ export class RaceEvent {
     return isBefore(this.dateTime, currentTime);
   }
 
-  isCurrentlyLive(raceType: RaceTypes = RaceTypes.Race) {
+  isCurrentlyLive(raceType: RaceTypes) {
     const currentTime = new Date();
 
     return isWithinInterval(currentTime, {
