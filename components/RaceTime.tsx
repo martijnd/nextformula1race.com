@@ -29,7 +29,8 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
 
   useEffect(() => {
     setRaceType(
-      localStorage.raceType && localStorage.raceType in Object.values(RaceTypes)
+      localStorage.raceType &&
+        Object.values(RaceTypes).includes(localStorage.raceType)
         ? localStorage.raceType
         : RaceTypes.Race
     );
