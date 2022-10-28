@@ -93,7 +93,7 @@ const Home: NextPage<{
         <meta name="theme-color" content="#ffffff"></meta>
       </Head>
       <main className="dark:text-gray-200 text-neutral-900">
-        <section className="relative bg-gray-200 dark:bg-neutral-900">
+        <section className="relative bg-gray-100 dark:bg-neutral-900">
           <button
             onClick={toggleDarkMode}
             className="absolute flex items-center right-4 top-4"

@@ -97,7 +97,11 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
     }
 
     if (isBefore(nextF1RaceDateTime, currentTime)) {
-      return <span className="text-red-300">Started {duration} ago</span>;
+      return (
+        <span className="text-red-500 dark:text-red-300">
+          Started {duration} ago
+        </span>
+      );
     }
 
     return <span>In {duration}</span>;
