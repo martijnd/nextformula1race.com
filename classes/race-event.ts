@@ -1,4 +1,3 @@
-import { RaceTypes } from '@/components/RaceTime';
 import { addHours, isBefore, isWithinInterval } from 'date-fns';
 
 export class RaceEvent {
@@ -27,7 +26,16 @@ export class RaceEvent {
   }
 }
 
-const HOURS_TO_ADD: Record<RaceTypes, number> = {
+export enum RaceTypes {
+  FP1 = 'FP1',
+  FP2 = 'FP2',
+  FP3 = 'FP3',
+  Qualy = 'QUALY',
+  Sprint = 'SPRINT',
+  Race = 'RACE',
+}
+
+export const HOURS_TO_ADD: Record<RaceTypes, number> = {
   [RaceTypes.FP1]: 1,
   [RaceTypes.FP2]: 1.5,
   [RaceTypes.FP3]: 1,
