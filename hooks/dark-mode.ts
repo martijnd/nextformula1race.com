@@ -11,14 +11,14 @@ export function useDarkMode(initial = true) {
       document.documentElement.classList.add('dark');
       setIsDarkMode(true);
     } else {
-      setIsDarkMode(false);
       document.documentElement.classList.remove('dark');
+      setIsDarkMode(false);
     }
   }
 
   function toggleDarkMode() {
     localStorage.theme = localStorage.theme === 'light' ? 'dark' : 'light';
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode((current) => !current);
     initDarkMode();
   }
 
