@@ -15,7 +15,7 @@ export interface Circuit {
 export interface RaceEvent {
   date: string;
   time: string;
-  dateTime: Date;
+  dateTime?: Date;
 }
 
 export interface Race {
@@ -28,9 +28,9 @@ export interface Race {
   time: string;
   FirstPractice: RaceEvent;
   SecondPractice: RaceEvent;
-  ThirdPractice: RaceEvent;
+  ThirdPractice?: RaceEvent;
   Qualifying: RaceEvent;
-  Sprint: RaceEvent;
+  Sprint?: RaceEvent;
 }
 
 export interface RaceTable {

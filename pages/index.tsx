@@ -5,7 +5,6 @@ import RaceTime from '@/components/RaceTime';
 import Standings from '@/components/Standings';
 import { useDarkMode } from '@/hooks/dark-mode';
 import { useObserver } from '@/hooks/observer';
-import { log } from 'next-axiom';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
@@ -19,27 +18,13 @@ import {
   fetchDriverStandings,
   fetchRaceResults,
 } from '@/api/ergast/fetchers';
-import { RacesResponse } from '@/api/ergast/types/races';
 import Schedule from '@/components/Schedule';
+import { RacesResponse } from '@/api/ergast/types/races';
+import { races } from '@/data/current';
 
-export async function getServerSideProps() {
-  const startTime = performance.now();
-  const [races] = await Promise.all([fetchCurrentYearRaces()]);
-  const totalEndTime = performance.now();
-
-  log.info(`Total time to load: ${totalEndTime - startTime}ms`);
-
-  return {
-    props: {
-      races,
-    },
-  };
-}
-
-const Home: NextPage<{
-  races: RacesResponse;
-}> = ({ races }) => {
+const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
+  const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const { data: standingsData } = useSWR('standings', fetchDriverStandings);
   const { data: resultsData } = useSWR('results', fetchRaceResults);
   const { isDarkMode, toggleDarkMode, initDarkMode } = useDarkMode();
@@ -51,7 +36,11 @@ const Home: NextPage<{
   useEffect(() => {
     // Set dark mode
     initDarkMode();
-
+    if (new Date().getFullYear() === 2022) {
+      setRaceData(races);
+    } else {
+      fetchCurrentYearRaces().then((data) => setRaceData(data));
+    }
     observe();
   }, [target, initDarkMode, observe]);
 
@@ -122,7 +111,7 @@ const Home: NextPage<{
               </svg>
             )}
           </button>
-          {races && <RaceTime data={raceTransformer(races)} />}
+          {raceData && <RaceTime data={raceTransformer(raceData)} />}
           <button
             className="absolute font-semibold bottom-6 text-neutral-400"
             onClick={() => scrollToStandings(target)}
@@ -132,11 +121,11 @@ const Home: NextPage<{
         </section>
 
         <section className="bg-white" ref={target}>
-          {resultsData && (
+          {resultsData && raceData && (
             <Schedule
               show={showSchedule}
               data={resultsTransformer(resultsData)}
-              remaining={raceTransformer(races).races.filter(
+              remaining={raceTransformer(raceData).races.filter(
                 (race) => !race.hasHappened()
               )}
             />
