@@ -1,9 +1,9 @@
 import { ResultsTransformerResult } from '@/api/ergast/types/transformers';
 import { Race } from '@/classes/race';
+import { RaceTypes } from '@/classes/race-event';
 import { RaceResult } from '@/classes/race-result';
 import format from 'date-fns/format';
 import { useState } from 'react';
-import { RaceTypes } from './RaceTime';
 import { Trophy } from './Trophy';
 
 export default function Schedule({

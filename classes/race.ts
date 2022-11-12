@@ -39,7 +39,7 @@ export class Race extends RaceEvent {
     this.time = time;
     this.FirstPractice = new RaceEvent(FirstPractice);
     this.SecondPractice = new RaceEvent(SecondPractice);
-    this.SpecialEvent = new RaceEvent(ThirdPractice ?? Sprint);
+    this.SpecialEvent = new RaceEvent(ThirdPractice ?? Sprint!);
     this.Qualifying = new RaceEvent(Qualifying);
     this.hasSprint = Boolean(Sprint);
   }
