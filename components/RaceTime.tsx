@@ -17,8 +17,8 @@ const ONE_SECOND = 1000;
 
 export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   const [currentTime, setCurrentTime] = useState(
-    // new Date('1 January 2023 14:59:59').getTime()
-    new Date().getTime()
+    new Date('31 December 2022 14:59:59')
+    // new Date()
   );
   const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
@@ -30,7 +30,7 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
         : RaceTypes.Race
     );
     setInterval(() => {
-      setCurrentTime(new Date().getTime());
+      // setCurrentTime(new Date());
     }, ONE_SECOND);
     setHydrated(true);
   }, []);
@@ -43,7 +43,10 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
     return <h2></h2>;
   }
   const nextF1Race = data.races.find((race) => {
-    return !race.hasHappened() || race.isCurrentlyLive(raceType);
+    return (
+      !race.hasHappened(currentTime) ||
+      race.isCurrentlyLive(raceType, currentTime)
+    );
   });
 
   if (!nextF1Race) {
@@ -209,10 +212,10 @@ function NoRaceDisplay({
   currentTime,
   season,
 }: {
-  currentTime: number;
+  currentTime: Date;
   season: string;
 }) {
-  const currentYear = new Date(currentTime).getFullYear();
+  const currentYear = currentTime.getFullYear();
   const stillInCurrentSeasonYear = season === currentYear.toString();
   // If we're still in 2022 and referencing 2023 season, add 1 to the current year
   // Otherwise, add nothing

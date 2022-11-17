@@ -11,15 +11,12 @@ export class RaceEvent {
     this.dateTime = new Date(`${this.date}T${this.time}`);
   }
 
-  hasHappened() {
-    const currentTime = new Date();
-    return isBefore(this.dateTime, currentTime);
+  hasHappened(time: Date = new Date()) {
+    return isBefore(this.dateTime, time);
   }
 
-  isCurrentlyLive(raceType: RaceTypes) {
-    const currentTime = new Date();
-
-    return isWithinInterval(currentTime, {
+  isCurrentlyLive(raceType: RaceTypes, time: Date = new Date()) {
+    return isWithinInterval(time, {
       start: this.dateTime,
       end: addHours(this.dateTime, HOURS_TO_ADD[raceType]),
     });
