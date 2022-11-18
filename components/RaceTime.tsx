@@ -17,8 +17,8 @@ const ONE_SECOND = 1000;
 
 export default function RaceTime({ data }: { data: RacesTransformerResult }) {
   const [currentTime, setCurrentTime] = useState(
-    new Date('31 December 2022 14:59:59')
-    // new Date()
+    // new Date('31 December 2022 14:59:59')
+    new Date()
   );
   const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
