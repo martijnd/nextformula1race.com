@@ -30,7 +30,7 @@ export default function RaceTime({ data }: { data: RacesTransformerResult }) {
         : RaceTypes.Race
     );
     setInterval(() => {
-      // setCurrentTime(new Date());
+      setCurrentTime(new Date());
     }, ONE_SECOND);
     setHydrated(true);
   }, []);
