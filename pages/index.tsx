@@ -37,7 +37,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     // Set dark mode
     initDarkMode();
-    if (new Date().getFullYear() === 2022) {
+    if ([2022, 2023].includes(new Date().getFullYear())) {
       setRaceData(races);
     } else {
       fetchCurrentYearRaces().then((data) => setRaceData(data));
