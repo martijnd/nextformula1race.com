@@ -29,10 +29,22 @@ export const races: RacesResponse = {
           },
           date: '2023-03-05',
           time: '15:00:00Z',
-          FirstPractice: { date: '2023-03-03', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-03-03', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-03-04', time: '12:00:00Z' },
-          Qualifying: { date: '2023-03-04', time: '15:00:00Z' },
+          FirstPractice: {
+            date: '2023-03-03',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-03-03',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-03-04',
+            time: '11:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-03-04',
+            time: '15:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -52,10 +64,22 @@ export const races: RacesResponse = {
           },
           date: '2023-03-19',
           time: '17:00:00Z',
-          FirstPractice: { date: '2023-03-17', time: '14:00:00Z' },
-          SecondPractice: { date: '2023-03-17', time: '17:00:00Z' },
-          ThirdPractice: { date: '2023-03-18', time: '14:00:00Z' },
-          Qualifying: { date: '2023-03-18', time: '17:00:00Z' },
+          FirstPractice: {
+            date: '2023-03-17',
+            time: '13:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-03-17',
+            time: '17:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-03-18',
+            time: '13:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-03-18',
+            time: '17:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -75,10 +99,22 @@ export const races: RacesResponse = {
           },
           date: '2023-04-02',
           time: '05:00:00Z',
-          FirstPractice: { date: '2023-03-31', time: '03:00:00Z' },
-          SecondPractice: { date: '2023-03-31', time: '06:00:00Z' },
-          ThirdPractice: { date: '2023-04-01', time: '03:00:00Z' },
-          Qualifying: { date: '2023-04-01', time: '06:00:00Z' },
+          FirstPractice: {
+            date: '2023-03-31',
+            time: '01:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-03-31',
+            time: '05:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-04-01',
+            time: '01:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-04-01',
+            time: '05:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -98,10 +134,22 @@ export const races: RacesResponse = {
           },
           date: '2023-04-30',
           time: '11:00:00Z',
-          FirstPractice: { date: '2023-04-28', time: '11:00:00Z' },
-          Qualifying: { date: '2023-04-28', time: '14:00:00Z' },
-          SecondPractice: { date: '2023-04-29', time: '11:00:00Z' },
-          Sprint: { date: '2023-04-29', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-04-28',
+            time: '09:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-04-28',
+            time: '13:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-04-29',
+            time: '09:30:00Z',
+          },
+          Sprint: {
+            date: '2023-04-29',
+            time: '13:30:00Z',
+          },
         },
         {
           season: '2023',
@@ -121,10 +169,22 @@ export const races: RacesResponse = {
           },
           date: '2023-05-07',
           time: '19:30:00Z',
-          FirstPractice: { date: '2023-05-05', time: '18:30:00Z' },
-          SecondPractice: { date: '2023-05-05', time: '21:30:00Z' },
-          ThirdPractice: { date: '2023-05-06', time: '17:00:00Z' },
-          Qualifying: { date: '2023-05-06', time: '21:00:00Z' },
+          FirstPractice: {
+            date: '2023-05-05',
+            time: '17:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-05-05',
+            time: '21:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-05-06',
+            time: '16:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-05-06',
+            time: '20:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -144,10 +204,22 @@ export const races: RacesResponse = {
           },
           date: '2023-05-21',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-05-19', time: '11:30:00Z' },
-          SecondPractice: { date: '2023-05-19', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-05-20', time: '10:30:00Z' },
-          Qualifying: { date: '2023-05-20', time: '14:30:00Z' },
+          FirstPractice: {
+            date: '2023-05-19',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-05-19',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-05-20',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-05-20',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -167,10 +239,22 @@ export const races: RacesResponse = {
           },
           date: '2023-05-28',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-05-26', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-05-26', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-05-27', time: '11:00:00Z' },
-          Qualifying: { date: '2023-05-27', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-05-26',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-05-26',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-05-27',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-05-27',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -190,10 +274,22 @@ export const races: RacesResponse = {
           },
           date: '2023-06-04',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-06-02', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-06-02', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-06-03', time: '11:00:00Z' },
-          Qualifying: { date: '2023-06-03', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-06-02',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-06-02',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-06-03',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-06-03',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -213,10 +309,22 @@ export const races: RacesResponse = {
           },
           date: '2023-06-18',
           time: '18:00:00Z',
-          FirstPractice: { date: '2023-06-16', time: '18:00:00Z' },
-          SecondPractice: { date: '2023-06-16', time: '21:00:00Z' },
-          ThirdPractice: { date: '2023-06-17', time: '17:00:00Z' },
-          Qualifying: { date: '2023-06-17', time: '20:00:00Z' },
+          FirstPractice: {
+            date: '2023-06-16',
+            time: '17:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-06-16',
+            time: '21:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-06-17',
+            time: '16:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-06-17',
+            time: '20:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -236,10 +344,22 @@ export const races: RacesResponse = {
           },
           date: '2023-07-02',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-06-30', time: '11:30:00Z' },
-          Qualifying: { date: '2023-06-30', time: '15:00:00Z' },
-          SecondPractice: { date: '2023-07-01', time: '10:30:00Z' },
-          Sprint: { date: '2023-07-01', time: '14:30:00Z' },
+          FirstPractice: {
+            date: '2023-06-30',
+            time: '11:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-06-30',
+            time: '15:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-07-01',
+            time: '10:30:00Z',
+          },
+          Sprint: {
+            date: '2023-07-01',
+            time: '14:30:00Z',
+          },
         },
         {
           season: '2023',
@@ -259,10 +379,22 @@ export const races: RacesResponse = {
           },
           date: '2023-07-09',
           time: '14:00:00Z',
-          FirstPractice: { date: '2023-07-07', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-07-07', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-07-08', time: '11:00:00Z' },
-          Qualifying: { date: '2023-07-08', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-07-07',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-07-07',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-07-08',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-07-08',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -282,10 +414,22 @@ export const races: RacesResponse = {
           },
           date: '2023-07-23',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-07-21', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-07-21', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-07-22', time: '11:00:00Z' },
-          Qualifying: { date: '2023-07-22', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-07-21',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-07-21',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-07-22',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-07-22',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -305,10 +449,22 @@ export const races: RacesResponse = {
           },
           date: '2023-07-30',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-07-28', time: '12:00:00Z' },
-          Qualifying: { date: '2023-07-28', time: '15:00:00Z' },
-          SecondPractice: { date: '2023-07-29', time: '11:00:00Z' },
-          Sprint: { date: '2023-07-29', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-07-28',
+            time: '11:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-07-28',
+            time: '15:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-07-29',
+            time: '10:30:00Z',
+          },
+          Sprint: {
+            date: '2023-07-29',
+            time: '14:30:00Z',
+          },
         },
         {
           season: '2023',
@@ -328,10 +484,22 @@ export const races: RacesResponse = {
           },
           date: '2023-08-27',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-08-25', time: '10:30:00Z' },
-          SecondPractice: { date: '2023-08-25', time: '14:00:00Z' },
-          ThirdPractice: { date: '2023-08-26', time: '10:00:00Z' },
-          Qualifying: { date: '2023-08-26', time: '13:00:00Z' },
+          FirstPractice: {
+            date: '2023-08-25',
+            time: '10:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-08-25',
+            time: '14:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-08-26',
+            time: '09:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-08-26',
+            time: '13:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -351,10 +519,22 @@ export const races: RacesResponse = {
           },
           date: '2023-09-03',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-09-01', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-09-01', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-09-02', time: '11:00:00Z' },
-          Qualifying: { date: '2023-09-02', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-09-01',
+            time: '11:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-09-01',
+            time: '15:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-09-02',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-09-02',
+            time: '14:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -374,10 +554,22 @@ export const races: RacesResponse = {
           },
           date: '2023-09-17',
           time: '12:00:00Z',
-          FirstPractice: { date: '2023-09-15', time: '10:00:00Z' },
-          SecondPractice: { date: '2023-09-15', time: '13:00:00Z' },
-          ThirdPractice: { date: '2023-09-16', time: '10:00:00Z' },
-          Qualifying: { date: '2023-09-16', time: '13:00:00Z' },
+          FirstPractice: {
+            date: '2023-09-15',
+            time: '09:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-09-15',
+            time: '13:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-09-16',
+            time: '09:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-09-16',
+            time: '13:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -397,10 +589,22 @@ export const races: RacesResponse = {
           },
           date: '2023-09-24',
           time: '05:00:00Z',
-          FirstPractice: { date: '2023-09-22', time: '03:00:00Z' },
-          SecondPractice: { date: '2023-09-22', time: '06:00:00Z' },
-          ThirdPractice: { date: '2023-09-23', time: '03:00:00Z' },
-          Qualifying: { date: '2023-09-23', time: '06:00:00Z' },
+          FirstPractice: {
+            date: '2023-09-22',
+            time: '02:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-09-22',
+            time: '06:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-09-23',
+            time: '02:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-09-23',
+            time: '06:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -420,10 +624,22 @@ export const races: RacesResponse = {
           },
           date: '2023-10-08',
           time: '14:00:00Z',
-          FirstPractice: { date: '2023-10-06', time: '10:30:00Z' },
-          Qualifying: { date: '2023-10-06', time: '14:00:00Z' },
-          SecondPractice: { date: '2023-10-07', time: '11:00:00Z' },
-          Sprint: { date: '2023-10-07', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-10-06',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-10-06',
+            time: '14:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-10-07',
+            time: '10:30:00Z',
+          },
+          Sprint: {
+            date: '2023-10-07',
+            time: '14:30:00Z',
+          },
         },
         {
           season: '2023',
@@ -443,10 +659,22 @@ export const races: RacesResponse = {
           },
           date: '2023-10-22',
           time: '19:00:00Z',
-          FirstPractice: { date: '2023-10-20', time: '19:00:00Z' },
-          Qualifying: { date: '2023-10-20', time: '22:00:00Z' },
-          SecondPractice: { date: '2023-10-21', time: '19:00:00Z' },
-          Sprint: { date: '2023-10-21', time: '22:00:00Z' },
+          FirstPractice: {
+            date: '2023-10-20',
+            time: '17:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-10-20',
+            time: '21:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-10-21',
+            time: '18:00:00Z',
+          },
+          Sprint: {
+            date: '2023-10-21',
+            time: '22:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -466,10 +694,22 @@ export const races: RacesResponse = {
           },
           date: '2023-10-29',
           time: '20:00:00Z',
-          FirstPractice: { date: '2023-10-27', time: '18:00:00Z' },
-          SecondPractice: { date: '2023-10-27', time: '21:00:00Z' },
-          ThirdPractice: { date: '2023-10-28', time: '17:00:00Z' },
-          Qualifying: { date: '2023-10-28', time: '20:00:00Z' },
+          FirstPractice: {
+            date: '2023-10-27',
+            time: '18:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-10-27',
+            time: '22:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-10-28',
+            time: '17:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-10-28',
+            time: '21:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -488,11 +728,23 @@ export const races: RacesResponse = {
             },
           },
           date: '2023-11-05',
-          time: '18:00:00Z',
-          FirstPractice: { date: '2023-11-03', time: '15:30:00Z' },
-          Qualifying: { date: '2023-11-03', time: '19:00:00Z' },
-          SecondPractice: { date: '2023-11-04', time: '15:30:00Z' },
-          Sprint: { date: '2023-11-04', time: '19:30:00Z' },
+          time: '17:00:00Z',
+          FirstPractice: {
+            date: '2023-11-03',
+            time: '14:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-11-03',
+            time: '18:00:00Z',
+          },
+          SecondPractice: {
+            date: '2023-11-04',
+            time: '14:30:00Z',
+          },
+          Sprint: {
+            date: '2023-11-04',
+            time: '18:30:00Z',
+          },
         },
         {
           season: '2023',
@@ -500,22 +752,34 @@ export const races: RacesResponse = {
           url: 'https://en.wikipedia.org/wiki/2023_Las_Vegas_Grand_Prix',
           raceName: 'Las Vegas Grand Prix',
           Circuit: {
-            circuitId: 'las_vegas',
-            url: 'http://en.wikipedia.org/wiki/Las_Vegas,_Nevada',
-            circuitName: 'Las Vegas Street Circuit',
+            circuitId: 'vegas',
+            url: 'https://en.wikipedia.org/wiki/Las_Vegas_Grand_Prix#Circuit',
+            circuitName: 'Las Vegas Strip Street Circuit',
             Location: {
-              lat: '36.1162',
-              long: '-115.174',
-              locality: 'Nevada',
-              country: 'USA',
+              lat: '36.1147',
+              long: '-115.173',
+              locality: 'Las Vegas',
+              country: 'United States',
             },
           },
-          date: '2023-11-18',
-          time: '13:00:00Z',
-          FirstPractice: { date: '2023-11-16', time: '12:00:00Z' },
-          SecondPractice: { date: '2023-11-16', time: '15:00:00Z' },
-          ThirdPractice: { date: '2023-11-17', time: '11:00:00Z' },
-          Qualifying: { date: '2023-11-17', time: '14:00:00Z' },
+          date: '2023-11-19',
+          time: '06:00:00Z',
+          FirstPractice: {
+            date: '2023-11-17',
+            time: '04:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-11-17',
+            time: '08:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-11-18',
+            time: '04:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-11-18',
+            time: '08:00:00Z',
+          },
         },
         {
           season: '2023',
@@ -535,10 +799,22 @@ export const races: RacesResponse = {
           },
           date: '2023-11-26',
           time: '13:00:00Z',
-          FirstPractice: { date: '2023-11-24', time: '10:00:00Z' },
-          SecondPractice: { date: '2023-11-24', time: '13:00:00Z' },
-          ThirdPractice: { date: '2023-11-25', time: '11:00:00Z' },
-          Qualifying: { date: '2023-11-25', time: '14:00:00Z' },
+          FirstPractice: {
+            date: '2023-11-24',
+            time: '09:30:00Z',
+          },
+          SecondPractice: {
+            date: '2023-11-24',
+            time: '13:00:00Z',
+          },
+          ThirdPractice: {
+            date: '2023-11-25',
+            time: '10:30:00Z',
+          },
+          Qualifying: {
+            date: '2023-11-25',
+            time: '14:00:00Z',
+          },
         },
       ],
     },

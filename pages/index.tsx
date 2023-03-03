@@ -27,7 +27,9 @@ const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const { data: standingsData } = useSWR('standings', fetchDriverStandings);
-  const { data: resultsData } = useSWR('results', fetchRaceResults);
+  const { data: resultsData } = useSWR('results', () =>
+    fetchRaceResults(new Date().getFullYear())
+  );
   const target = useRef<HTMLElement>(null);
   const observe = useObserver(target, () => {
     setShowSchedule(true);
@@ -37,10 +39,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     // Set dark mode
     initDarkMode();
-    if ([2022, 2023].includes(new Date().getFullYear())) {
+    if (new Date().getFullYear() === 2023) {
       setRaceData(races);
     } else {
-      fetchCurrentYearRaces().then((data) => setRaceData(data));
+      fetchCurrentYearRaces(new Date().getFullYear()).then((data) =>
+        setRaceData(data)
+      );
     }
     observe();
   }, [target, initDarkMode, observe]);
