@@ -35,7 +35,7 @@ export default function Schedule({
               onClick={() => setShowAllRaces(true)}
               className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
             >
-              &uarr; Show all races
+              Show all races
             </button>
           </div>
         )}
@@ -45,7 +45,7 @@ export default function Schedule({
                 ...data.races.filter((_, index) =>
                   showAllRaces ? true : index + 1 >= data.races.length - 1
                 ),
-                ...remaining,
+                ...remaining.slice(0, showAllRaces ? undefined : 3),
               ].map((race: Race | RaceResult, index, races) => (
                 <div key={race.raceName}>
                   <div

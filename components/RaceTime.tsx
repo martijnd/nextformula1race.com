@@ -1,5 +1,4 @@
 import { atcb_action } from 'add-to-calendar-button';
-import 'add-to-calendar-button/assets/css/atcb.css';
 import { RacesTransformerResult } from '@/api/ergast/types/transformers';
 import {
   format,
