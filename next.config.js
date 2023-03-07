@@ -4,9 +4,6 @@ const { withAxiom } = require('next-axiom');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  images: {
-    domains: ['www.formula1.com'],
-  },
 };
 
 module.exports = withAxiom(nextConfig);

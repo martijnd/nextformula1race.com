@@ -1,4 +1,8 @@
-export function Trophy({ color }: { color: string }) {
+interface TrophyProps {
+  color: string;
+}
+
+export function Trophy({ color }: TrophyProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

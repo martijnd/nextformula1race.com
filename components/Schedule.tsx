@@ -6,15 +6,13 @@ import format from 'date-fns/format';
 import { useState } from 'react';
 import { Trophy } from './Trophy';
 
-export default function Schedule({
-  show,
-  data,
-  remaining,
-}: {
+interface ScheduleProps {
   show: boolean;
   data: ResultsTransformerResult;
   remaining: Race[];
-}) {
+}
+
+export default function Schedule({ show, data, remaining }: ScheduleProps) {
   const [showAllRaces, setShowAllRaces] = useState(false);
   const nextF1Race = remaining.find((race) => {
     return !race.hasHappened() || race.isCurrentlyLive(RaceTypes.Race);
@@ -26,7 +24,7 @@ export default function Schedule({
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h2 className="my-8 text-6xl font-bold text-gray-800">Schedule</h2>
+      <h2 className="mt-8 mb-16 text-6xl font-bold text-gray-800">Schedule</h2>
 
       <div className={`relative ${!showAllRaces ? 'pt-12' : ''}`}>
         {!showAllRaces && (
@@ -52,9 +50,9 @@ export default function Schedule({
                     className={`${
                       nextF1Race?.raceName === race.raceName
                         ? 'bg-gradient-to-tr from-blue-300 to-blue-700 shadow-lg p-24 text-2xl'
-                        : 'bg-white p-8'
+                        : 'p-8'
                     } rounded-lg shadow hover:shadow-2xl transition-shadow overflow-hidden relative ${
-                      race.hasHappened() ? 'bg-green-600' : ''
+                      race.hasHappened() ? 'bg-green-600' : 'bg-white'
                     } ${
                       nextF1Race?.raceName === race.raceName ||
                       race.hasHappened()

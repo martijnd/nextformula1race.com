@@ -1,4 +1,4 @@
-const Footer: React.FC = () => {
+export default function Footer() {
   return (
     <div className="flex justify-center border-t border-slate-100 py-8 mt-4 font-semibold">
       <span className="text-gray-500 hover:text-slate-800 transition-colors">
@@ -14,6 +14,4 @@ const Footer: React.FC = () => {
       </span>
     </div>
   );
-};
-
-export default Footer;
+}

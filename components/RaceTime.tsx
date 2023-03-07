@@ -14,7 +14,11 @@ import { Race } from '@/classes/race';
 
 const ONE_SECOND = 1000;
 
-export default function RaceTime({ data }: { data: RacesTransformerResult }) {
+interface RaceTimeProps {
+  data: RacesTransformerResult;
+}
+
+export default function RaceTime({ data }: RaceTimeProps) {
   const [currentTime, setCurrentTime] = useState(
     // new Date('31 December 2022 14:59:59')
     new Date()

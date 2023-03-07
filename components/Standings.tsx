@@ -1,32 +1,12 @@
 import { StandingsTransformerResult } from '@/api/ergast/types/transformers';
 import { Trophy } from './Trophy';
 
-export default function Standings({
-  show,
-  data,
-}: {
+interface StandingsProps {
   show: boolean;
   data?: StandingsTransformerResult;
-}) {
-  // if (!data)
-  //   return (
-  //     <div className="w-full">
-  //       <div className="max-w-screen-md mx-auto rounded divide-y divide-gray-200 animate-pulse md:p-6">
-  //         {[...Array(20)].map((e, i) => (
-  //           <div
-  //             key={i}
-  //             className="flex justify-between items-center py-8 gap-4 w-full"
-  //           >
-  //             <div className="h-4 bg-gray-300 rounded-full w-4"></div>
-  //             <div className="flex-grow h-4 bg-gray-200 rounded-full"></div>
-  //             <div className="h-4 bg-gray-300 rounded-full w-12"></div>
-  //           </div>
-  //         ))}
-  //         <span className="sr-only">Loading...</span>
-  //       </div>
-  //     </div>
-  //   );
+}
 
+export default function Standings({ show, data }: StandingsProps) {
   function getWidthClass() {
     const items = ['w-28', 'w-32', 'w-36'];
     return items[Math.floor(Math.random() * items.length)];
@@ -38,7 +18,7 @@ export default function Standings({
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h2 className="text-6xl font-bold my-8 text-gray-800">Standings</h2>
+      <h2 className="text-6xl font-bold mt-8 mb-16 text-gray-800">Standings</h2>
 
       <table className={`text-left table-auto w-full max-w-screen-md mx-auto`}>
         <thead className="uppercase text-gray-400">
