@@ -669,7 +669,7 @@ export const races: RacesResponse = {
           },
           SecondPractice: {
             date: '2023-10-21',
-            time: '18:00:00Z',
+            time: '17:30:00Z',
           },
           Sprint: {
             date: '2023-10-21',
