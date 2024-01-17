@@ -39,13 +39,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     // Set dark mode
     initDarkMode();
-    if (new Date().getFullYear() === 2023) {
-      setRaceData(races);
-    } else {
-      fetchCurrentYearRaces(new Date().getFullYear()).then((data) =>
-        setRaceData(data)
-      );
-    }
+    setRaceData(races);
     observe();
   }, [target, initDarkMode, observe]);
 
