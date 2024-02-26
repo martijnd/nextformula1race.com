@@ -42,7 +42,7 @@ export const races: RacesResponse = {
             time: '12:30:00Z',
           },
           Qualifying: {
-            date: '2024-03-02',
+            date: '2024-03-01',
             time: '16:00:00Z',
           },
         },
