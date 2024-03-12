@@ -108,11 +108,11 @@ export const races: RacesResponse = {
             time: '05:00:00Z',
           },
           ThirdPractice: {
-            date: '2024-04-23',
+            date: '2024-03-23',
             time: '01:30:00Z',
           },
           Qualifying: {
-            date: '2024-04-23',
+            date: '2024-03-23',
             time: '05:00:00Z',
           },
         },
