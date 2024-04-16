@@ -179,7 +179,7 @@ export const races: RacesResponse = {
           },
           SecondPractice: {
             date: '2024-04-19',
-            time: '08:30:00Z',
+            time: '07:30:00Z',
           },
           Sprint: {
             date: '2024-04-20',
