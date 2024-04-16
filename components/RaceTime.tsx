@@ -154,7 +154,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
           .map((type) => (
             <RaceTypeButton
               key={type}
-              type={type}
+              type={nextF1Race.hasSprint && type === RaceTypes.FP2 ? 'Sprint Qualy' : type}
               active={raceType === type}
               onClick={() => onClickRaceType(type)}
             />
@@ -166,7 +166,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
 interface RaceTypeButtonProps {
   active: boolean;
-  type: RaceTypes;
+  type: RaceTypes & 'Sprint Qualy';
   onClick: () => void;
 }
 
