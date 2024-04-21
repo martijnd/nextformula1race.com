@@ -204,22 +204,21 @@ export const races: RacesResponse = {
           },
           date: '2024-05-05',
           time: '20:00:00Z',
-          // TBA
           FirstPractice: {
-            date: '2024-05-05',
-            time: '17:30:00Z',
-          },
-          SecondPractice: {
-            date: '2024-05-05',
-            time: '21:00:00Z',
-          },
-          ThirdPractice: {
-            date: '2024-05-06',
+            date: '2024-05-03',
             time: '16:30:00Z',
           },
+          SecondPractice: {
+            date: '2024-05-03',
+            time: '20:30:00Z',
+          },
           Qualifying: {
-            date: '2024-05-06',
+            date: '2024-05-04',
             time: '20:00:00Z',
+          },
+           Sprint: {
+            date: '2024-05-04',
+            time: '16:30:00Z',
           },
         },
         {
