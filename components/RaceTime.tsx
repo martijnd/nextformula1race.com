@@ -67,6 +67,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
       [RaceTypes.FP2]: race.SecondPractice,
       [RaceTypes.FP3]: race.SpecialEvent,
       [RaceTypes.Sprint]: race.SpecialEvent,
+      [RaceTypes.SprintQualy]: race.SecondPractice,
     }[raceType];
   }
 
@@ -148,13 +149,13 @@ export default function RaceTime({ data }: RaceTimeProps) {
         {Object.values(RaceTypes)
           .filter((type) =>
             nextF1Race.hasSprint
-              ? type !== RaceTypes.FP3
+              ? ![RaceTypes.FP2, RaceTypes.FP3].includes(type)
               : type !== RaceTypes.Sprint
           )
           .map((type) => (
             <RaceTypeButton
               key={type}
-              type={nextF1Race.hasSprint && type === RaceTypes.FP2 ? 'Sprint Qualy' : type}
+              type={type}
               active={raceType === type}
               onClick={() => onClickRaceType(type)}
             />
@@ -166,7 +167,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
 interface RaceTypeButtonProps {
   active: boolean;
-  type: RaceTypes & 'Sprint Qualy';
+  type: RaceTypes;
   onClick: () => void;
 }
 

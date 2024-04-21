@@ -26,9 +26,10 @@ export class RaceEvent {
 export enum RaceTypes {
   FP1 = 'FP1',
   FP2 = 'FP2',
+  SprintQualy = 'SPRINT QUALY',
   FP3 = 'FP3',
-  Qualy = 'QUALY',
   Sprint = 'SPRINT',
+  Qualy = 'QUALY',
   Race = 'RACE',
 }
 
@@ -37,6 +38,7 @@ export const HOURS_TO_ADD: Record<RaceTypes, number> = {
   [RaceTypes.FP2]: 1.5,
   [RaceTypes.FP3]: 1,
   [RaceTypes.Sprint]: 1,
+  [RaceTypes.SprintQualy]: 1,
   [RaceTypes.Qualy]: 1,
   [RaceTypes.Race]: 2,
 };

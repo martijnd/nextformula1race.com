@@ -169,7 +169,7 @@ export const races: RacesResponse = {
           },
           date: '2024-04-21',
           time: '07:00:00Z',
-           FirstPractice: {
+          FirstPractice: {
             date: '2024-04-19',
             time: '03:30:00Z',
           },
@@ -216,9 +216,9 @@ export const races: RacesResponse = {
             date: '2024-05-04',
             time: '20:00:00Z',
           },
-           Sprint: {
+          Sprint: {
             date: '2024-05-04',
-            time: '16:30:00Z',
+            time: '16:00:00Z',
           },
         },
         {
