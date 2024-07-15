@@ -150,7 +150,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
           .filter((type) =>
             nextF1Race.hasSprint
               ? ![RaceTypes.FP2, RaceTypes.FP3].includes(type)
-              : type !== RaceTypes.Sprint
+              : ![RaceTypes.Sprint, RaceTypes.SprintQualy].includes(type)
           )
           .map((type) => (
             <RaceTypeButton
