@@ -556,7 +556,7 @@ export const races: RacesResponse = {
           date: '2024-09-01',
           time: '13:00:00Z',
           FirstPractice: {
-            date: '2024-09-01',
+            date: '2024-08-30',
             time: '11:30:00Z',
           },
           SecondPractice: {
