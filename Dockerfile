@@ -11,12 +11,8 @@ WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
-# Step 4: Install the dependencies
-RUN npm i -g pnpm && pnpm install --prod
-
 # Step 5: Copy the rest of the application code to the container
 COPY . /app
-
 
 FROM base AS prod-deps
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
