@@ -16,6 +16,7 @@ COPY . .
 
 # Step 6: Build the Next.js app (for production)
 RUN npm run build
+COPY /app/.next ./.next
 
 # Step 7: Expose the port on which the Next.js app will run
 EXPOSE 3002
