@@ -764,7 +764,7 @@ export const races: RacesResponse = {
               country: 'United States',
             },
           },
-          date: '2024-11-23',
+          date: '2024-11-24',
           time: '06:00:00Z',
           FirstPractice: {
             date: '2024-11-21',
