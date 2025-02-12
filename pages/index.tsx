@@ -103,13 +103,13 @@ const Home: NextPage = () => {
             />
           )}
         </section>
-        <hr />
-        <section className="bg-white">
+        {/* <hr /> */}
+        {/* <section className="bg-white">
           <Standings
             show={showSchedule}
             data={standingsTransformer(standingsData)}
           />
-        </section>
+        </section> */}
       </main>
       <Footer />
     </>

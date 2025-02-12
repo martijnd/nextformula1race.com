@@ -9,8 +9,14 @@ import {
   addHours,
 } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { HOURS_TO_ADD, RaceTypes } from '@/classes/race-event';
-import { Race } from '@/classes/race';
+import {
+  HOURS_TO_ADD,
+  RaceType,
+  RaceEvent,
+  RegularRaceType,
+  SprintRaceType,
+} from '@/classes/race-event';
+import { RegularRace, SprintRace } from '@/classes/race';
 
 const ONE_SECOND = 1000;
 
@@ -24,13 +30,10 @@ export default function RaceTime({ data }: RaceTimeProps) {
     new Date()
   );
   const [hydrated, setHydrated] = useState(false);
-  const [raceType, setRaceType] = useState<RaceTypes>(RaceTypes.Race);
+  const [raceType, setRaceType] = useState<RaceType>(RegularRaceType.Race);
   useEffect(() => {
     setRaceType(
-      localStorage.raceType &&
-        Object.values(RaceTypes).includes(localStorage.raceType)
-        ? localStorage.raceType
-        : RaceTypes.Race
+      localStorage.raceType ? localStorage.raceType : RegularRaceType.Race
     );
     setInterval(() => {
       setCurrentTime(new Date());
@@ -57,21 +60,37 @@ export default function RaceTime({ data }: RaceTimeProps) {
   }
 
   function getRaceEvent(
-    raceType: RaceTypes,
+    raceType: RaceType,
     race: RacesTransformerResult['races'][number]
-  ) {
-    return {
-      [RaceTypes.Race]: race,
-      [RaceTypes.Qualy]: race.Qualifying,
-      [RaceTypes.FP1]: race.FirstPractice,
-      [RaceTypes.FP2]: race.SecondPractice,
-      [RaceTypes.FP3]: race.SpecialEvent,
-      [RaceTypes.Sprint]: race.SpecialEvent,
-      [RaceTypes.SprintQualy]: race.SecondPractice,
-    }[raceType];
+  ): RaceEvent | undefined {
+    if ('Sprint' in race) {
+      // Sprint weekend
+      const sprintEvents: Partial<Record<SprintRaceType, RaceEvent>> = {
+        [SprintRaceType.Race]: race,
+        [SprintRaceType.Qualy]: race.Qualifying,
+        [SprintRaceType.FP1]: race.FirstPractice,
+        [SprintRaceType.SprintQualy]: race.SprintQualifying,
+        [SprintRaceType.Sprint]: race.Sprint,
+      };
+      return sprintEvents[raceType as SprintRaceType];
+    } else {
+      // Regular weekend
+      const regularEvents: Partial<Record<RegularRaceType, RaceEvent>> = {
+        [RegularRaceType.Race]: race,
+        [RegularRaceType.Qualy]: race.Qualifying,
+        [RegularRaceType.FP1]: race.FirstPractice,
+        [RegularRaceType.FP2]: race.SecondPractice,
+        [RegularRaceType.FP3]: race.ThirdPractice,
+      };
+      return regularEvents[raceType as RegularRaceType];
+    }
   }
 
   const event = getRaceEvent(raceType, nextF1Race);
+
+  if (!event) {
+    return <h2>unpossible</h2>;
+  }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
 
@@ -86,7 +105,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
   );
 
   function getDurationString() {
-    if (event.isCurrentlyLive(raceType)) {
+    if (event!.isCurrentlyLive(raceType)) {
       return (
         <a
           className="text-4xl text-red-600 hover:underline md:text-6xl"
@@ -112,7 +131,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
   const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm');
 
-  function onClickRaceType(raceType: RaceTypes) {
+  function onClickRaceType(raceType: RaceType) {
     setRaceType(raceType);
     localStorage.raceType = raceType;
   }
@@ -146,20 +165,16 @@ export default function RaceTime({ data }: RaceTimeProps) {
         </Link> */}
       </h3>
       <div className="flex justify-center space-x-2">
-        {Object.values(RaceTypes)
-          .filter((type) =>
-            nextF1Race.hasSprint
-              ? ![RaceTypes.FP2, RaceTypes.FP3].includes(type)
-              : ![RaceTypes.Sprint, RaceTypes.SprintQualy].includes(type)
-          )
-          .map((type) => (
-            <RaceTypeButton
-              key={type}
-              type={type}
-              active={raceType === type}
-              onClick={() => onClickRaceType(type)}
-            />
-          ))}
+        {Object.values(
+          'Sprint' in nextF1Race ? SprintRaceType : RegularRaceType
+        ).map((type) => (
+          <RaceTypeButton
+            key={type}
+            type={type}
+            active={raceType === type}
+            onClick={() => onClickRaceType(type)}
+          />
+        ))}
       </div>
     </div>
   );
@@ -167,7 +182,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
 interface RaceTypeButtonProps {
   active: boolean;
-  type: RaceTypes;
+  type: RaceType;
   onClick: () => void;
 }
 
@@ -193,8 +208,8 @@ function CalendarButton({ onClick }: { onClick: () => void }) {
 }
 
 function setupCalendarButton(
-  nextF1Race: Race,
-  raceType: RaceTypes,
+  nextF1Race: RegularRace | SprintRace,
+  raceType: RaceType,
   nextF1RaceDateTime: Date
 ) {
   atcb_action({

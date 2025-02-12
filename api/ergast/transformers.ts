@@ -5,14 +5,16 @@ import {
   StandingsTransformerResult,
 } from '@/api/ergast/types/transformers';
 import { RacesResponse } from '@/api/ergast/types/races';
-import { Race } from '@/classes/race';
+import { RegularRace, SprintRace } from '@/classes/race';
 import { ResultsResponse } from './types/results';
 import { RaceResult } from '@/classes/race-result';
 
 export function raceTransformer(data: RacesResponse): RacesTransformerResult {
   return {
     season: data.MRData.RaceTable.season,
-    races: data.MRData.RaceTable.Races.map((race) => new Race(race)),
+    races: data.MRData.RaceTable.Races.map((race) =>
+      'Sprint' in race ? new SprintRace(race) : new RegularRace(race)
+    ),
   };
 }
 

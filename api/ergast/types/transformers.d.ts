@@ -1,8 +1,8 @@
-import { Race } from '@/classes/race';
+import { SprintRace, RegularRace } from '@/classes/race';
 
 export interface RacesTransformerResult {
   season: string;
-  races: Race[];
+  races: (SprintRace | RegularRace)[];
 }
 
 export interface StandingsTransformerResult {

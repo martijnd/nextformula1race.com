@@ -1,5 +1,7 @@
 import { addHours, isBefore, isWithinInterval } from 'date-fns';
 
+export type RaceType = RegularRaceType | SprintRaceType;
+
 export class RaceEvent {
   date: string;
   time: string;
@@ -15,7 +17,7 @@ export class RaceEvent {
     return isBefore(this.dateTime, time);
   }
 
-  isCurrentlyLive(raceType: RaceTypes, time: Date = new Date()) {
+  isCurrentlyLive(raceType: RaceType, time: Date = new Date()) {
     return isWithinInterval(time, {
       start: this.dateTime,
       end: addHours(this.dateTime, HOURS_TO_ADD[raceType]),
@@ -23,22 +25,28 @@ export class RaceEvent {
   }
 }
 
-export enum RaceTypes {
+export enum RegularRaceType {
   FP1 = 'FP1',
   FP2 = 'FP2',
-  SprintQualy = 'SPRINT QUALY',
   FP3 = 'FP3',
+  Qualy = 'QUALY',
+  Race = 'RACE',
+}
+
+export enum SprintRaceType {
+  FP1 = 'FP1',
+  SprintQualy = 'SPRINT QUALY',
   Sprint = 'SPRINT',
   Qualy = 'QUALY',
   Race = 'RACE',
 }
 
-export const HOURS_TO_ADD: Record<RaceTypes, number> = {
-  [RaceTypes.FP1]: 1,
-  [RaceTypes.FP2]: 1.5,
-  [RaceTypes.FP3]: 1,
-  [RaceTypes.Sprint]: 1,
-  [RaceTypes.SprintQualy]: 1,
-  [RaceTypes.Qualy]: 1,
-  [RaceTypes.Race]: 2,
+export const HOURS_TO_ADD: Record<RegularRaceType | SprintRaceType, number> = {
+  [RegularRaceType.FP1]: 1,
+  [RegularRaceType.FP2]: 1.5,
+  [RegularRaceType.FP3]: 1,
+  [SprintRaceType.Sprint]: 1,
+  [SprintRaceType.SprintQualy]: 1,
+  [RegularRaceType.Qualy]: 1,
+  [RegularRaceType.Race]: 2,
 };

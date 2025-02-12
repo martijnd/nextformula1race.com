@@ -18,24 +18,32 @@ export interface RaceEvent {
   dateTime?: Date;
 }
 
-export interface Race {
+export type BaseRaceType = {
   season: string;
   round: string;
-  url: string;
+  url?: string;
   raceName: string;
   Circuit: Circuit;
   date: string;
   time: string;
+  Qualifying: RaceEvent;
+};
+
+export type RegularRaceType = BaseRaceType & {
   FirstPractice: RaceEvent;
   SecondPractice: RaceEvent;
-  ThirdPractice?: RaceEvent;
-  Qualifying: RaceEvent;
-  Sprint?: RaceEvent;
-}
+  ThirdPractice: RaceEvent;
+};
+
+export type SprintRaceType = BaseRaceType & {
+  FirstPractice: RaceEvent;
+  SprintQualifying: RaceEvent;
+  Sprint: RaceEvent;
+};
 
 export interface RaceTable {
   season: string;
-  Races: Race[];
+  Races: (RegularRaceType | SprintRaceType)[];
 }
 
 export interface MRData {
