@@ -137,10 +137,10 @@ export const races: RacesResponse = {
             },
           },
           date: '2025-05-04',
-          time: '21:00:00Z',
+          time: '20:00:00Z',
           FirstPractice: { date: '2025-05-02', time: '17:30:00Z' },
-          Qualifying: { date: '2025-05-03', time: '21:00:00Z' },
-          Sprint: { date: '2025-05-03', time: '17:00:00Z' },
+          Qualifying: { date: '2025-05-03', time: '20:00:00Z' },
+          Sprint: { date: '2025-05-03', time: '16:00:00Z' },
           SprintQualifying: { date: '2025-05-02', time: '21:30:00Z' },
         },
         {
