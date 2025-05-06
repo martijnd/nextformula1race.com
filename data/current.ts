@@ -159,7 +159,7 @@ export const races: RacesResponse = {
             },
           },
           date: '2025-05-18',
-          time: '14:00:00Z',
+          time: '13:00:00Z',
           FirstPractice: { date: '2025-05-16', time: '12:30:00Z' },
           SecondPractice: { date: '2025-05-16', time: '16:00:00Z' },
           ThirdPractice: { date: '2025-05-17', time: '11:30:00Z' },
