@@ -8,25 +8,17 @@ import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import {
-  raceTransformer,
-  resultsTransformer,
-  standingsTransformer,
-} from '@/api/ergast/transformers';
-import {
-  fetchCurrentYearRaces,
-  fetchDriverStandings,
-  fetchRaceResults,
-} from '@/api/ergast/fetchers';
+import { raceTransformer, resultsTransformer } from '@/api/ergast/transformers';
+
 import Schedule from '@/components/Schedule';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { races } from '@/data/current';
 import { DarkModeToggle } from '@/components/DarkModeToggle';
+import { fetchRaceResults } from '@/api/ergast/fetchers';
 
 const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
-  const { data: standingsData } = useSWR('standings', fetchDriverStandings);
   const { data: resultsData } = useSWR('results', () =>
     fetchRaceResults(new Date().getFullYear())
   );
