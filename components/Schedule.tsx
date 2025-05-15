@@ -56,14 +56,7 @@ export default function Schedule({ show, data, remaining }: ScheduleProps) {
 
       <div className={`relative ${!showAllRaces ? 'pt-12' : ''}`}>
         {!showAllRaces && (
-          <div className="absolute z-10 w-full h-96 bg-gradient-to-b from-white to-white/0 -top-px">
-            <button
-              onClick={() => setShowAllRaces(true)}
-              className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
-            >
-              Show all races
-            </button>
-          </div>
+          <div className="absolute z-10 w-full h-96 bg-gradient-to-b from-white to-white/0 -top-px"></div>
         )}
         <div className="max-w-md mx-auto space-y-4">
           {data
@@ -166,6 +159,16 @@ export default function Schedule({ show, data, remaining }: ScheduleProps) {
                 )
               )
             : 'loading...'}
+          {!showAllRaces && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setShowAllRaces(true)}
+                className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
+              >
+                Show all races
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
