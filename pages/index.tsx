@@ -85,7 +85,7 @@ const Home: NextPage = () => {
           <DarkModeToggle />
           {raceData && <RaceTime data={raceTransformer(raceData)} />}
           <button
-            className="absolute font-semibold bottom-6 text-neutral-400"
+            className="absolute font-semibold transition-colors bottom-6 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100"
             onClick={() => scrollToStandings(target)}
           >
             Schedule &darr;

@@ -138,10 +138,10 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
   return (
     <div className="space-y-2 md:space-y-4">
-      <h2 className="hover:opacity-[0.8] transition-opacity duration-300 text-2xl md:text-6xl font-bold">
+      <h2 className="hover:opacity-[0.8] transition-opacity duration-300 text-2xl md:text-6xl font-bold text-neutral-900 dark:text-neutral-100">
         {getDurationString()}
       </h2>
-      <h3 className="flex justify-center gap-2 hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold">
+      <h3 className="flex justify-center gap-2 hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold text-neutral-800 dark:text-neutral-200">
         {formattedRaceTime}
 
         <CalendarButton
@@ -150,7 +150,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
           }
         />
       </h3>
-      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold">
+      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold text-neutral-800 dark:text-neutral-200">
         <span className="font-bold">{nextF1Race.raceName}</span>, at{' '}
         <a
           className="hover:underline"
@@ -244,8 +244,12 @@ function NoRaceDisplay({
 
   return (
     <>
-      <h1 className="text-6xl font-bold">No more races this season!</h1>
-      <h2 className="mt-2 italic md:text-2xl">See you in {nextYearsSeason}!</h2>
+      <h1 className="text-6xl font-bold text-neutral-900 dark:text-neutral-100">
+        No more races this season!
+      </h1>
+      <h2 className="mt-2 italic md:text-2xl text-neutral-800 dark:text-neutral-200">
+        See you in {nextYearsSeason}!
+      </h2>
     </>
   );
 }
