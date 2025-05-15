@@ -38,10 +38,17 @@ interface ScheduleProps {
   show: boolean;
   data: ResultsTransformerResult;
   remaining: (RegularRace | SprintRace)[];
+  past: (RegularRace | SprintRace)[];
 }
 
-export default function Schedule({ show, data, remaining }: ScheduleProps) {
+export default function Schedule({
+  show,
+  data,
+  remaining,
+  past,
+}: ScheduleProps) {
   const [showAllRaces, setShowAllRaces] = useState(false);
+  const [showPreviousRaces, setShowPreviousRaces] = useState(false);
   const nextF1Race = remaining.find((race) => {
     return !race.hasHappened() || race.isCurrentlyLive(RegularRaceType.Race);
   });
@@ -54,16 +61,28 @@ export default function Schedule({ show, data, remaining }: ScheduleProps) {
     >
       <h2 className="mt-8 mb-16 text-6xl font-bold text-gray-800">Schedule</h2>
 
-      <div className={`relative ${!showAllRaces ? 'pt-12' : ''}`}>
-        {!showAllRaces && (
+      <div
+        className={`relative ${
+          !showAllRaces && !showPreviousRaces ? 'pt-12' : ''
+        }`}
+      >
+        {!showAllRaces && !showPreviousRaces && (
           <div className="absolute z-10 w-full h-96 bg-gradient-to-b from-white to-white/0 -top-px"></div>
         )}
         <div className="max-w-md mx-auto space-y-4">
+          {!showPreviousRaces && past.length > 0 && (
+            <div className="relative z-20 flex justify-center mb-4">
+              <button
+                onClick={() => setShowPreviousRaces(true)}
+                className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
+              >
+                Show previous races
+              </button>
+            </div>
+          )}
           {data
             ? [
-                ...data.races.filter((_, index) =>
-                  showAllRaces ? true : index + 1 >= data.races.length - 1
-                ),
+                ...(showPreviousRaces ? past : []),
                 ...remaining.slice(0, showAllRaces ? undefined : 3),
               ].map(
                 (
@@ -159,16 +178,16 @@ export default function Schedule({ show, data, remaining }: ScheduleProps) {
                 )
               )
             : 'loading...'}
-          {!showAllRaces && (
-            <div className="flex justify-center mt-8">
+          <div className="flex justify-center gap-4 mt-8">
+            {!showAllRaces && (
               <button
                 onClick={() => setShowAllRaces(true)}
                 className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
               >
                 Show all races
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

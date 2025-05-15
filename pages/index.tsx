@@ -100,6 +100,9 @@ const Home: NextPage = () => {
               remaining={raceTransformer(raceData).races.filter(
                 (race) => !race.hasHappened()
               )}
+              past={raceTransformer(raceData).races.filter((race) =>
+                race.hasHappened()
+              )}
             />
           )}
         </section>
