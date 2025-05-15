@@ -1,0 +1,14 @@
+# Modern browsers with ES2020 support
+last 2 versions
+not dead
+> 0.2%
+not IE 11
+not op_mini all
+
+# Specific modern browsers
+chrome >= 80
+edge >= 80
+firefox >= 75
+safari >= 13.1
+ios >= 13.4
+android >= 80
