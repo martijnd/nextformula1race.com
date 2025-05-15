@@ -7,6 +7,33 @@ import { useState } from 'react';
 import { Trophy } from './Trophy';
 import { RegularRace, SprintRace } from '@/classes/race';
 
+const RACE_NAME_MAP: Record<string, string> = {
+  albert_park: 'Melbourne',
+  shanghai: 'Shanghai',
+  suzuka: 'Suzuka',
+  bahrain: 'Sakhir',
+  jeddah: 'Jeddah',
+  miami: 'Miami',
+  imola: 'Imola',
+  monaco: 'Monaco',
+  catalunya: 'Barcelona',
+  villeneuve: 'Montreal',
+  red_bull_ring: 'Austria',
+  silverstone: 'Silverstone',
+  spa: 'Belgium',
+  hungaroring: 'Hungary',
+  zandvoort: 'Netherlands',
+  monza: 'Italy',
+  baku: 'Azerbaijan',
+  marina_bay: 'Singapore',
+  americas: 'COTA, USA',
+  rodriguez: 'Mexico City',
+  interlagos: 'São Paulo',
+  vegas: 'Las Vegas',
+  losail: 'Qatar',
+  yas_marina: 'Abu Dhabi',
+};
+
 interface ScheduleProps {
   show: boolean;
   data: ResultsTransformerResult;
@@ -88,7 +115,11 @@ export default function Schedule({ show, data, remaining }: ScheduleProps) {
                           />
                         </svg>
                       )}
-                      <h2 className="font-bold">{race.Circuit.circuitName}</h2>
+                      <h2 className="font-bold">
+                        {RACE_NAME_MAP[race.Circuit.circuitId] ||
+                          race.Circuit.Location.country}{' '}
+                        GP
+                      </h2>
                       <h3>
                         {format(new Date(race.dateTime), 'd MMMM Y, HH:mm')}
                       </h3>
