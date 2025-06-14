@@ -1,27 +1,20 @@
-import useSWR from 'swr';
-
 import Footer from '@/components/Footer';
 import RaceTime from '@/components/RaceTime';
-import Standings from '@/components/Standings';
 import { useDarkMode } from '@/hooks/dark-mode';
 import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { raceTransformer, resultsTransformer } from '@/api/ergast/transformers';
+import { raceTransformer } from '@/api/ergast/transformers';
 
-import Schedule from '@/components/Schedule';
+import { Schedule } from '@/components/Schedule';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { races } from '@/data/current';
 import { DarkModeToggle } from '@/components/DarkModeToggle';
-import { fetchRaceResults } from '@/api/ergast/fetchers';
 
 const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
-  const { data: resultsData } = useSWR('results', () =>
-    fetchRaceResults(new Date().getFullYear())
-  );
   const target = useRef<HTMLElement>(null);
   const observe = useObserver(target, () => {
     setShowSchedule(true);
@@ -85,10 +78,9 @@ const Home: NextPage = () => {
         </section>
 
         <section className="bg-white" ref={target}>
-          {resultsData && raceData && (
+          {raceData && (
             <Schedule
               show={showSchedule}
-              data={resultsTransformer(resultsData)}
               remaining={raceTransformer(raceData).races.filter(
                 (race) => !race.hasHappened()
               )}
@@ -98,13 +90,6 @@ const Home: NextPage = () => {
             />
           )}
         </section>
-        {/* <hr /> */}
-        {/* <section className="bg-white">
-          <Standings
-            show={showSchedule}
-            data={standingsTransformer(standingsData)}
-          />
-        </section> */}
       </main>
       <Footer />
     </>

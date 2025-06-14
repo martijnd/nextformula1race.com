@@ -36,17 +36,11 @@ const RACE_NAME_MAP: Record<string, string> = {
 
 interface ScheduleProps {
   show: boolean;
-  data: ResultsTransformerResult;
   remaining: (RegularRace | SprintRace)[];
   past: (RegularRace | SprintRace)[];
 }
 
-export default function Schedule({
-  show,
-  data,
-  remaining,
-  past,
-}: ScheduleProps) {
+export function Schedule({ show, remaining, past }: ScheduleProps) {
   const [showAllRaces, setShowAllRaces] = useState(false);
   const [showPreviousRaces, setShowPreviousRaces] = useState(false);
   const nextF1Race = remaining.find((race) => {
@@ -80,8 +74,7 @@ export default function Schedule({
               </button>
             </div>
           )}
-          {data
-            ? [
+            {[
                 ...(showPreviousRaces ? past : []),
                 ...remaining.slice(0, showAllRaces ? undefined : 3),
               ].map(
@@ -176,8 +169,7 @@ export default function Schedule({
                     )}
                   </div>
                 )
-              )
-            : 'loading...'}
+              )}
           <div className="flex justify-center gap-4 mt-8">
             {!showAllRaces && (
               <button
