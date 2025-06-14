@@ -89,6 +89,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
   const event = getRaceEvent(raceType, nextF1Race);
 
   if (!event) {
+    console.error('No event found for race', nextF1Race);
     return <h2>unpossible</h2>;
   }
 
