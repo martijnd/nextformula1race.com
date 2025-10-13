@@ -89,11 +89,13 @@ export default function RaceTime({ data }: RaceTimeProps) {
   const event = getRaceEvent(raceType, nextF1Race);
 
   if (!event) {
+    // eslint-disable-next-line no-console
     console.error('No event found for race', nextF1Race);
     return <h2>unpossible</h2>;
   }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
+  const isSprintWeekend = 'Sprint' in nextF1Race;
 
   const duration = formatDuration(
     intervalToDuration({
@@ -139,6 +141,14 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
   return (
     <div className="space-y-2 md:space-y-4">
+      {isSprintWeekend && (
+        <div className="flex justify-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-red-300 bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-red-700 shadow-sm dark:border-red-500/40 dark:bg-red-500/20 dark:text-red-200">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-300"></span>
+            Sprint weekend
+          </span>
+        </div>
+      )}
       <h2 className="hover:opacity-[0.8] transition-opacity duration-300 text-2xl md:text-6xl font-bold text-neutral-900 dark:text-neutral-100">
         {getDurationString()}
       </h2>

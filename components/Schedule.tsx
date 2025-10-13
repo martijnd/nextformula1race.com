@@ -1,10 +1,7 @@
-import { ResultsTransformerResult } from '@/api/ergast/types/transformers';
-
-import { RegularRaceType } from '@/classes/race-event';
-import { RaceResult } from '@/classes/race-result';
+import { RegularRaceType, SprintRaceType } from '@/classes/race-event';
 import format from 'date-fns/format';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useState } from 'react';
-import { Trophy } from './Trophy';
 import { RegularRace, SprintRace } from '@/classes/race';
 
 const RACE_NAME_MAP: Record<string, string> = {
@@ -41,147 +38,235 @@ interface ScheduleProps {
 }
 
 export function Schedule({ show, remaining, past }: ScheduleProps) {
-  const [showAllRaces, setShowAllRaces] = useState(false);
-  const [showPreviousRaces, setShowPreviousRaces] = useState(false);
-  const nextF1Race = remaining.find((race) => {
-    return !race.hasHappened() || race.isCurrentlyLive(RegularRaceType.Race);
-  });
+  const [showPastRaces, setShowPastRaces] = useState(false);
+  const [now] = useState(() => new Date());
+
+  const nextRace = remaining[0] ?? null;
+  const upcomingRaces = nextRace ? remaining.slice(1) : remaining;
 
   return (
     <div
-      className={`w-full duration-1000 transition-opacity p-4 ${
+      className={`w-full max-w-5xl mx-auto p-4 transition-opacity duration-1000 ${
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h2 className="mt-8 mb-16 text-6xl font-bold text-gray-800">Schedule</h2>
+      <h2 className="mt-8 text-center text-4xl font-bold text-neutral-900 dark:text-neutral-50 md:text-5xl">
+        2025 Season Schedule
+      </h2>
 
-      <div
-        className={`relative ${
-          !showAllRaces && !showPreviousRaces ? 'pt-12' : ''
-        }`}
-      >
-        {!showAllRaces && !showPreviousRaces && (
-          <div className="absolute z-10 w-full h-96 bg-gradient-to-b from-white to-white/0 -top-px"></div>
-        )}
-        <div className="max-w-md mx-auto space-y-4">
-          {!showPreviousRaces && past.length > 0 && (
-            <div className="relative z-20 flex justify-center mb-4">
-              <button
-                onClick={() => setShowPreviousRaces(true)}
-                className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
-              >
-                Show previous races
-              </button>
-            </div>
+      {nextRace && <NextRaceCard race={nextRace} now={now} />}
+
+      <RaceGrid
+        title="Upcoming races"
+        emptyLabel="All done for this season."
+        races={upcomingRaces}
+        now={now}
+      />
+
+      {past.length > 0 && (
+        <div className="mt-10">
+          <button
+            onClick={() => setShowPastRaces((value) => !value)}
+            className="mx-auto flex items-center gap-2 rounded-full border border-neutral-300 bg-white/70 px-4 py-2 text-sm font-semibold text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-800 hover:shadow-sm dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-100 dark:hover:shadow-md"
+            aria-expanded={showPastRaces}
+          >
+            {showPastRaces ? 'Hide completed races' : 'Show completed races'}
+          </button>
+          {showPastRaces && (
+            <RaceGrid
+              title="Completed races"
+              emptyLabel="No races completed yet."
+              races={past}
+              now={now}
+            />
           )}
-            {[
-                ...(showPreviousRaces ? past : []),
-                ...remaining.slice(0, showAllRaces ? undefined : 3),
-              ].map(
-                (
-                  race: (RegularRace | SprintRace) | RaceResult,
-                  index,
-                  races
-                ) => (
-                  <div key={race.raceName}>
-                    <div
-                      className={`${
-                        nextF1Race?.raceName === race.raceName
-                          ? 'bg-gradient-to-tr from-blue-300 to-blue-700 shadow-lg p-24 text-2xl'
-                          : 'p-8'
-                      } rounded-lg shadow hover:shadow-2xl transition-shadow overflow-hidden relative ${
-                        race.hasHappened() ? 'bg-green-600' : 'bg-white'
-                      } ${
-                        nextF1Race?.raceName === race.raceName ||
-                        race.hasHappened()
-                          ? 'text-white'
-                          : 'text-black'
-                      }`}
-                    >
-                      {nextF1Race?.raceName === race.raceName && (
-                        <div className="absolute font-bold text-7xl md:text-8xl -top-6 md:-top-8 -right-3 md:-right-4 text-blue-400/30">
-                          Next race
-                        </div>
-                      )}
-
-                      {race.hasHappened() && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="absolute w-32 h-32 -top-10 -right-10 text-green-500/30"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      )}
-                      <h2 className="font-bold">
-                        {RACE_NAME_MAP[race.Circuit.circuitId] ||
-                          race.Circuit.Location.country}{' '}
-                        GP
-                      </h2>
-                      <h3>
-                        {format(new Date(race.dateTime), 'd MMMM Y, HH:mm')}
-                      </h3>
-                      {race.hasHappened() && race instanceof RaceResult && (
-                        <div className="grid max-w-xs grid-cols-4 grid-rows-2 gap-2 mx-auto mt-4">
-                          <div className="flex items-center justify-center col-span-2 col-start-2 gap-1 font-semibold">
-                            <Trophy color="text-orange-400" />
-                            {race.getDriverAtPosition(1)?.familyName}
-                          </div>
-                          <div className="flex items-center justify-center col-span-2 col-start-1 row-start-2 gap-1">
-                            <Trophy color="text-gray-200" />
-                            {race.getDriverAtPosition(2)?.familyName}
-                          </div>
-                          <div className="flex items-center justify-center col-span-2 col-start-3 row-start-2 gap-1">
-                            <Trophy color="text-yellow-800" />
-                            {race.getDriverAtPosition(3)?.familyName}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    {index !== races.length - 1 && (
-                      <div
-                        className={`${
-                          race.hasHappened() ? 'text-green-600' : 'text-black'
-                        } mt-4 flex justify-center`}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className="w-4 h-4"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                )
-              )}
-          <div className="flex justify-center gap-4 mt-8">
-            {!showAllRaces && (
-              <button
-                onClick={() => setShowAllRaces(true)}
-                className="px-4 py-2 font-semibold text-blue-400 transition rounded text-md hover:text-blue-300"
-              >
-                Show all races
-              </button>
-            )}
-          </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+type RaceLike = RegularRace | SprintRace;
+
+function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
+  const descriptor = buildRaceDescriptor(race, now);
+
+  return (
+    <div className="mx-auto mt-10 w-full max-w-4xl rounded-3xl border border-red-200 bg-gradient-to-br from-red-50 via-white to-white p-6 shadow-lg backdrop-blur dark:border-red-500/30 dark:bg-gradient-to-br dark:from-red-500/20 dark:via-neutral-900/90 dark:to-neutral-950 dark:shadow-red-900/30 dark:backdrop-blur">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700 dark:bg-red-500/35 dark:text-red-100">
+            Next race
+          </span>
+          <h3 className="mt-3 text-2xl font-bold text-neutral-900 dark:text-neutral-50 md:text-3xl">
+            {descriptor.name}
+          </h3>
+          <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            Round {race.round} • {descriptor.country}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-semibold uppercase tracking-wide text-red-600 dark:text-red-200">
+            {descriptor.status.label}
+          </p>
+          <p className="mt-2 text-lg font-semibold text-neutral-800 dark:text-neutral-50">
+            {descriptor.date}
+          </p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            {descriptor.locality}
+          </p>
+        </div>
+      </div>
+      {descriptor.isSprint && (
+        <p className="mt-4 text-sm font-medium text-red-700 dark:text-red-200">
+          Sprint weekend • extra action on Saturday!
+        </p>
+      )}
+    </div>
+  );
+}
+
+interface RaceGridProps {
+  title: string;
+  emptyLabel: string;
+  races: RaceLike[];
+  now: Date;
+}
+
+function RaceGrid({ title, emptyLabel, races, now }: RaceGridProps) {
+  if (races.length === 0) {
+    return (
+      <div className="mt-10 text-center text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        {emptyLabel}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-12">
+      <h3 className="mb-4 text-lg font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        {title}
+      </h3>
+      <ul className="grid gap-4 max-w-screen-sm mx-auto">
+        {races.map((race) => (
+          <li key={`${race.round}-${race.raceName}`}>
+            <RaceCard race={race} now={now} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function RaceCard({ race, now }: { race: RaceLike; now: Date }) {
+  const descriptor = buildRaceDescriptor(race, now);
+
+  return (
+    <div className="flex h-full flex-col justify-between rounded-2xl border border-neutral-200 bg-white/80 p-4 shadow-sm transition hover:border-neutral-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-900/70 dark:backdrop-blur-sm dark:hover:border-neutral-500 dark:hover:shadow-lg">
+      <div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h4 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+              {descriptor.name}
+            </h4>
+            <p className="text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+              Round {race.round}
+            </p>
+          </div>
+          <StatusPill tone={descriptor.status.tone}>
+            {descriptor.status.label}
+          </StatusPill>
+        </div>
+        <p className="mt-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+          {descriptor.date}
+        </p>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          {descriptor.locality} • {descriptor.country}
+        </p>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400">
+        <span className="rounded-full bg-neutral-100 px-2 py-1 dark:bg-neutral-800/80">
+          {descriptor.circuit}
+        </span>
+        {descriptor.isSprint && (
+          <span className="rounded-full bg-red-100 px-2 py-1 text-red-700 dark:bg-red-500/30 dark:text-red-100">
+            Sprint
+          </span>
+        )}
       </div>
     </div>
   );
+}
+
+function StatusPill({
+  tone,
+  children,
+}: {
+  tone: 'live' | 'upcoming' | 'completed';
+  children: string;
+}) {
+  const base =
+    'rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-colors';
+  if (tone === 'live') {
+    return (
+      <span
+        className={`${base} bg-red-100 text-red-700 dark:bg-red-500/30 dark:text-red-100`}
+      >
+        {children}
+      </span>
+    );
+  }
+  if (tone === 'completed') {
+    return (
+      <span
+        className={`${base} bg-neutral-100 text-neutral-600 dark:bg-neutral-800/80 dark:text-neutral-200`}
+      >
+        {children}
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`${base} bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-100`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function buildRaceDescriptor(race: RaceLike, now: Date) {
+  const isSprint = race instanceof SprintRace;
+  const mainRaceType = isSprint ? SprintRaceType.Race : RegularRaceType.Race;
+  const isLive = race.isCurrentlyLive(mainRaceType, now);
+  const hasHappened = race.hasHappened(now);
+
+  const status = isLive
+    ? { label: 'Live now', tone: 'live' as const }
+    : hasHappened
+    ? {
+        label: `Finished ${formatDistanceToNow(race.dateTime, {
+          addSuffix: true,
+        })}`,
+        tone: 'completed' as const,
+      }
+    : {
+        label: `Starts ${formatDistanceToNow(race.dateTime, {
+          addSuffix: true,
+        })}`,
+        tone: 'upcoming' as const,
+      };
+
+  return {
+    name: `${getRaceName(race)} Grand Prix`,
+    country: race.Circuit.Location.country,
+    locality: race.Circuit.Location.locality,
+    circuit: race.Circuit.circuitName,
+    date: format(race.dateTime, 'eee d MMM • HH:mm'),
+    status,
+    isSprint,
+  };
+}
+
+function getRaceName(race: RaceLike) {
+  return RACE_NAME_MAP[race.Circuit.circuitId] ?? race.Circuit.Location.country;
 }

@@ -77,7 +77,7 @@ const Home: NextPage = () => {
           </button>
         </section>
 
-        <section className="bg-white" ref={target}>
+        <section className="bg-white dark:bg-neutral-950" ref={target}>
           {raceData && (
             <Schedule
               show={showSchedule}
