@@ -59,9 +59,12 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <h2 className="mt-8 text-center text-4xl font-bold text-neutral-900 dark:text-neutral-50 md:text-5xl">
-        2025 Season Schedule
-      </h2>
+      <div className="relative mb-12">
+        <h2 className="text-center text-4xl md:text-6xl font-black text-f1-black dark:text-white">
+          2025 Season Schedule
+        </h2>
+        <div className="mx-auto mt-10 w-48 h-1 bg-f1-red dark:bg-f1-red-light rounded"></div>
+      </div>
 
       {nextRace && <NextRaceCard race={nextRace} now={now} />}
 
@@ -79,10 +82,25 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         <div className="mt-10">
           <button
             onClick={() => setShowPastRaces((value) => !value)}
-            className="mx-auto flex items-center gap-2 rounded-full border border-neutral-300 bg-white/70 px-4 py-2 text-sm font-semibold text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-800 hover:shadow-sm dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:text-neutral-100 dark:hover:shadow-md"
+            className="mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-white px-5 py-2.5 text-sm font-bold text-f1-gray transition-all hover:border-f1-red hover:text-f1-red hover:shadow-lg dark:border-f1-gray dark:bg-f1-black dark:text-gray-300 dark:hover:border-f1-red dark:hover:text-f1-red-light"
             aria-expanded={showPastRaces}
           >
             {showPastRaces ? 'Hide completed races' : 'Show completed races'}
+            <svg
+              className={`w-4 h-4 transition-transform duration-300 ${
+                showPastRaces ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
           </button>
           {showPastRaces && (
             <RaceGrid
@@ -107,21 +125,22 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
   const descriptor = buildRaceDescriptor(race, now);
 
   return (
-    <div className="mx-auto mt-10 w-full max-w-4xl rounded-3xl border border-red-200 bg-gradient-to-br from-red-50 via-white to-white p-6 shadow-lg backdrop-blur dark:border-red-500/30 dark:bg-gradient-to-br dark:from-red-500/20 dark:via-neutral-900/90 dark:to-neutral-950 dark:shadow-red-900/30 dark:backdrop-blur">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="mx-auto mt-10 w-full max-w-4xl rounded-2xl border-2 border-f1-red bg-gradient-to-br from-f1-red/5 via-white to-white p-8 shadow-2xl backdrop-blur-sm dark:border-f1-red dark:bg-gradient-to-br dark:from-f1-red/20 dark:via-f1-black dark:to-f1-gray/30 dark:shadow-f1-red/20 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-f1-red/10 dark:bg-f1-red/20 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+      <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700 dark:bg-red-500/35 dark:text-red-100">
+          <span className="inline-flex items-center rounded-full bg-f1-red px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-lg">
             Next race
           </span>
-          <h3 className="mt-3 text-2xl font-bold text-neutral-900 dark:text-neutral-50 md:text-3xl">
+          <h3 className="mt-4 text-3xl font-black text-f1-black dark:text-white md:text-4xl">
             {descriptor.name}
           </h3>
-          <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-f1-gray dark:text-gray-400">
             Round {race.round} • {descriptor.country}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-semibold uppercase tracking-wide text-red-600 dark:text-red-200">
+          <p className="text-sm font-bold uppercase tracking-wider text-f1-red dark:text-f1-red-light">
             {descriptor.status.label}
           </p>
           {race.officialUrl ? (
@@ -129,24 +148,26 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
               href={race.officialUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 block text-lg font-semibold text-neutral-800 transition-colors hover:text-blue-600 hover:underline dark:text-neutral-50 dark:hover:text-blue-400"
+              className="mt-2 block text-xl font-bold text-f1-black transition-colors hover:text-f1-red dark:text-white dark:hover:text-f1-red-light"
             >
               {descriptor.date}
             </a>
           ) : (
-            <p className="mt-2 text-lg font-semibold text-neutral-800 dark:text-neutral-50">
+            <p className="mt-2 text-xl font-bold text-f1-black dark:text-white">
               {descriptor.date}
             </p>
           )}
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm font-medium text-f1-gray dark:text-gray-400 mt-1">
             {descriptor.locality}
           </p>
         </div>
       </div>
       {descriptor.isSprint && (
-        <p className="mt-4 text-sm font-medium text-red-700 dark:text-red-200">
-          Sprint weekend • extra action on Saturday!
-        </p>
+        <div className="mt-6 pt-6 border-t-2 border-f1-red/20 dark:border-f1-red/30">
+          <p className="text-sm font-bold text-f1-red dark:text-f1-red-light uppercase tracking-wide">
+            🏁 Sprint weekend • extra action on Saturday!
+          </p>
+        </div>
       )}
     </div>
   );
@@ -181,8 +202,10 @@ function RaceGrid({
 
   return (
     <div className="mt-12">
-      <h3 className="mb-4 text-lg font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+      <h3 className="mb-6 text-xl font-black uppercase tracking-widest text-f1-gray dark:text-gray-400 flex items-center gap-3">
+        <span className="h-1 w-12 bg-f1-red dark:bg-f1-red-light"></span>
         {title}
+        <span className="h-1 flex-1 bg-f1-red dark:bg-f1-red-light"></span>
       </h3>
       <ul className="grid gap-4 max-w-screen-sm mx-auto">
         {races.map((race) => {
@@ -222,70 +245,104 @@ function RaceCard({
   const descriptor = buildRaceDescriptor(race, now);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 shadow-sm transition-all duration-300 hover:border-neutral-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-900/70 dark:backdrop-blur-sm dark:hover:border-neutral-500 dark:hover:shadow-lg">
+    <div className="overflow-hidden rounded-xl border-2 border-gray-200 bg-white shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl dark:border-f1-gray dark:bg-f1-black/50 dark:backdrop-blur-sm dark:hover:border-f1-red relative">
+      {/* Mobile chevron in top right corner */}
+      <div className="md:hidden absolute top-4 right-4 z-10">
+        <svg
+          className={`h-5 w-5 text-f1-gray dark:text-gray-400 transition-transform duration-300 group-hover:text-f1-red dark:group-hover:text-f1-red-light ${
+            isExpanded ? 'rotate-180' : ''
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+
       <div
-        className="flex h-full flex-col justify-between p-4 cursor-pointer"
+        className="flex h-full flex-col p-4 md:p-5 cursor-pointer group"
         onClick={onClick}
       >
-        <div>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <h4 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+        {/* Desktop: Stack items vertically, Mobile: Keep current layout */}
+        <div className="flex flex-col md:flex-col gap-3 md:gap-4">
+          {/* Title and status row */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+            <div className="flex-1 min-w-0 pr-8 md:pr-0">
+              <h4 className="text-lg md:text-xl font-black text-f1-black dark:text-white group-hover:text-f1-red dark:group-hover:text-f1-red-light transition-colors break-words">
                 {descriptor.name}
               </h4>
-              <p className="text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-f1-gray dark:text-gray-400 mt-1">
                 Round {race.round}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            {/* Desktop chevron - hidden on mobile */}
+            <div className="hidden md:flex items-center gap-3 flex-shrink-0">
               <StatusPill tone={descriptor.status.tone}>
                 {descriptor.status.label}
               </StatusPill>
               <svg
-                className={`h-5 w-5 text-neutral-400 transition-transform duration-300 ${
+                className={`h-5 w-5 flex-shrink-0 text-f1-gray dark:text-gray-400 transition-transform duration-300 group-hover:text-f1-red dark:group-hover:text-f1-red-light ${
                   isExpanded ? 'rotate-180' : ''
                 }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                strokeWidth={2.5}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
             </div>
+            {/* Mobile status pill - below title */}
+            <div className="md:hidden flex items-center justify-center gap-2">
+              <StatusPill tone={descriptor.status.tone}>
+                {descriptor.status.label}
+              </StatusPill>
+            </div>
           </div>
+
+          {/* Date */}
           {race.officialUrl ? (
             <a
               href={race.officialUrl}
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="mt-3 block text-sm font-semibold text-neutral-700 transition-colors hover:text-blue-600 hover:underline dark:text-neutral-200 dark:hover:text-blue-400"
+              className="block text-sm md:text-base font-bold text-f1-black transition-colors hover:text-f1-red dark:text-white dark:hover:text-f1-red-light break-words"
             >
               {descriptor.date}
             </a>
           ) : (
-            <p className="mt-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+            <p className="text-sm md:text-base font-bold text-f1-black dark:text-white break-words">
               {descriptor.date}
             </p>
           )}
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+
+          {/* Location */}
+          <p className="text-xs md:text-sm font-medium text-f1-gray dark:text-gray-400 break-words">
             {descriptor.locality} • {descriptor.country}
           </p>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400">
-          <span className="rounded-full bg-neutral-100 px-2 py-1 dark:bg-neutral-800/80">
-            {descriptor.circuit}
-          </span>
-          {descriptor.isSprint && (
-            <span className="rounded-full bg-red-100 px-2 py-1 text-red-700 dark:bg-red-500/30 dark:text-red-100">
-              Sprint
+
+          {/* Circuit and Sprint badges */}
+          <div className="flex flex-wrap gap-2 text-xs font-bold justify-center md:justify-center">
+            <span className="rounded-lg bg-gray-100 px-2 md:px-3 py-1 md:py-1.5 text-f1-gray dark:bg-f1-gray dark:text-gray-300 uppercase tracking-wide break-words">
+              {descriptor.circuit}
             </span>
-          )}
+            {descriptor.isSprint && (
+              <span className="rounded-lg bg-f1-red/10 px-2 md:px-3 py-1 md:py-1.5 text-f1-red dark:bg-f1-red/20 dark:text-f1-red-light uppercase tracking-wide">
+                Sprint
+              </span>
+            )}
+          </div>
         </div>
       </div>
       <div
@@ -293,7 +350,7 @@ function RaceCard({
           isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="border-t border-neutral-200 dark:border-neutral-700/60 px-4 py-4">
+        <div className="border-t-2 border-f1-red/20 dark:border-f1-red/30 px-4 md:px-5 py-4 md:py-5 bg-gray-50 dark:bg-f1-black/30">
           <RaceEventsList race={race} />
         </div>
       </div>
@@ -309,11 +366,11 @@ function StatusPill({
   children: string;
 }) {
   const base =
-    'rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-colors';
+    'rounded-lg px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap';
   if (tone === 'live') {
     return (
       <span
-        className={`${base} bg-red-100 text-red-700 dark:bg-red-500/30 dark:text-red-100`}
+        className={`${base} bg-f1-red text-white shadow-lg shadow-f1-red/50 animate-pulse-slow`}
       >
         {children}
       </span>
@@ -322,7 +379,7 @@ function StatusPill({
   if (tone === 'completed') {
     return (
       <span
-        className={`${base} bg-neutral-100 text-neutral-600 dark:bg-neutral-800/80 dark:text-neutral-200`}
+        className={`${base} bg-gray-200 text-f1-gray dark:bg-f1-gray dark:text-gray-300`}
       >
         {children}
       </span>
@@ -330,7 +387,7 @@ function StatusPill({
   }
   return (
     <span
-      className={`${base} bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-100`}
+      className={`${base} bg-blue-100 text-blue-700 dark:bg-blue-500/30 dark:text-blue-200`}
     >
       {children}
     </span>
@@ -404,23 +461,24 @@ function RaceEventsList({ race }: RaceEventsListProps) {
 
   return (
     <div className="w-full">
-      <h5 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-300">
+      <h5 className="mb-4 text-sm font-black uppercase tracking-widest text-f1-gray dark:text-gray-400 flex items-center gap-2">
+        <span className="h-0.5 w-6 bg-f1-red dark:bg-f1-red-light"></span>
         Weekend Schedule (Your Local Time)
       </h5>
       <div className="space-y-2">
         {sortedEvents.map(({ name, event }) => (
           <div
             key={name}
-            className="flex items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50/50 px-4 py-3 dark:border-neutral-700/60 dark:bg-neutral-800/30"
+            className="flex items-center justify-between rounded-lg border-2 border-gray-200 bg-white px-5 py-3.5 dark:border-f1-gray dark:bg-f1-black/50 transition-all hover:border-f1-red dark:hover:border-f1-red hover:shadow-md"
           >
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+            <span className="text-sm font-bold text-f1-black dark:text-white uppercase tracking-wide">
               {name}
             </span>
-            <div className="text-right">
-              <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
+            <div className="text-right flex items-center gap-3">
+              <span className="text-sm font-bold text-f1-black dark:text-white">
                 {format(event.dateTime, 'EEE d MMM')}
               </span>
-              <span className="ml-2 text-sm text-neutral-600 dark:text-neutral-400">
+              <span className="text-lg font-black text-f1-red dark:text-f1-red-light">
                 {format(event.dateTime, 'HH:mm')}
               </span>
             </div>

@@ -1,6 +1,5 @@
 import Footer from '@/components/Footer';
 import RaceTime from '@/components/RaceTime';
-import { useDarkMode } from '@/hooks/dark-mode';
 import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
@@ -10,7 +9,6 @@ import { raceTransformer } from '@/api/ergast/transformers';
 import { Schedule } from '@/components/Schedule';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { races } from '@/data/current';
-import { DarkModeToggle } from '@/components/DarkModeToggle';
 
 const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
@@ -19,14 +17,10 @@ const Home: NextPage = () => {
   const observe = useObserver(target, () => {
     setShowSchedule(true);
   });
-  const { initDarkMode } = useDarkMode();
-
   useEffect(() => {
-    // Set dark mode
-    initDarkMode();
     setRaceData(races);
     observe();
-  }, [target, initDarkMode, observe]);
+  }, [target, observe]);
 
   function scrollToStandings(target: RefObject<HTMLElement>) {
     target.current?.scrollIntoView({
@@ -65,19 +59,34 @@ const Home: NextPage = () => {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff"></meta>
       </Head>
-      <main className="dark:text-gray-200 text-neutral-900">
-        <section className="relative bg-gray-100 dark:bg-neutral-900">
-          <DarkModeToggle />
-          {raceData && <RaceTime data={raceTransformer(raceData)} />}
+      <main className="text-gray-200">
+        <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-f1-red/5 to-transparent"></div>
+          <div className="relative z-10">
+            {raceData && <RaceTime data={raceTransformer(raceData)} />}
+          </div>
           <button
-            className="absolute font-semibold transition-colors bottom-6 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100"
+            className="absolute bottom-8 z-20 font-bold transition-all duration-300 text-f1-red-light hover:text-f1-red transform hover:scale-110 flex items-center gap-2 group"
             onClick={() => scrollToStandings(target)}
           >
-            Schedule &darr;
+            <span className="text-lg md:text-xl">Schedule</span>
+            <svg
+              className="w-5 h-5 md:w-6 md:h-6 animate-bounce group-hover:animate-none transition-transform group-hover:translate-y-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={3}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
+            </svg>
           </button>
         </section>
 
-        <section className="bg-white dark:bg-neutral-950" ref={target}>
+        <section className="bg-f1-black px-4 md:px-6 lg:px-8" ref={target}>
           {raceData && (
             <Schedule
               show={showSchedule}

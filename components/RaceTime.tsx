@@ -111,19 +111,22 @@ export default function RaceTime({ data }: RaceTimeProps) {
     if (event!.isCurrentlyLive(raceType)) {
       return (
         <a
-          className="text-4xl text-red-600 hover:underline md:text-6xl"
+          className="relative inline-block text-f1-red dark:text-f1-red-light hover:scale-105 transition-transform duration-200"
           href="https://f1tv.formula1.com/"
           target="_blank"
           rel="noreferrer"
         >
-          🔴 LIVE RIGHT NOW!
+          <span className="relative z-10 flex items-center gap-3">
+            <span className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-f1-red animate-pulse dark:bg-f1-red-light"></span>
+            LIVE RIGHT NOW!
+          </span>
         </a>
       );
     }
 
     if (isBefore(nextF1RaceDateTime, currentTime)) {
       return (
-        <span className="text-red-500 dark:text-red-300">
+        <span className="text-f1-red dark:text-f1-red-light">
           Started {duration} ago
         </span>
       );
@@ -140,25 +143,28 @@ export default function RaceTime({ data }: RaceTimeProps) {
   }
 
   return (
-    <div className="space-y-2 md:space-y-4">
+    <div className="space-y-4 md:space-y-6">
       {isSprintWeekend && (
         <div className="flex justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-red-300 bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-red-700 shadow-sm dark:border-red-500/40 dark:bg-red-500/20 dark:text-red-200">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-300"></span>
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-f1-red bg-f1-red/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-f1-red shadow-lg backdrop-blur-sm dark:bg-f1-red/20 dark:text-f1-red-light animate-pulse-slow">
+            <span className="h-2 w-2 rounded-full bg-f1-red animate-pulse dark:bg-f1-red-light"></span>
             Sprint weekend
           </span>
         </div>
       )}
-      <h2 className="hover:opacity-[0.8] transition-opacity duration-300 text-2xl md:text-6xl font-bold text-neutral-900 dark:text-neutral-100">
-        {getDurationString()}
-      </h2>
-      <h3 className="flex justify-center gap-2 hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold text-neutral-800 dark:text-neutral-200">
+      <div className="relative">
+        <h2 className="relative z-10 hover:opacity-90 transition-opacity duration-300 text-2xl md:text-5xl lg:text-6xl font-black text-f1-red dark:text-f1-red-light drop-shadow-lg">
+          {getDurationString()}
+        </h2>
+        <div className="absolute inset-0 blur-2xl bg-f1-red/20 dark:bg-f1-red-light/20 animate-pulse-slow"></div>
+      </div>
+      <h3 className="flex justify-center items-center gap-3 hover:opacity-90 transition-opacity duration-300 text-xl md:text-4xl lg:text-5xl font-bold text-f1-black dark:text-gray-100">
         {nextF1Race.officialUrl ? (
           <a
             href={nextF1Race.officialUrl}
             target="_blank"
             rel="noreferrer"
-            className="hover:underline"
+            className="hover:text-f1-red dark:hover:text-f1-red-light transition-colors duration-200"
           >
             {formattedRaceTime}
           </a>
@@ -172,21 +178,21 @@ export default function RaceTime({ data }: RaceTimeProps) {
           }
         />
       </h3>
-      <h3 className="hover:opacity-[0.8] transition-opacity duration-300 text-lg md:text-2xl font-semibold text-neutral-800 dark:text-neutral-200">
-        <span className="font-bold">{nextF1Race.raceName}</span>, at{' '}
+      <h3 className="hover:opacity-90 transition-opacity duration-300 text-lg md:text-2xl lg:text-3xl font-semibold text-f1-gray dark:text-gray-300">
+        <span className="font-black text-f1-black dark:text-white">
+          {nextF1Race.raceName}
+        </span>
+        <span className="mx-2">•</span>
         <a
-          className="hover:underline"
+          className="hover:text-f1-red dark:hover:text-f1-red-light transition-colors duration-200 font-medium"
           target="_blank"
           rel="noreferrer"
           href={nextF1Race.Circuit.url}
         >
           {nextF1Race.Circuit.circuitName}
         </a>
-        {/* <Link href={`/circuits/${nextF1Race.Circuit.circuitId}`}>
-          <a className="hover:underline">{nextF1Race.Circuit.circuitName}</a>
-        </Link> */}
       </h3>
-      <div className="flex justify-center space-x-2">
+      <div className="flex justify-center items-center gap-2 flex-wrap pt-4">
         {Object.values(
           'Sprint' in nextF1Race ? SprintRaceType : RegularRaceType
         ).map((type) => (
@@ -210,14 +216,18 @@ interface RaceTypeButtonProps {
 
 function CalendarButton({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} title="Add to calendar">
+    <button
+      onClick={onClick}
+      title="Add to calendar"
+      className="p-2 rounded-lg hover:bg-f1-red/10 dark:hover:bg-f1-red/20 transition-colors duration-200 hover:scale-110 transform"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        strokeWidth={1.5}
+        strokeWidth={2}
         stroke="currentColor"
-        className="w-6 h-6"
+        className="w-6 h-6 md:w-7 md:h-7 text-f1-red dark:text-f1-red-light"
       >
         <path
           strokeLinecap="round"
@@ -266,11 +276,15 @@ function NoRaceDisplay({
 
   return (
     <>
-      <h1 className="text-6xl font-bold text-neutral-900 dark:text-neutral-100">
+      <h1 className="text-5xl md:text-7xl font-black text-f1-red dark:text-f1-red-light">
         No more races this season!
       </h1>
-      <h2 className="mt-2 italic md:text-2xl text-neutral-800 dark:text-neutral-200">
-        See you in {nextYearsSeason}!
+      <h2 className="mt-4 text-xl md:text-3xl font-semibold text-f1-gray dark:text-gray-300">
+        See you in{' '}
+        <span className="text-f1-red dark:text-f1-red-light font-black">
+          {nextYearsSeason}
+        </span>
+        !
       </h2>
     </>
   );
@@ -279,8 +293,10 @@ function NoRaceDisplay({
 function RaceTypeButton({ active, onClick, type }: RaceTypeButtonProps) {
   return (
     <button
-      className={`p-2 rounded text-xl font-bold hover:text-red-900 dark:hover:text-red-200 transition-colors duration-75 ${
-        active ? 'text-red-600 hover:text-red-900 dark:hover:text-red-700' : ''
+      className={`px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-all duration-200 ${
+        active
+          ? 'bg-f1-red text-white shadow-lg shadow-f1-red/50 dark:shadow-f1-red-light/50 scale-105'
+          : 'bg-gray-100 dark:bg-f1-gray text-f1-gray dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-f1-gray/80 hover:text-f1-red dark:hover:text-f1-red-light'
       }`}
       onClick={onClick}
     >

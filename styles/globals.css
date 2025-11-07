@@ -1,6 +1,68 @@
 @tailwind base;
 @tailwind components;
-section {
-  @apply min-h-screen px-4 py-8 flex flex-col text-center justify-center items-center;
+
+@layer base {
+  body {
+    @apply font-f1 antialiased;
+  }
 }
+
+@layer components {
+  section {
+    @apply min-h-screen px-4 py-8 flex flex-col text-center justify-center items-center;
+  }
+  
+  /* F1 Racing stripe effect */
+  .f1-stripe {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .f1-stripe::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(225, 6, 0, 0.1) 50%,
+      transparent 100%
+    );
+    animation: stripe 3s infinite;
+  }
+  
+  @keyframes stripe {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+  
+  /* Checkered flag pattern */
+  .checkered-bg {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #000 0,
+      #000 20px,
+      #fff 20px,
+      #fff 40px
+    );
+  }
+  
+  .dark .checkered-bg {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #15151E 0,
+      #15151E 20px,
+      #2a2a35 20px,
+      #2a2a35 40px
+    );
+  }
+}
+
 @tailwind utilities;

@@ -1,10 +1,11 @@
 export default function Footer() {
   return (
-    <div className="flex justify-center border-t border-slate-100 bg-white py-8 font-semibold transition-colors dark:border-neutral-800 dark:bg-neutral-950">
-      <span className="text-gray-500 transition-colors hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200">
+    <div className="relative flex justify-center border-t-2 border-f1-red/20 bg-white py-10 font-bold transition-colors dark:border-f1-red/30 dark:bg-f1-black">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-f1-red to-transparent"></div>
+      <span className="text-f1-gray transition-colors hover:text-f1-red dark:text-gray-400 dark:hover:text-f1-red-light">
         Made by
         <a
-          className="pl-1 hover:underline"
+          className="pl-2 hover:underline font-black text-f1-black dark:text-white"
           target="_blank"
           rel="noreferrer"
           href="https://www.martijndorsman.nl"
