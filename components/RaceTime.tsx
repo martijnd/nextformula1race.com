@@ -8,7 +8,7 @@ import {
   isBefore,
   addHours,
 } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   HOURS_TO_ADD,
   RaceType,
@@ -17,52 +17,77 @@ import {
   SprintRaceType,
 } from '@/classes/race-event';
 import { RegularRace, SprintRace } from '@/classes/race';
-
-const ONE_SECOND = 1000;
+import {
+  ONE_SECOND,
+  STORAGE_KEYS,
+  EXTERNAL_URLS,
+  DEFAULT_TIMEZONE,
+} from '@/constants';
 
 interface RaceTimeProps {
   data: RacesTransformerResult;
 }
 
 export default function RaceTime({ data }: RaceTimeProps) {
-  const [currentTime, setCurrentTime] = useState(
-    // new Date('31 December 2022 14:59:59')
-    new Date()
-  );
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceType>(RegularRaceType.Race);
+
   useEffect(() => {
-    setRaceType(
-      localStorage.raceType ? localStorage.raceType : RegularRaceType.Race
-    );
-    setInterval(() => {
+    // Safely read from localStorage (SSR-safe)
+    try {
+      const storedRaceType = localStorage.getItem(STORAGE_KEYS.RACE_TYPE);
+      if (
+        storedRaceType &&
+        (Object.values(RegularRaceType).includes(
+          storedRaceType as RegularRaceType
+        ) ||
+          Object.values(SprintRaceType).includes(
+            storedRaceType as SprintRaceType
+          ))
+      ) {
+        setRaceType(storedRaceType as RaceType);
+      }
+    } catch (error) {
+      // localStorage not available (SSR or private browsing) - silently fail
+    }
+
+    // Set up interval for countdown updates
+    const intervalId = setInterval(() => {
       setCurrentTime(new Date());
     }, ONE_SECOND);
+
     setHydrated(true);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
-  if (!hydrated) {
-    // Returns null on first render, so the client and server match
-    return null;
-  }
-  if (!data?.races) {
-    return <h2></h2>;
-  }
-  const nextF1Race = data.races.find((race) => {
+  const onClickRaceType = useCallback((newRaceType: RaceType) => {
+    setRaceType(newRaceType);
+    try {
+      localStorage.setItem(STORAGE_KEYS.RACE_TYPE, newRaceType);
+    } catch (error) {
+      // localStorage not available - silently fail
+    }
+  }, []);
+
+  // Compute next race and event early (before early returns)
+  const nextF1Race = data?.races?.find((race) => {
     return (
       !race.hasHappened(currentTime) ||
       race.isCurrentlyLive(raceType, currentTime)
     );
   });
 
-  if (!nextF1Race) {
-    return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
-  }
-
   function getRaceEvent(
     raceType: RaceType,
-    race: RacesTransformerResult['races'][number]
+    race: RacesTransformerResult['races'][number] | undefined
   ): RaceEvent | undefined {
+    if (!race) return undefined;
+
     if ('Sprint' in race) {
       // Sprint weekend
       const sprintEvents: Partial<Record<SprintRaceType, RaceEvent>> = {
@@ -88,10 +113,33 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
   const event = getRaceEvent(raceType, nextF1Race);
 
+  // Handle invalid race type by falling back to Race
+  useEffect(() => {
+    if (!event && nextF1Race && raceType !== RegularRaceType.Race) {
+      setRaceType(RegularRaceType.Race);
+      try {
+        localStorage.setItem(STORAGE_KEYS.RACE_TYPE, RegularRaceType.Race);
+      } catch (error) {
+        // localStorage not available - silently fail
+      }
+    }
+  }, [event, nextF1Race, raceType]);
+
+  if (!hydrated) {
+    // Returns null on first render, so the client and server match
+    return null;
+  }
+  if (!data?.races) {
+    return <h2></h2>;
+  }
+
+  if (!nextF1Race) {
+    return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
+  }
+
   if (!event) {
-    setRaceType(RegularRaceType.Race);
-    localStorage.raceType = RegularRaceType.Race;
-    return <h2>unpossible</h2>;
+    // Return null while fixing race type to prevent flash of incorrect content
+    return null;
   }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
@@ -108,11 +156,12 @@ export default function RaceTime({ data }: RaceTimeProps) {
   );
 
   function getDurationString() {
-    if (event!.isCurrentlyLive(raceType)) {
+    if (!event) return null;
+    if (event.isCurrentlyLive(raceType)) {
       return (
         <a
           className="relative inline-block text-f1-red-light hover:scale-105 transition-transform duration-200"
-          href="https://f1tv.formula1.com/"
+          href={EXTERNAL_URLS.F1_TV}
           target="_blank"
           rel="noreferrer"
         >
@@ -132,11 +181,6 @@ export default function RaceTime({ data }: RaceTimeProps) {
   }
 
   const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm');
-
-  function onClickRaceType(raceType: RaceType) {
-    setRaceType(raceType);
-    localStorage.raceType = raceType;
-  }
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -248,7 +292,7 @@ function setupCalendarButton(
       'HH:mm'
     ),
     options: ['Google', 'Apple', 'Microsoft365', 'Outlook.com', 'iCal'],
-    timeZone: 'Europe/Amsterdam',
+    timeZone: DEFAULT_TIMEZONE,
     iCalFileName: `F1 ${nextF1Race.Circuit.Location.country} GP ${raceType}`,
   });
 }

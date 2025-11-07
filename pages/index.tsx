@@ -3,7 +3,7 @@ import RaceTime from '@/components/RaceTime';
 import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState, useCallback } from 'react';
 import { raceTransformer } from '@/api/ergast/transformers';
 
 import { Schedule } from '@/components/Schedule';
@@ -14,13 +14,15 @@ const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const target = useRef<HTMLElement>(null);
-  const observe = useObserver(target, () => {
+  const handleIntersection = useCallback(() => {
     setShowSchedule(true);
-  });
+  }, []);
+
+  useObserver(target, handleIntersection);
+
   useEffect(() => {
     setRaceData(races);
-    observe();
-  }, [target, observe]);
+  }, []);
 
   function scrollToStandings(target: RefObject<HTMLElement>) {
     target.current?.scrollIntoView({
@@ -56,8 +58,8 @@ const Home: NextPage = () => {
           href="/favicons/safari-pinned-tab.svg"
           color="#5bbad5"
         />
-        <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff"></meta>
+        <meta name="msapplication-TileColor" content="#15151E" />
+        <meta name="theme-color" content="#15151E" />
       </Head>
       <main className="text-gray-200">
         <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8">

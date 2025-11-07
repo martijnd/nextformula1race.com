@@ -1,24 +1,51 @@
-import { RefObject } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 export function useObserver<T extends Element>(
   target: RefObject<T>,
   callback: (entry: IntersectionObserverEntry) => void
 ) {
-  return () => {
-    const observer = new IntersectionObserver(
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const callbackRef = useRef(callback);
+
+  // Keep callback ref up to date
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    // Cleanup previous observer if it exists
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    if (!target?.current) {
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          callback(entry);
+          callbackRef.current(entry);
         }
       },
       {
         threshold: 0.1,
       }
     );
-    if (target?.current) {
-      observer.observe(target.current);
-    }
 
-    return observer;
+    observerRef.current.observe(target.current);
+
+    // Cleanup on unmount or when target changes
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+    };
+  }, [target]);
+
+  // Return a no-op function for backward compatibility
+  return () => {
+    // Observer is managed by useEffect, so this is just for compatibility
   };
 }
