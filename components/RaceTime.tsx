@@ -111,13 +111,13 @@ export default function RaceTime({ data }: RaceTimeProps) {
     if (event!.isCurrentlyLive(raceType)) {
       return (
         <a
-          className="relative inline-block text-f1-red dark:text-f1-red-light hover:scale-105 transition-transform duration-200"
+          className="relative inline-block text-f1-red-light hover:scale-105 transition-transform duration-200"
           href="https://f1tv.formula1.com/"
           target="_blank"
           rel="noreferrer"
         >
           <span className="relative z-10 flex items-center gap-3">
-            <span className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-f1-red animate-pulse dark:bg-f1-red-light"></span>
+            <span className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-f1-red-light animate-pulse"></span>
             LIVE RIGHT NOW!
           </span>
         </a>
@@ -125,11 +125,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
     }
 
     if (isBefore(nextF1RaceDateTime, currentTime)) {
-      return (
-        <span className="text-f1-red dark:text-f1-red-light">
-          Started {duration} ago
-        </span>
-      );
+      return <span className="text-f1-red-light">Started {duration} ago</span>;
     }
 
     return <span>In {duration}</span>;
@@ -146,25 +142,25 @@ export default function RaceTime({ data }: RaceTimeProps) {
     <div className="space-y-4 md:space-y-6">
       {isSprintWeekend && (
         <div className="flex justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full border-2 border-f1-red bg-f1-red/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-f1-red shadow-lg backdrop-blur-sm dark:bg-f1-red/20 dark:text-f1-red-light animate-pulse-slow">
-            <span className="h-2 w-2 rounded-full bg-f1-red animate-pulse dark:bg-f1-red-light"></span>
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-f1-red bg-f1-red/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-f1-red-light shadow-lg backdrop-blur-sm animate-pulse-slow">
+            <span className="h-2 w-2 rounded-full bg-f1-red-light animate-pulse"></span>
             Sprint weekend
           </span>
         </div>
       )}
       <div className="relative">
-        <h2 className="relative z-10 hover:opacity-90 transition-opacity duration-300 text-2xl md:text-5xl lg:text-6xl font-black text-f1-red dark:text-f1-red-light drop-shadow-lg">
+        <h2 className="relative z-10 hover:opacity-90 transition-opacity duration-300 text-2xl md:text-5xl lg:text-6xl font-black text-f1-red-light drop-shadow-lg">
           {getDurationString()}
         </h2>
-        <div className="absolute inset-0 blur-2xl bg-f1-red/20 dark:bg-f1-red-light/20 animate-pulse-slow"></div>
+        <div className="absolute inset-0 blur-2xl bg-f1-red-light/20 animate-pulse-slow"></div>
       </div>
-      <h3 className="flex justify-center items-center gap-3 hover:opacity-90 transition-opacity duration-300 text-xl md:text-4xl lg:text-5xl font-bold text-f1-black dark:text-gray-100">
+      <h3 className="flex justify-center items-center gap-3 hover:opacity-90 transition-opacity duration-300 text-xl md:text-4xl lg:text-5xl font-bold text-gray-100">
         {nextF1Race.officialUrl ? (
           <a
             href={nextF1Race.officialUrl}
             target="_blank"
             rel="noreferrer"
-            className="hover:text-f1-red dark:hover:text-f1-red-light transition-colors duration-200"
+            className="hover:text-f1-red-light transition-colors duration-200"
           >
             {formattedRaceTime}
           </a>
@@ -178,13 +174,11 @@ export default function RaceTime({ data }: RaceTimeProps) {
           }
         />
       </h3>
-      <h3 className="hover:opacity-90 transition-opacity duration-300 text-lg md:text-2xl lg:text-3xl font-semibold text-f1-gray dark:text-gray-300">
-        <span className="font-black text-f1-black dark:text-white">
-          {nextF1Race.raceName}
-        </span>
+      <h3 className="hover:opacity-90 transition-opacity duration-300 text-lg md:text-2xl lg:text-3xl font-semibold text-gray-300">
+        <span className="font-black text-white">{nextF1Race.raceName}</span>
         <span className="mx-2">•</span>
         <a
-          className="hover:text-f1-red dark:hover:text-f1-red-light transition-colors duration-200 font-medium"
+          className="hover:text-f1-red-light transition-colors duration-200 font-medium"
           target="_blank"
           rel="noreferrer"
           href={nextF1Race.Circuit.url}
@@ -219,7 +213,7 @@ function CalendarButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       title="Add to calendar"
-      className="p-2 rounded-lg hover:bg-f1-red/10 dark:hover:bg-f1-red/20 transition-colors duration-200 hover:scale-110 transform"
+      className="p-2 rounded-lg hover:bg-f1-red/20 transition-colors duration-200 hover:scale-110 transform"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +221,7 @@ function CalendarButton({ onClick }: { onClick: () => void }) {
         viewBox="0 0 24 24"
         strokeWidth={2}
         stroke="currentColor"
-        className="w-6 h-6 md:w-7 md:h-7 text-f1-red dark:text-f1-red-light"
+        className="w-6 h-6 md:w-7 md:h-7 text-f1-red-light"
       >
         <path
           strokeLinecap="round"
@@ -276,15 +270,12 @@ function NoRaceDisplay({
 
   return (
     <>
-      <h1 className="text-5xl md:text-7xl font-black text-f1-red dark:text-f1-red-light">
+      <h1 className="text-5xl md:text-7xl font-black text-f1-red-light">
         No more races this season!
       </h1>
-      <h2 className="mt-4 text-xl md:text-3xl font-semibold text-f1-gray dark:text-gray-300">
+      <h2 className="mt-4 text-xl md:text-3xl font-semibold text-gray-300">
         See you in{' '}
-        <span className="text-f1-red dark:text-f1-red-light font-black">
-          {nextYearsSeason}
-        </span>
-        !
+        <span className="text-f1-red-light font-black">{nextYearsSeason}</span>!
       </h2>
     </>
   );
@@ -295,8 +286,8 @@ function RaceTypeButton({ active, onClick, type }: RaceTypeButtonProps) {
     <button
       className={`px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-all duration-200 ${
         active
-          ? 'bg-f1-red text-white shadow-lg shadow-f1-red/50 dark:shadow-f1-red-light/50 scale-105'
-          : 'bg-gray-100 dark:bg-f1-gray text-f1-gray dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-f1-gray/80 hover:text-f1-red dark:hover:text-f1-red-light'
+          ? 'bg-f1-red text-white shadow-lg shadow-f1-red-light/50 scale-105'
+          : 'bg-f1-gray text-gray-300 hover:bg-f1-gray/80 hover:text-f1-red-light'
       }`}
       onClick={onClick}
     >

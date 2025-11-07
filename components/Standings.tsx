@@ -19,10 +19,10 @@ export default function Standings({ show, data }: StandingsProps) {
       }`}
     >
       <div className="relative mb-12">
-        <h2 className="text-5xl md:text-7xl font-black mt-8 mb-4 text-f1-black dark:text-white">
+        <h2 className="text-5xl md:text-7xl font-black mt-8 mb-4 text-white">
           Standings
         </h2>
-        <div className="mx-auto mt-10 w-48 h-1 bg-f1-red dark:bg-f1-red-light rounded"></div>
+        <div className="mx-auto mt-10 w-48 h-1 bg-f1-red-light rounded"></div>
       </div>
 
       <div className="overflow-x-auto">
@@ -30,26 +30,26 @@ export default function Standings({ show, data }: StandingsProps) {
           className={`text-left table-auto w-full max-w-screen-md mx-auto border-collapse`}
         >
           <thead>
-            <tr className="border-b-2 border-f1-red dark:border-f1-red-light">
-              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-f1-gray dark:text-gray-400"></th>
-              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-f1-gray dark:text-gray-400">
+            <tr className="border-b-2 border-f1-red-light">
+              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-gray-400"></th>
+              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-gray-400">
                 Driver
               </th>
-              <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest text-f1-red dark:text-f1-red-light">
+              <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest text-f1-red-light">
                 Points
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-f1-black/50">
+          <tbody className="bg-f1-black/50">
             {data
               ? data.drivers
                   .slice(0, 20)
                   .map(({ name, position, points, url }, index) => (
                     <tr
                       key={position}
-                      className={`border-b border-gray-200 dark:border-f1-gray transition-colors hover:bg-f1-red/5 dark:hover:bg-f1-red/10 ${
+                      className={`border-b border-f1-gray transition-colors hover:bg-f1-red/10 ${
                         position === '1'
-                          ? 'bg-gradient-to-r from-yellow-50/50 to-transparent dark:from-yellow-900/10'
+                          ? 'bg-gradient-to-r from-yellow-900/10 to-transparent'
                           : ''
                       }`}
                     >
@@ -57,12 +57,12 @@ export default function Standings({ show, data }: StandingsProps) {
                         <span
                           className={`text-lg font-black ${
                             position === '1'
-                              ? 'text-f1-red dark:text-f1-red-light'
+                              ? 'text-f1-red-light'
                               : position === '2'
-                              ? 'text-f1-gray dark:text-gray-400'
+                              ? 'text-gray-400'
                               : position === '3'
-                              ? 'text-orange-600 dark:text-orange-400'
-                              : 'text-f1-gray dark:text-gray-500'
+                              ? 'text-orange-400'
+                              : 'text-gray-500'
                           }`}
                         >
                           {position}
@@ -73,24 +73,22 @@ export default function Standings({ show, data }: StandingsProps) {
                           href={url}
                           target="_blank"
                           rel="noreferrer"
-                          className="hover:text-f1-red dark:hover:text-f1-red-light transition-colors flex items-center gap-3 group"
+                          className="hover:text-f1-red-light transition-colors flex items-center gap-3 group"
                         >
                           {position === '1' && (
-                            <Trophy color="text-yellow-500 dark:text-yellow-400" />
+                            <Trophy color="text-yellow-400" />
                           )}
-                          {position === '2' && (
-                            <Trophy color="text-gray-400 dark:text-gray-500" />
-                          )}
+                          {position === '2' && <Trophy color="text-gray-500" />}
                           {position === '3' && (
-                            <Trophy color="text-orange-600 dark:text-orange-500" />
+                            <Trophy color="text-orange-500" />
                           )}
-                          <span className="font-bold text-f1-black dark:text-white group-hover:underline">
+                          <span className="font-bold text-white group-hover:underline">
                             {name}
                           </span>
                         </a>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <span className="text-lg font-black text-f1-black dark:text-white">
+                        <span className="text-lg font-black text-white">
                           {points}
                         </span>
                       </td>
@@ -99,21 +97,21 @@ export default function Standings({ show, data }: StandingsProps) {
               : [...Array(20)].map((e, i) => (
                   <tr
                     key={i}
-                    className={`border-b border-gray-200 dark:border-f1-gray animate-pulse ${
-                      i % 2 === 1 ? 'bg-gray-50 dark:bg-f1-black/30' : ''
+                    className={`border-b border-f1-gray animate-pulse ${
+                      i % 2 === 1 ? 'bg-f1-black/30' : ''
                     }`}
                   >
                     <td className="px-6 py-4">
-                      <div className="h-5 bg-gray-200 dark:bg-f1-gray rounded w-6"></div>
+                      <div className="h-5 bg-f1-gray rounded w-6"></div>
                     </td>
                     <td className="px-6 py-4">
                       <div
-                        className={`h-5 bg-gray-200 dark:bg-f1-gray rounded ${getWidthClass()}`}
+                        className={`h-5 bg-f1-gray rounded ${getWidthClass()}`}
                       ></div>
                     </td>
                     <td className="px-6 py-4 flex justify-end">
                       <div
-                        className={`h-5 bg-gray-200 dark:bg-f1-gray rounded ${
+                        className={`h-5 bg-f1-gray rounded ${
                           i > 7 ? 'w-10' : 'w-12'
                         }`}
                       ></div>

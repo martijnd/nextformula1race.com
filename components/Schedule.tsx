@@ -60,10 +60,10 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
       }`}
     >
       <div className="relative mb-12">
-        <h2 className="text-center text-4xl md:text-6xl font-black text-f1-black dark:text-white">
+        <h2 className="text-center text-4xl md:text-6xl font-black text-white">
           2025 Season Schedule
         </h2>
-        <div className="mx-auto mt-10 w-48 h-1 bg-f1-red dark:bg-f1-red-light rounded"></div>
+        <div className="mx-auto mt-10 w-48 h-1 bg-f1-red-light rounded"></div>
       </div>
 
       {nextRace && <NextRaceCard race={nextRace} now={now} />}
@@ -82,7 +82,7 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         <div className="mt-10">
           <button
             onClick={() => setShowPastRaces((value) => !value)}
-            className="mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-white px-5 py-2.5 text-sm font-bold text-f1-gray transition-all hover:border-f1-red hover:text-f1-red hover:shadow-lg dark:border-f1-gray dark:bg-f1-black dark:text-gray-300 dark:hover:border-f1-red dark:hover:text-f1-red-light"
+            className="mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-f1-black px-5 py-2.5 text-sm font-bold text-gray-300 transition-all hover:border-f1-red hover:text-f1-red-light hover:shadow-lg"
             aria-expanded={showPastRaces}
           >
             {showPastRaces ? 'Hide completed races' : 'Show completed races'}
@@ -125,22 +125,22 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
   const descriptor = buildRaceDescriptor(race, now);
 
   return (
-    <div className="mx-auto mt-10 w-full max-w-4xl rounded-2xl border-2 border-f1-red bg-gradient-to-br from-f1-red/5 via-white to-white p-8 shadow-2xl backdrop-blur-sm dark:border-f1-red dark:bg-gradient-to-br dark:from-f1-red/20 dark:via-f1-black dark:to-f1-gray/30 dark:shadow-f1-red/20 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-f1-red/10 dark:bg-f1-red/20 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+    <div className="mx-auto mt-10 w-full max-w-4xl rounded-2xl border-2 border-f1-red bg-gradient-to-br from-f1-red/20 via-f1-black to-f1-gray/30 p-8 shadow-2xl shadow-f1-red/20 backdrop-blur-sm relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-f1-red/20 rounded-full -mr-16 -mt-16 blur-2xl"></div>
       <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
           <span className="inline-flex items-center rounded-full bg-f1-red px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-lg">
             Next race
           </span>
-          <h3 className="mt-4 text-3xl font-black text-f1-black dark:text-white md:text-4xl">
+          <h3 className="mt-4 text-3xl font-black text-white md:text-4xl">
             {descriptor.name}
           </h3>
-          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-f1-gray dark:text-gray-400">
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-gray-400">
             Round {race.round} • {descriptor.country}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-bold uppercase tracking-wider text-f1-red dark:text-f1-red-light">
+          <p className="text-sm font-bold uppercase tracking-wider text-f1-red-light">
             {descriptor.status.label}
           </p>
           {race.officialUrl ? (
@@ -148,23 +148,23 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
               href={race.officialUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 block text-xl font-bold text-f1-black transition-colors hover:text-f1-red dark:text-white dark:hover:text-f1-red-light"
+              className="mt-2 block text-xl font-bold text-white transition-colors hover:text-f1-red-light"
             >
               {descriptor.date}
             </a>
           ) : (
-            <p className="mt-2 text-xl font-bold text-f1-black dark:text-white">
+            <p className="mt-2 text-xl font-bold text-white">
               {descriptor.date}
             </p>
           )}
-          <p className="text-sm font-medium text-f1-gray dark:text-gray-400 mt-1">
+          <p className="text-sm font-medium text-gray-400 mt-1">
             {descriptor.locality}
           </p>
         </div>
       </div>
       {descriptor.isSprint && (
-        <div className="mt-6 pt-6 border-t-2 border-f1-red/20 dark:border-f1-red/30">
-          <p className="text-sm font-bold text-f1-red dark:text-f1-red-light uppercase tracking-wide">
+        <div className="mt-6 pt-6 border-t-2 border-f1-red/30">
+          <p className="text-sm font-bold text-f1-red-light uppercase tracking-wide">
             🏁 Sprint weekend • extra action on Saturday!
           </p>
         </div>
@@ -194,7 +194,7 @@ function RaceGrid({
 }: RaceGridProps) {
   if (races.length === 0) {
     return (
-      <div className="mt-10 text-center text-sm font-medium text-neutral-500 dark:text-neutral-400">
+      <div className="mt-10 text-center text-sm font-medium text-neutral-400">
         {emptyLabel}
       </div>
     );
@@ -202,10 +202,10 @@ function RaceGrid({
 
   return (
     <div className="mt-12">
-      <h3 className="mb-6 text-xl font-black uppercase tracking-widest text-f1-gray dark:text-gray-400 flex items-center gap-3">
-        <span className="h-1 w-12 bg-f1-red dark:bg-f1-red-light"></span>
+      <h3 className="mb-6 text-xl font-black uppercase tracking-widest text-gray-400 flex items-center gap-3">
+        <span className="h-1 w-12 bg-f1-red-light"></span>
         {title}
-        <span className="h-1 flex-1 bg-f1-red dark:bg-f1-red-light"></span>
+        <span className="h-1 flex-1 bg-f1-red-light"></span>
       </h3>
       <ul className="grid gap-4 max-w-screen-sm mx-auto">
         {races.map((race) => {
@@ -245,11 +245,11 @@ function RaceCard({
   const descriptor = buildRaceDescriptor(race, now);
 
   return (
-    <div className="overflow-hidden rounded-xl border-2 border-gray-200 bg-white shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl dark:border-f1-gray dark:bg-f1-black/50 dark:backdrop-blur-sm dark:hover:border-f1-red relative">
+    <div className="overflow-hidden rounded-xl border-2 border-f1-gray bg-f1-black/50 backdrop-blur-sm shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl relative">
       {/* Mobile chevron in top right corner */}
       <div className="md:hidden absolute top-4 right-4 z-10">
         <svg
-          className={`h-5 w-5 text-f1-gray dark:text-gray-400 transition-transform duration-300 group-hover:text-f1-red dark:group-hover:text-f1-red-light ${
+          className={`h-5 w-5 text-gray-400 transition-transform duration-300 group-hover:text-f1-red-light ${
             isExpanded ? 'rotate-180' : ''
           }`}
           fill="none"
@@ -274,10 +274,10 @@ function RaceCard({
           {/* Title and status row */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
             <div className="flex-1 min-w-0 pr-8 md:pr-0">
-              <h4 className="text-lg md:text-xl font-black text-f1-black dark:text-white group-hover:text-f1-red dark:group-hover:text-f1-red-light transition-colors break-words">
+              <h4 className="text-lg md:text-xl font-black text-white group-hover:text-f1-red-light transition-colors break-words">
                 {descriptor.name}
               </h4>
-              <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-f1-gray dark:text-gray-400 mt-1">
+              <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-gray-400 mt-1">
                 Round {race.round}
               </p>
             </div>
@@ -287,7 +287,7 @@ function RaceCard({
                 {descriptor.status.label}
               </StatusPill>
               <svg
-                className={`h-5 w-5 flex-shrink-0 text-f1-gray dark:text-gray-400 transition-transform duration-300 group-hover:text-f1-red dark:group-hover:text-f1-red-light ${
+                className={`h-5 w-5 flex-shrink-0 text-gray-400 transition-transform duration-300 group-hover:text-f1-red-light ${
                   isExpanded ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -317,28 +317,28 @@ function RaceCard({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="block text-sm md:text-base font-bold text-f1-black transition-colors hover:text-f1-red dark:text-white dark:hover:text-f1-red-light break-words"
+              className="block text-sm md:text-base font-bold text-white transition-colors hover:text-f1-red-light break-words"
             >
               {descriptor.date}
             </a>
           ) : (
-            <p className="text-sm md:text-base font-bold text-f1-black dark:text-white break-words">
+            <p className="text-sm md:text-base font-bold text-white break-words">
               {descriptor.date}
             </p>
           )}
 
           {/* Location */}
-          <p className="text-xs md:text-sm font-medium text-f1-gray dark:text-gray-400 break-words">
+          <p className="text-xs md:text-sm font-medium text-gray-400 break-words">
             {descriptor.locality} • {descriptor.country}
           </p>
 
           {/* Circuit and Sprint badges */}
           <div className="flex flex-wrap gap-2 text-xs font-bold justify-center md:justify-center">
-            <span className="rounded-lg bg-gray-100 px-2 md:px-3 py-1 md:py-1.5 text-f1-gray dark:bg-f1-gray dark:text-gray-300 uppercase tracking-wide break-words">
+            <span className="rounded-lg bg-f1-gray px-2 md:px-3 py-1 md:py-1.5 text-gray-300 uppercase tracking-wide break-words">
               {descriptor.circuit}
             </span>
             {descriptor.isSprint && (
-              <span className="rounded-lg bg-f1-red/10 px-2 md:px-3 py-1 md:py-1.5 text-f1-red dark:bg-f1-red/20 dark:text-f1-red-light uppercase tracking-wide">
+              <span className="rounded-lg bg-f1-red/20 px-2 md:px-3 py-1 md:py-1.5 text-f1-red-light uppercase tracking-wide">
                 Sprint
               </span>
             )}
@@ -350,7 +350,7 @@ function RaceCard({
           isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="border-t-2 border-f1-red/20 dark:border-f1-red/30 px-4 md:px-5 py-4 md:py-5 bg-gray-50 dark:bg-f1-black/30">
+        <div className="border-t-2 border-f1-red/30 px-4 md:px-5 py-4 md:py-5 bg-f1-black/30">
           <RaceEventsList race={race} />
         </div>
       </div>
@@ -378,19 +378,11 @@ function StatusPill({
   }
   if (tone === 'completed') {
     return (
-      <span
-        className={`${base} bg-gray-200 text-f1-gray dark:bg-f1-gray dark:text-gray-300`}
-      >
-        {children}
-      </span>
+      <span className={`${base} bg-f1-gray text-gray-300`}>{children}</span>
     );
   }
   return (
-    <span
-      className={`${base} bg-blue-100 text-blue-700 dark:bg-blue-500/30 dark:text-blue-200`}
-    >
-      {children}
-    </span>
+    <span className={`${base} bg-blue-500/30 text-blue-200`}>{children}</span>
   );
 }
 
@@ -461,24 +453,24 @@ function RaceEventsList({ race }: RaceEventsListProps) {
 
   return (
     <div className="w-full">
-      <h5 className="mb-4 text-sm font-black uppercase tracking-widest text-f1-gray dark:text-gray-400 flex items-center gap-2">
-        <span className="h-0.5 w-6 bg-f1-red dark:bg-f1-red-light"></span>
+      <h5 className="mb-4 text-sm font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+        <span className="h-0.5 w-6 bg-f1-red-light"></span>
         Weekend Schedule (Your Local Time)
       </h5>
       <div className="space-y-2">
         {sortedEvents.map(({ name, event }) => (
           <div
             key={name}
-            className="flex items-center justify-between rounded-lg border-2 border-gray-200 bg-white px-5 py-3.5 dark:border-f1-gray dark:bg-f1-black/50 transition-all hover:border-f1-red dark:hover:border-f1-red hover:shadow-md"
+            className="flex items-center justify-between rounded-lg border-2 border-f1-gray bg-f1-black/50 px-5 py-3.5 transition-all hover:border-f1-red hover:shadow-md"
           >
-            <span className="text-sm font-bold text-f1-black dark:text-white uppercase tracking-wide">
+            <span className="text-sm font-bold text-white uppercase tracking-wide">
               {name}
             </span>
             <div className="text-right flex items-center gap-3">
-              <span className="text-sm font-bold text-f1-black dark:text-white">
+              <span className="text-sm font-bold text-white">
                 {format(event.dateTime, 'EEE d MMM')}
               </span>
-              <span className="text-lg font-black text-f1-red dark:text-f1-red-light">
+              <span className="text-lg font-black text-f1-red-light">
                 {format(event.dateTime, 'HH:mm')}
               </span>
             </div>
