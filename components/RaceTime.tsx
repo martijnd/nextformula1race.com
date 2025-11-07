@@ -91,7 +91,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
   if (!event) {
     setRaceType(RegularRaceType.Race);
     localStorage.raceType = RegularRaceType.Race;
-    return;
+    return <h2>unpossible</h2>;
   }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
