@@ -43,10 +43,10 @@ export enum SprintRaceType {
 
 export const HOURS_TO_ADD: Record<RegularRaceType | SprintRaceType, number> = {
   [RegularRaceType.FP1]: 1,
-  [RegularRaceType.FP2]: 1.5,
+  [RegularRaceType.FP2]: 1,
   [RegularRaceType.FP3]: 1,
   [SprintRaceType.Sprint]: 1,
-  [SprintRaceType.SprintQualy]: 1,
+  [SprintRaceType.SprintQualy]: 44 / 60,
   [RegularRaceType.Qualy]: 1,
   [RegularRaceType.Race]: 2,
 };

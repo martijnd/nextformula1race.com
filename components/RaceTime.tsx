@@ -153,7 +153,18 @@ export default function RaceTime({ data }: RaceTimeProps) {
         {getDurationString()}
       </h2>
       <h3 className="flex justify-center gap-2 hover:opacity-[0.8] transition-opacity duration-300 text-xl md:text-4xl font-semibold text-neutral-800 dark:text-neutral-200">
-        {formattedRaceTime}
+        {nextF1Race.officialUrl ? (
+          <a
+            href={nextF1Race.officialUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:underline"
+          >
+            {formattedRaceTime}
+          </a>
+        ) : (
+          formattedRaceTime
+        )}
 
         <CalendarButton
           onClick={() =>

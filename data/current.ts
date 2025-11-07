@@ -32,6 +32,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-03-14', time: '06:00:00Z' },
           ThirdPractice: { date: '2025-03-15', time: '02:30:00Z' },
           Qualifying: { date: '2025-03-15', time: '06:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/australia',
         },
         {
           season: '2025',
@@ -54,6 +55,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-03-22', time: '08:00:00Z' },
           Sprint: { date: '2025-03-22', time: '04:00:00Z' },
           SprintQualifying: { date: '2025-03-21', time: '08:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/china',
         },
         {
           season: '2025',
@@ -76,6 +78,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-04-04', time: '08:00:00Z' },
           ThirdPractice: { date: '2025-04-05', time: '04:30:00Z' },
           Qualifying: { date: '2025-04-05', time: '08:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/japan',
         },
         {
           season: '2025',
@@ -98,6 +101,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-04-11', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-04-12', time: '12:30:00Z' },
           Qualifying: { date: '2025-04-12', time: '16:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/bahrain',
         },
         {
           season: '2025',
@@ -120,6 +124,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-04-18', time: '17:00:00Z' },
           ThirdPractice: { date: '2025-04-19', time: '13:30:00Z' },
           Qualifying: { date: '2025-04-19', time: '17:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/saudi-arabia',
         },
         {
           season: '2025',
@@ -142,6 +147,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-05-03', time: '20:00:00Z' },
           Sprint: { date: '2025-05-03', time: '16:00:00Z' },
           SprintQualifying: { date: '2025-05-02', time: '20:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/miami',
         },
         {
           season: '2025',
@@ -164,6 +170,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-05-16', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-05-17', time: '10:30:00Z' },
           Qualifying: { date: '2025-05-17', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/emilia-romagna',
         },
         {
           season: '2025',
@@ -186,6 +193,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-05-23', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-05-24', time: '10:30:00Z' },
           Qualifying: { date: '2025-05-24', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/monaco',
         },
         {
           season: '2025',
@@ -208,6 +216,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-05-30', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-05-31', time: '10:30:00Z' },
           Qualifying: { date: '2025-05-31', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/spain',
         },
         {
           season: '2025',
@@ -230,6 +239,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-06-13', time: '21:00:00Z' },
           ThirdPractice: { date: '2025-06-14', time: '16:30:00Z' },
           Qualifying: { date: '2025-06-14', time: '20:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/canada',
         },
         {
           season: '2025',
@@ -252,6 +262,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-06-27', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-06-28', time: '10:30:00Z' },
           Qualifying: { date: '2025-06-28', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/austria',
         },
         {
           season: '2025',
@@ -274,6 +285,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-07-04', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-07-05', time: '10:30:00Z' },
           Qualifying: { date: '2025-07-05', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/great-britain',
         },
         {
           season: '2025',
@@ -296,6 +308,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-07-26', time: '14:00:00Z' },
           Sprint: { date: '2025-07-26', time: '10:00:00Z' },
           SprintQualifying: { date: '2025-07-25', time: '14:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/belgium',
         },
         {
           season: '2025',
@@ -318,6 +331,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-08-01', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-08-02', time: '10:30:00Z' },
           Qualifying: { date: '2025-08-02', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/hungary',
         },
         {
           season: '2025',
@@ -340,6 +354,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-08-29', time: '14:00:00Z' },
           ThirdPractice: { date: '2025-08-30', time: '09:30:00Z' },
           Qualifying: { date: '2025-08-30', time: '13:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/netherlands',
         },
         {
           season: '2025',
@@ -362,6 +377,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-09-05', time: '15:00:00Z' },
           ThirdPractice: { date: '2025-09-06', time: '10:30:00Z' },
           Qualifying: { date: '2025-09-06', time: '14:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/italy',
         },
         {
           season: '2025',
@@ -384,6 +400,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-09-19', time: '12:00:00Z' },
           ThirdPractice: { date: '2025-09-20', time: '08:30:00Z' },
           Qualifying: { date: '2025-09-20', time: '12:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/azerbaijan',
         },
         {
           season: '2025',
@@ -406,6 +423,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-10-03', time: '13:00:00Z' },
           ThirdPractice: { date: '2025-10-04', time: '09:30:00Z' },
           Qualifying: { date: '2025-10-04', time: '13:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/singapore',
         },
         {
           season: '2025',
@@ -428,6 +446,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-10-18', time: '21:00:00Z' },
           Sprint: { date: '2025-10-18', time: '17:00:00Z' },
           SprintQualifying: { date: '2025-10-17', time: '21:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/united-states',
         },
         {
           season: '2025',
@@ -450,6 +469,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-10-24', time: '22:00:00Z' },
           ThirdPractice: { date: '2025-10-25', time: '17:30:00Z' },
           Qualifying: { date: '2025-10-25', time: '21:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/mexico',
         },
         {
           season: '2025',
@@ -472,6 +492,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-11-08', time: '18:00:00Z' },
           Sprint: { date: '2025-11-08', time: '14:00:00Z' },
           SprintQualifying: { date: '2025-11-07', time: '18:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/brazil',
         },
         {
           season: '2025',
@@ -494,6 +515,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-11-21', time: '03:00:00Z' },
           ThirdPractice: { date: '2025-11-22', time: '23:30:00Z' },
           Qualifying: { date: '2025-11-22', time: '03:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/las-vegas',
         },
         {
           season: '2025',
@@ -516,6 +538,7 @@ export const races: RacesResponse = {
           Qualifying: { date: '2025-11-29', time: '17:00:00Z' },
           Sprint: { date: '2025-11-29', time: '13:00:00Z' },
           SprintQualifying: { date: '2025-11-28', time: '16:30:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/qatar',
         },
         {
           season: '2025',
@@ -538,6 +561,7 @@ export const races: RacesResponse = {
           SecondPractice: { date: '2025-12-05', time: '12:00:00Z' },
           ThirdPractice: { date: '2025-12-06', time: '09:30:00Z' },
           Qualifying: { date: '2025-12-06', time: '13:00:00Z' },
+          officialUrl: 'https://www.formula1.com/en/racing/2025/abu-dhabi',
         },
       ],
     },

@@ -27,6 +27,7 @@ export type BaseRaceType = {
   date: string;
   time: string;
   Qualifying: RaceEvent;
+  officialUrl?: string;
 };
 
 export type RegularRaceType = BaseRaceType & {

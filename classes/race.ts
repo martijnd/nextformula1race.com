@@ -15,6 +15,7 @@ export class BaseRace extends RaceEvent {
   date: string;
   time: string;
   Qualifying: RaceEvent;
+  officialUrl?: string;
 
   constructor({
     season,
@@ -25,6 +26,7 @@ export class BaseRace extends RaceEvent {
     date,
     time,
     Qualifying,
+    officialUrl,
   }: BaseRaceType) {
     super({ date, time });
     this.season = season;
@@ -35,6 +37,7 @@ export class BaseRace extends RaceEvent {
     this.date = date;
     this.time = time;
     this.Qualifying = new RaceEvent(Qualifying);
+    this.officialUrl = officialUrl;
   }
 }
 
