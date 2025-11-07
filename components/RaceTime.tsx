@@ -174,7 +174,11 @@ export default function RaceTime({ data }: RaceTimeProps) {
     }
 
     if (isBefore(nextF1RaceDateTime, currentTime)) {
-      return <span className="text-f1-red-light">Started {duration} ago</span>;
+      return (
+        <span className="text-f1-red-light opacity-40">
+          Started {duration} ago
+        </span>
+      );
     }
 
     return <span>In {duration}</span>;
