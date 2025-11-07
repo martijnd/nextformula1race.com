@@ -89,9 +89,9 @@ export default function RaceTime({ data }: RaceTimeProps) {
   const event = getRaceEvent(raceType, nextF1Race);
 
   if (!event) {
-    // eslint-disable-next-line no-console
-    console.error('No event found for race', nextF1Race);
-    return <h2>unpossible</h2>;
+    setRaceType(RegularRaceType.Race);
+    localStorage.raceType = RegularRaceType.Race;
+    return;
   }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
