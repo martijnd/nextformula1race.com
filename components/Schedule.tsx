@@ -1,4 +1,8 @@
-import { RegularRaceType, SprintRaceType } from '@/classes/race-event';
+import {
+  RegularRaceType,
+  SprintRaceType,
+  RaceEvent,
+} from '@/classes/race-event';
 import format from 'date-fns/format';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useState } from 'react';
@@ -39,10 +43,15 @@ interface ScheduleProps {
 
 export function Schedule({ show, remaining, past }: ScheduleProps) {
   const [showPastRaces, setShowPastRaces] = useState(false);
+  const [expandedRaceId, setExpandedRaceId] = useState<string | null>(null);
   const [now] = useState(() => new Date());
 
   const nextRace = remaining[0] ?? null;
   const upcomingRaces = nextRace ? remaining.slice(1) : remaining;
+
+  const onRaceClick = (raceId: string) => {
+    setExpandedRaceId(expandedRaceId === raceId ? null : raceId);
+  };
 
   return (
     <div
@@ -61,6 +70,9 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         emptyLabel="All done for this season."
         races={upcomingRaces}
         now={now}
+        expandedRaceId={expandedRaceId}
+        onRaceClick={onRaceClick}
+        isUpcoming={true}
       />
 
       {past.length > 0 && (
@@ -76,8 +88,11 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
             <RaceGrid
               title="Completed races"
               emptyLabel="No races completed yet."
-              races={past}
+              races={[...past].reverse()}
               now={now}
+              expandedRaceId={expandedRaceId}
+              onRaceClick={onRaceClick}
+              isUpcoming={false}
             />
           )}
         </div>
@@ -109,9 +124,20 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
           <p className="text-sm font-semibold uppercase tracking-wide text-red-600 dark:text-red-200">
             {descriptor.status.label}
           </p>
-          <p className="mt-2 text-lg font-semibold text-neutral-800 dark:text-neutral-50">
-            {descriptor.date}
-          </p>
+          {race.officialUrl ? (
+            <a
+              href={race.officialUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 block text-lg font-semibold text-neutral-800 transition-colors hover:text-blue-600 hover:underline dark:text-neutral-50 dark:hover:text-blue-400"
+            >
+              {descriptor.date}
+            </a>
+          ) : (
+            <p className="mt-2 text-lg font-semibold text-neutral-800 dark:text-neutral-50">
+              {descriptor.date}
+            </p>
+          )}
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             {descriptor.locality}
           </p>
@@ -131,9 +157,20 @@ interface RaceGridProps {
   emptyLabel: string;
   races: RaceLike[];
   now: Date;
+  expandedRaceId: string | null;
+  onRaceClick?: (raceId: string) => void;
+  isUpcoming: boolean;
 }
 
-function RaceGrid({ title, emptyLabel, races, now }: RaceGridProps) {
+function RaceGrid({
+  title,
+  emptyLabel,
+  races,
+  now,
+  expandedRaceId,
+  onRaceClick,
+  isUpcoming,
+}: RaceGridProps) {
   if (races.length === 0) {
     return (
       <div className="mt-10 text-center text-sm font-medium text-neutral-500 dark:text-neutral-400">
@@ -148,51 +185,117 @@ function RaceGrid({ title, emptyLabel, races, now }: RaceGridProps) {
         {title}
       </h3>
       <ul className="grid gap-4 max-w-screen-sm mx-auto">
-        {races.map((race) => (
-          <li key={`${race.round}-${race.raceName}`}>
-            <RaceCard race={race} now={now} />
-          </li>
-        ))}
+        {races.map((race) => {
+          const raceId = `${race.round}-${race.raceName}`;
+          return (
+            <li key={raceId}>
+              <RaceCard
+                race={race}
+                now={now}
+                isExpanded={expandedRaceId === raceId}
+                onClick={() => onRaceClick?.(raceId)}
+                isUpcoming={isUpcoming}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
 
-function RaceCard({ race, now }: { race: RaceLike; now: Date }) {
+interface RaceCardProps {
+  race: RaceLike;
+  now: Date;
+  isExpanded: boolean;
+  onClick: () => void;
+  isUpcoming: boolean;
+}
+
+function RaceCard({
+  race,
+  now,
+  isExpanded,
+  onClick,
+  isUpcoming,
+}: RaceCardProps) {
   const descriptor = buildRaceDescriptor(race, now);
 
   return (
-    <div className="flex h-full flex-col justify-between rounded-2xl border border-neutral-200 bg-white/80 p-4 shadow-sm transition hover:border-neutral-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-900/70 dark:backdrop-blur-sm dark:hover:border-neutral-500 dark:hover:shadow-lg">
-      <div>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h4 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-              {descriptor.name}
-            </h4>
-            <p className="text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-              Round {race.round}
-            </p>
+    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 shadow-sm transition-all duration-300 hover:border-neutral-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-900/70 dark:backdrop-blur-sm dark:hover:border-neutral-500 dark:hover:shadow-lg">
+      <div
+        className="flex h-full flex-col justify-between p-4 cursor-pointer"
+        onClick={onClick}
+      >
+        <div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+                {descriptor.name}
+              </h4>
+              <p className="text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                Round {race.round}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <StatusPill tone={descriptor.status.tone}>
+                {descriptor.status.label}
+              </StatusPill>
+              <svg
+                className={`h-5 w-5 text-neutral-400 transition-transform duration-300 ${
+                  isExpanded ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
           </div>
-          <StatusPill tone={descriptor.status.tone}>
-            {descriptor.status.label}
-          </StatusPill>
+          {race.officialUrl ? (
+            <a
+              href={race.officialUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="mt-3 block text-sm font-semibold text-neutral-700 transition-colors hover:text-blue-600 hover:underline dark:text-neutral-200 dark:hover:text-blue-400"
+            >
+              {descriptor.date}
+            </a>
+          ) : (
+            <p className="mt-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+              {descriptor.date}
+            </p>
+          )}
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            {descriptor.locality} • {descriptor.country}
+          </p>
         </div>
-        <p className="mt-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
-          {descriptor.date}
-        </p>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {descriptor.locality} • {descriptor.country}
-        </p>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400">
-        <span className="rounded-full bg-neutral-100 px-2 py-1 dark:bg-neutral-800/80">
-          {descriptor.circuit}
-        </span>
-        {descriptor.isSprint && (
-          <span className="rounded-full bg-red-100 px-2 py-1 text-red-700 dark:bg-red-500/30 dark:text-red-100">
-            Sprint
+        <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400">
+          <span className="rounded-full bg-neutral-100 px-2 py-1 dark:bg-neutral-800/80">
+            {descriptor.circuit}
           </span>
-        )}
+          {descriptor.isSprint && (
+            <span className="rounded-full bg-red-100 px-2 py-1 text-red-700 dark:bg-red-500/30 dark:text-red-100">
+              Sprint
+            </span>
+          )}
+        </div>
+      </div>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="border-t border-neutral-200 dark:border-neutral-700/60 px-4 py-4">
+          <RaceEventsList race={race} />
+        </div>
       </div>
     </div>
   );
@@ -269,4 +372,61 @@ function buildRaceDescriptor(race: RaceLike, now: Date) {
 
 function getRaceName(race: RaceLike) {
   return RACE_NAME_MAP[race.Circuit.circuitId] ?? race.Circuit.Location.country;
+}
+
+interface RaceEventsListProps {
+  race: RaceLike;
+}
+
+function RaceEventsList({ race }: RaceEventsListProps) {
+  const isSprint = race instanceof SprintRace;
+
+  const events: Array<{ name: string; event: RaceEvent }> = isSprint
+    ? [
+        { name: 'Free Practice 1', event: race.FirstPractice },
+        { name: 'Sprint Qualifying', event: race.SprintQualifying },
+        { name: 'Sprint', event: race.Sprint },
+        { name: 'Qualifying', event: race.Qualifying },
+        { name: 'Race', event: race },
+      ]
+    : [
+        { name: 'Free Practice 1', event: race.FirstPractice },
+        { name: 'Free Practice 2', event: race.SecondPractice },
+        { name: 'Free Practice 3', event: race.ThirdPractice },
+        { name: 'Qualifying', event: race.Qualifying },
+        { name: 'Race', event: race },
+      ];
+
+  // Sort events chronologically (earliest first)
+  const sortedEvents = [...events].sort(
+    (a, b) => a.event.dateTime.getTime() - b.event.dateTime.getTime()
+  );
+
+  return (
+    <div className="w-full">
+      <h5 className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-300">
+        Weekend Schedule (Your Local Time)
+      </h5>
+      <div className="space-y-2">
+        {sortedEvents.map(({ name, event }) => (
+          <div
+            key={name}
+            className="flex items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50/50 px-4 py-3 dark:border-neutral-700/60 dark:bg-neutral-800/30"
+          >
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+              {name}
+            </span>
+            <div className="text-right">
+              <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
+                {format(event.dateTime, 'EEE d MMM')}
+              </span>
+              <span className="ml-2 text-sm text-neutral-600 dark:text-neutral-400">
+                {format(event.dateTime, 'HH:mm')}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
