@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# deployment
+deploy.tar.gz
+
 # production
 /build
 
