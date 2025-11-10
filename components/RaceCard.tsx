@@ -52,7 +52,7 @@ export function RaceCard({
         <div className="flex flex-col md:flex-col gap-3 md:gap-4">
           {/* Title and status row */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-            <div className="flex-1 min-w-0 pr-8 md:pr-0">
+            <div className="flex-1 min-w-0 pr-8 sm:pr-12 md:pr-0">
               <h4 className="text-lg md:text-xl font-black text-white group-hover:text-f1-red-light transition-colors break-words">
                 {descriptor.name}
               </h4>
@@ -82,7 +82,7 @@ export function RaceCard({
               </svg>
             </div>
             {/* Mobile status pill - below title */}
-            <div className="md:hidden flex items-center justify-center gap-2">
+            <div className="md:hidden flex items-center justify-center gap-2 sm:mr-12">
               <StatusPill tone={descriptor.status.tone}>
                 {descriptor.status.label}
               </StatusPill>
