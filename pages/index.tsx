@@ -65,7 +65,6 @@ const Home: NextPage = () => {
       </Head>
       <main className="text-gray-200">
         <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-f1-red/5 to-transparent"></div>
           <div className="relative z-10">
             {raceData && <RaceTime data={raceTransformer(raceData)} />}
           </div>
@@ -90,7 +89,10 @@ const Home: NextPage = () => {
           </button>
         </section>
 
-        <section className="bg-f1-black px-4 md:px-6 lg:px-8" ref={target}>
+        <section
+          className="bg-f1-black f1-stripe px-4 md:px-6 lg:px-8"
+          ref={target}
+        >
           {raceData && (
             <Schedule
               show={showSchedule}

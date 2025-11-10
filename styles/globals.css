@@ -31,7 +31,7 @@
       rgba(225, 6, 0, 0.1) 50%,
       transparent 100%
     );
-    animation: stripe 3s infinite;
+    animation: stripe 4s infinite;
   }
 
   @keyframes stripe {
