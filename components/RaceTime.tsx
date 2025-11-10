@@ -24,6 +24,9 @@ import {
   DEFAULT_TIMEZONE,
 } from '@/constants';
 import { useI18n } from '@/lib/i18n';
+import { CalendarButton } from './CalendarButton';
+import { NoRaceDisplay } from './NoRaceDisplay';
+import { RaceTypeButton } from './RaceTypeButton';
 
 interface RaceTimeProps {
   data: RacesTransformerResult;
@@ -255,38 +258,6 @@ export default function RaceTime({ data }: RaceTimeProps) {
   );
 }
 
-interface RaceTypeButtonProps {
-  active: boolean;
-  type: RaceType;
-  onClick: () => void;
-}
-
-function CalendarButton({ onClick }: { onClick: () => void }) {
-  const { t } = useI18n();
-  return (
-    <button
-      onClick={onClick}
-      title={t('common.addToCalendar')}
-      className="p-2 rounded-lg hover:bg-f1-red/20 transition-colors duration-200 hover:scale-110 transform"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-6 h-6 md:w-7 md:h-7 text-f1-red-light"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-        />
-      </svg>
-    </button>
-  );
-}
-
 function setupCalendarButton(
   nextF1Race: RegularRace | SprintRace,
   raceType: RaceType,
@@ -305,49 +276,4 @@ function setupCalendarButton(
     timeZone: DEFAULT_TIMEZONE,
     iCalFileName: `F1 ${nextF1Race.Circuit.Location.country} GP ${raceType}`,
   });
-}
-
-function NoRaceDisplay({
-  currentTime,
-  season,
-}: {
-  currentTime: Date;
-  season: string;
-}) {
-  const { t } = useI18n();
-  const currentYear = currentTime.getFullYear();
-  const stillInCurrentSeasonYear = season === currentYear.toString();
-  // If we're still in 2022 and referencing 2023 season, add 1 to the current year
-  // Otherwise, add nothing
-  const nextYearsSeason = stillInCurrentSeasonYear
-    ? currentYear + 1
-    : currentYear;
-
-  return (
-    <>
-      <h1 className="text-5xl md:text-7xl font-black text-f1-red-light">
-        {t('raceTime.noMoreRaces')}
-      </h1>
-      <h2 className="mt-4 text-xl md:text-3xl font-semibold text-gray-300">
-        {t('raceTime.seeYouInPrefix')}{' '}
-        <span className="text-f1-red-light font-black">{nextYearsSeason}</span>
-        {t('raceTime.seeYouInSuffix')}
-      </h2>
-    </>
-  );
-}
-
-function RaceTypeButton({ active, onClick, type }: RaceTypeButtonProps) {
-  return (
-    <button
-      className={`px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-all duration-200 ${
-        active
-          ? 'bg-f1-red text-white shadow-lg shadow-f1-red-light/50 scale-105'
-          : 'bg-f1-gray text-gray-300 hover:bg-f1-gray/80 hover:text-f1-red-light'
-      }`}
-      onClick={onClick}
-    >
-      {type}
-    </button>
-  );
 }
