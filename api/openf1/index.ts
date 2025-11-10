@@ -38,13 +38,105 @@ import {
 
 const BASE_URL = 'https://api.openf1.org/v1';
 
+// Rate limiting: Max 3 requests per second
+const RATE_LIMIT = 3;
+const RATE_WINDOW = 1000; // 1 second in milliseconds
+
+// Request queue for rate limiting
+interface QueuedRequest {
+  resolve: (value: any) => void;
+  reject: (error: any) => void;
+  execute: () => Promise<any>;
+}
+
+let requestQueue: QueuedRequest[] = [];
+let requestTimestamps: number[] = [];
+let isProcessingQueue = false;
+
 /**
- * Generic fetch function for OpenF1 API
+ * Process the request queue with rate limiting
+ */
+async function processQueue() {
+  if (isProcessingQueue || requestQueue.length === 0) {
+    return;
+  }
+
+  isProcessingQueue = true;
+
+  while (requestQueue.length > 0) {
+    // Remove timestamps older than the rate window
+    const now = Date.now();
+    requestTimestamps = requestTimestamps.filter(
+      (timestamp) => now - timestamp < RATE_WINDOW
+    );
+
+    // Wait if we've hit the rate limit
+    if (requestTimestamps.length >= RATE_LIMIT) {
+      const oldestTimestamp = requestTimestamps[0];
+      const waitTime = RATE_WINDOW - (now - oldestTimestamp) + 50; // Add 50ms buffer
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+      continue;
+    }
+
+    // Process the next request and wait for it to complete
+    const request = requestQueue.shift();
+    if (request) {
+      requestTimestamps.push(Date.now());
+      try {
+        const result = await request.execute();
+        request.resolve(result);
+      } catch (error) {
+        request.reject(error);
+      }
+    }
+  }
+
+  isProcessingQueue = false;
+}
+
+/**
+ * Queue a request for rate-limited execution
+ */
+function queueRequest<T>(execute: () => Promise<T>): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    requestQueue.push({ resolve, reject, execute });
+    processQueue();
+  });
+}
+
+// Cache for API responses
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+/**
+ * Get cache key from endpoint and params
+ */
+function getCacheKey(endpoint: string, params?: OpenF1QueryParams): string {
+  const paramsStr = params
+    ? JSON.stringify(
+        Object.entries(params)
+          .filter(([_, value]) => value !== undefined)
+          .sort(([a], [b]) => a.localeCompare(b))
+      )
+    : '';
+  return `${endpoint}:${paramsStr}`;
+}
+
+/**
+ * Generic fetch function for OpenF1 API with rate limiting, caching, and retry logic
  */
 async function fetchFromOpenF1<T>(
   endpoint: string,
-  params?: OpenF1QueryParams
+  params?: OpenF1QueryParams,
+  retryCount = 0
 ): Promise<T[]> {
+  // Check cache first
+  const cacheKey = getCacheKey(endpoint, params);
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+
   const url = new URL(`${BASE_URL}/${endpoint}`);
 
   if (params) {
@@ -55,7 +147,23 @@ async function fetchFromOpenF1<T>(
     });
   }
 
-  const response = await fetch(url.toString());
+  // Execute request through rate-limited queue
+  const response = await queueRequest(() => fetch(url.toString()));
+
+  // Handle rate limiting (429) with exponential backoff
+  if (response.status === 429) {
+    const retryAfter = response.headers.get('Retry-After');
+    const waitTime = retryAfter
+      ? parseInt(retryAfter) * 1000
+      : Math.min(1000 * Math.pow(2, retryCount), 10000); // Max 10 seconds
+
+    if (retryCount < 3) {
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+      return fetchFromOpenF1<T>(endpoint, params, retryCount + 1);
+    }
+
+    throw new Error(`OpenF1 API rate limit exceeded. Please try again later.`);
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -63,7 +171,12 @@ async function fetchFromOpenF1<T>(
     );
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // Cache the response
+  cache.set(cacheKey, { data, timestamp: Date.now() });
+
+  return data;
 }
 
 /**
@@ -220,6 +333,132 @@ export async function getSessionResults(
   params: GetSessionResultsParams
 ): Promise<SessionResult[]> {
   return fetchFromOpenF1<SessionResult>('session_result', params);
+}
+
+// Cache for sessions by year (sessions don't change frequently)
+const sessionsCache = new Map<number, Session[]>();
+
+/**
+ * Get top 3 finishers for a race by matching date and location
+ */
+export async function getTop3Finishers(
+  raceDate: Date,
+  location: string,
+  country: string,
+  year: number
+): Promise<FormattedRaceResult[] | null> {
+  try {
+    // Get all race sessions for the year (with caching)
+    let sessions = sessionsCache.get(year);
+    if (!sessions) {
+      sessions = await getSessions({
+        year,
+        session_name: 'Race',
+      });
+      sessionsCache.set(year, sessions);
+    }
+
+    // Find matching session by date and location
+    // Use the race date directly (it's already in the correct timezone)
+    const raceDateStr = raceDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const matchingSession = sessions.find((session) => {
+      const sessionDate = new Date(session.date_start)
+        .toISOString()
+        .split('T')[0];
+
+      // More flexible location matching
+      const locationLower = location.toLowerCase();
+      const countryLower = country.toLowerCase();
+      const sessionLocationLower = session.location.toLowerCase();
+      const sessionCountryLower = session.country_name.toLowerCase();
+
+      const locationMatch =
+        sessionLocationLower === locationLower ||
+        sessionCountryLower === countryLower ||
+        sessionLocationLower.includes(locationLower) ||
+        locationLower.includes(sessionLocationLower) ||
+        sessionCountryLower.includes(countryLower) ||
+        countryLower.includes(sessionCountryLower);
+
+      return sessionDate === raceDateStr && locationMatch;
+    });
+
+    if (!matchingSession) {
+      return null;
+    }
+
+    // Get all session results and filter to top 3
+    const allResults = await getSessionResults({
+      session_key: matchingSession.session_key,
+    });
+
+    if (!allResults || allResults.length === 0) {
+      return null;
+    }
+
+    // Sort all results by position ascending (1st, 2nd, 3rd, etc.)
+    // Position 1 = winner, 2 = second place, 3 = third place
+    // Filter out any invalid positions (should be >= 1)
+    const validResults = allResults.filter((r) => r.position != null && r.position >= 1);
+    const sortedResults = [...validResults].sort((a, b) => a.position - b.position);
+
+    // Get top 3 positions (positions 1, 2, 3) - these are the winners
+    // Make sure we're getting the FIRST 3 positions, not the last
+    const top3Results = sortedResults
+      .filter((r) => r.position === 1 || r.position === 2 || r.position === 3)
+      .sort((a, b) => a.position - b.position)
+      .slice(0, 3);
+
+    if (top3Results.length === 0) {
+      return null;
+    }
+
+    // Get driver information for this session
+    const drivers = await getDrivers({
+      session_key: matchingSession.session_key,
+    });
+
+    // Create a driver map for quick lookup
+    const driverMap = new Map(drivers.map((d) => [d.driver_number, d]));
+
+    // Format the results (top 3) - already sorted by position
+    const formattedResults: FormattedRaceResult[] = top3Results
+      .map((result) => {
+        const driver = driverMap.get(result.driver_number);
+
+        return {
+          position: result.position,
+          driverNumber: result.driver_number,
+          driverName: driver?.full_name || `Driver #${result.driver_number}`,
+          teamName: driver?.team_name || 'Unknown',
+          teamColour: driver?.team_colour || '000000',
+          points: result.points,
+          timeOrStatus: result.gap_to_leader
+            ? `+${formatGap(result.gap_to_leader)}`
+            : result.dnf || result.dns || result.dsq
+            ? 'DNF'
+            : null,
+        };
+      });
+
+    return formattedResults;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching top 3 finishers:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to format gap in seconds to readable format
+ */
+function formatGap(seconds: number): string {
+  if (seconds < 60) {
+    return `${seconds.toFixed(3)}s`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toFixed(3).padStart(6, '0')}`;
 }
 
 /**

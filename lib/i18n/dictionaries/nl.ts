@@ -36,6 +36,7 @@ export const nl: TranslationDict = {
       finished: (distance) => `${distance} geleden afgerond`,
       startsIn: (distance) => `Start over ${distance}`,
     },
+    topFinishers: 'Top 3',
   },
   standings: {
     title: 'Kampioenschap',

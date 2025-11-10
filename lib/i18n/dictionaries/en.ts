@@ -36,6 +36,7 @@ export const en: TranslationDict = {
       finished: (distance) => `Finished ${distance} ago`,
       startsIn: (distance) => `Starts in ${distance}`,
     },
+    topFinishers: 'Top 3',
   },
   standings: {
     title: 'Standings',

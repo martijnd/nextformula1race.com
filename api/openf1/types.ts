@@ -174,6 +174,12 @@ export interface SessionResult {
   points: number;
   session_key: number;
   time: number | null;
+  number_of_laps?: number;
+  dnf?: boolean;
+  dns?: boolean;
+  dsq?: boolean;
+  duration?: number;
+  gap_to_leader?: number;
 }
 
 export interface Overtake {
