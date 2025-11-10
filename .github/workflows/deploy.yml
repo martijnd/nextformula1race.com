@@ -57,7 +57,8 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
-          scp -i ~/.ssh/deploy_key -P ${{ secrets.DEPLOY_PORT || 22 }} -o StrictHostKeyChecking=no deploy.tar.gz ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/deploy.tar.gz
+          # Copy to home directory first (deploy user has write access there)
+          scp -i ~/.ssh/deploy_key -P ${{ secrets.DEPLOY_PORT || 22 }} -o StrictHostKeyChecking=no deploy.tar.gz ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:~/deploy.tar.gz
           rm -f ~/.ssh/deploy_key
 
       - name: Extract and deploy files
@@ -68,6 +69,9 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
+            # Move archive from home directory to deployment path
+            mv ~/deploy.tar.gz ${{ secrets.DEPLOY_PATH }}/deploy.tar.gz
+
             cd ${{ secrets.DEPLOY_PATH }}
 
             # Create logs directory if it doesn't exist
