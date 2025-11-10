@@ -7,7 +7,7 @@ export const en: TranslationDict = {
   },
   home: {
     title: 'When is the next F1 race?',
-    description: 'When is the next F1 race?',
+    description: 'Find out when the next Formula 1 race is scheduled. View the complete F1 calendar, race times, championship standings, and add races to your calendar. Stay up to date with the latest F1 schedule.',
     scheduleCta: 'Schedule',
   },
   schedule: {

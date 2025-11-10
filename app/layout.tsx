@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://nextformula1race.com'),
+  metadataBase: new URL('https://f1.lekkerklooien.nl'),
 };
 
 export default function RootLayout({

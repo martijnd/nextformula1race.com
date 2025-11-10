@@ -7,7 +7,7 @@ export const nl: TranslationDict = {
   },
   home: {
     title: 'Wanneer is de volgende F1-race?',
-    description: 'Wanneer is de volgende F1-race?',
+    description: 'Ontdek wanneer de volgende Formula 1 race gepland staat. Bekijk het complete F1-kalender, race tijden, kampioenschap standen en voeg races toe aan je agenda. Blijf op de hoogte van het laatste F1-schema.',
     scheduleCta: 'Schema',
   },
   schedule: {

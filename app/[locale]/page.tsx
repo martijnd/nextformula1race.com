@@ -36,7 +36,7 @@ export default function HomePage() {
   }
 
   // Build canonical URL
-  const siteUrl = 'https://nextformula1race.com';
+  const siteUrl = 'https://f1.lekkerklooien.nl';
   const canonicalUrl = `${siteUrl}${pathname}`;
   const currentLocale = locale || 'en';
 
@@ -103,44 +103,69 @@ export default function HomePage() {
         </section>
       </main>
       <Footer />
-      {nextRace && (
-        <Script
-          id="structured-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebSite',
-              name: 'Next Formula 1 Race',
-              description: t('home.description'),
-              url: siteUrl,
-              inLanguage: currentLocale,
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: {
-                  '@type': 'EntryPoint',
-                  urlTemplate: `${siteUrl}/?q={search_term_string}`,
-                },
-                'query-input': 'required name=search_term_string',
-              },
-              mainEntity: {
-                '@type': 'SportsEvent',
-                name: nextRace.raceName,
-                startDate: nextRace.dateTime.toISOString(),
-                location: {
-                  '@type': 'Place',
-                  name: nextRace.circuit.circuitName,
-                  address: {
-                    '@type': 'PostalAddress',
-                    addressLocality: nextRace.circuit.location.locality,
-                    addressCountry: nextRace.circuit.location.country,
+      <Script
+        id="structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            (() => {
+              const structuredData: Array<Record<string, unknown>> = [
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'WebSite',
+                  name: 'Next Formula 1 Race',
+                  description: t('home.description'),
+                  url: siteUrl,
+                  inLanguage: currentLocale,
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate: `${siteUrl}/?q={search_term_string}`,
+                    },
+                    'query-input': 'required name=search_term_string',
                   },
                 },
-              },
-            }),
-          }}
-        />
-      )}
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'Organization',
+                  name: 'Next Formula 1 Race',
+                  url: siteUrl,
+                  description: t('home.description'),
+                },
+              ];
+
+              if (nextRace) {
+                structuredData.push({
+                  '@context': 'https://schema.org',
+                  '@type': 'SportsEvent',
+                  name: nextRace.raceName,
+                  startDate: nextRace.dateTime.toISOString(),
+                  eventStatus: 'https://schema.org/EventScheduled',
+                  eventAttendanceMode:
+                    'https://schema.org/OfflineEventAttendanceMode',
+                  location: {
+                    '@type': 'Place',
+                    name: nextRace.circuit.circuitName,
+                    address: {
+                      '@type': 'PostalAddress',
+                      addressLocality: nextRace.circuit.location.locality,
+                      addressCountry: nextRace.circuit.location.country,
+                    },
+                  },
+                  sport: 'Formula One',
+                  organizer: {
+                    '@type': 'Organization',
+                    name: 'Formula One',
+                  },
+                });
+              }
+
+              return structuredData;
+            })()
+          ),
+        }}
+      />
     </>
   );
 }
