@@ -8,6 +8,8 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useState } from 'react';
 import { RegularRace, SprintRace } from '@/classes/race';
 import { useI18n } from '@/lib/i18n';
+import type { Locale } from 'date-fns';
+import type { Translator } from '@/lib/i18n/types';
 
 const RACE_NAME_MAP: Record<string, string> = {
   albert_park: 'Melbourne',
@@ -400,7 +402,7 @@ function StatusPill({
 function buildRaceDescriptor(
   race: RaceLike,
   now: Date,
-  t: (key: string, ...args: any[]) => string,
+  t: Translator,
   dateLocale: Locale
 ) {
   const isSprint = race instanceof SprintRace;

@@ -53,4 +53,40 @@ export type TranslationDict = {
   };
 };
 
+// ---- Type-safe translation key utilities ----
+type PrimitiveOrFn = string | ((...args: any[]) => string);
 
+type LeafPaths<T, Prev extends string = ''> = T extends PrimitiveOrFn
+  ? Prev extends ''
+    ? never
+    : Prev
+  : T extends object
+  ? {
+      [K in keyof T & string]: LeafPaths<
+        T[K],
+        Prev extends '' ? K : `${Prev}.${K}`
+      >;
+    }[keyof T & string]
+  : never;
+
+type PathValue<T, P extends string> = P extends `${infer K}.${infer Rest}`
+  ? K extends keyof T
+    ? PathValue<T[K], Rest>
+    : never
+  : P extends keyof T
+  ? T[P]
+  : never;
+
+export type TranslationKey = LeafPaths<TranslationDict>;
+export type TranslationKeyValue<K extends TranslationKey> = PathValue<
+  TranslationDict,
+  K
+>;
+export type TranslationArgs<K extends TranslationKey> =
+  TranslationKeyValue<K> extends (...a: infer A) => any ? A : [];
+
+// The type-safe translator function signature
+export type Translator = <K extends TranslationKey>(
+  key: K,
+  ...args: TranslationArgs<K>
+) => string;

@@ -2,12 +2,19 @@ import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { en } from './dictionaries/en';
 import { nl } from './dictionaries/nl';
-import { AppLocale, TranslationDict } from './types';
+import {
+  AppLocale,
+  TranslationArgs,
+  TranslationDict,
+  TranslationKey,
+  Translator,
+} from './types';
+import type { Locale } from 'date-fns';
 import { enGB as dfEn, nl as dfNl } from 'date-fns/locale';
 
 type I18nContextValue = {
   locale: AppLocale;
-  t: <K extends string>(key: K, ...args: any[]) => string;
+  t: Translator;
   dateLocale: Locale;
   switchLocale: (locale: AppLocale) => void;
   dict: TranslationDict;
@@ -33,7 +40,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const dict = I18N_DICTIONARIES[routerLocale] ?? en;
     const dateLocale = DATEFNS_LOCALES[routerLocale] ?? dfEn;
 
-    const t = (key: string, ...args: any[]) => {
+    const t: Translator = (key, ...args) => {
       const segments = key.split('.');
       let node: any = dict;
       for (const seg of segments) {
@@ -73,5 +80,3 @@ export function useI18n() {
   }
   return ctx;
 }
-
-
