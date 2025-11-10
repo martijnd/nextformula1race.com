@@ -23,9 +23,9 @@ export const en: TranslationDict = {
     sprintWeekendNote: '🏁 Sprint weekend • extra action on Saturday!',
     weekendScheduleHeading: 'Weekend Schedule (Your Local Time)',
     event: {
-      fp1: 'Free Practice 1',
-      fp2: 'Free Practice 2',
-      fp3: 'Free Practice 3',
+      fp1: 'FP1',
+      fp2: 'FP2',
+      fp3: 'FP3',
       qualifying: 'Qualifying',
       sprintQualifying: 'Sprint Qualifying',
       sprint: 'Sprint',
@@ -52,5 +52,3 @@ export const en: TranslationDict = {
     seeYouInSuffix: '!',
   },
 };
-
-

@@ -325,15 +325,17 @@ function RaceCard({
 
           {/* Date */}
           {race.officialUrl ? (
-            <a
-              href={race.officialUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="block text-sm md:text-base font-bold text-white transition-colors hover:text-f1-red-light break-words"
-            >
-              {descriptor.date}
-            </a>
+            <div>
+              <a
+                href={race.officialUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-block text-sm md:text-base font-bold text-white transition-colors hover:text-f1-red-light break-words"
+              >
+                {descriptor.date}
+              </a>
+            </div>
           ) : (
             <p className="text-sm md:text-base font-bold text-white break-words">
               {descriptor.date}
@@ -491,19 +493,17 @@ function RaceEventsList({ race }: RaceEventsListProps) {
         {sortedEvents.map(({ name, event }) => (
           <div
             key={name}
-            className="flex items-center justify-between rounded-lg border-2 border-f1-gray bg-f1-black/50 px-5 py-3.5 transition-all hover:border-f1-red hover:shadow-md"
+            className="grid rounded-lg items-center grid-cols-5 border-2 border-f1-gray bg-f1-black/50 px-5 py-3.5 transition-all hover:border-f1-red hover:shadow-md"
           >
-            <span className="text-sm font-bold text-white uppercase tracking-wide">
+            <span className="text-sm col-span-2 font-bold text-white uppercase tracking-wide text-left">
               {name}
             </span>
-            <div className="text-right flex items-center gap-3">
-              <span className="text-sm font-bold text-white">
-                {format(event.dateTime, 'EEE d MMM', { locale: dateLocale })}
-              </span>
-              <span className="text-lg font-black text-f1-red-light">
-                {format(event.dateTime, 'HH:mm')}
-              </span>
-            </div>
+            <span className="text-sm col-span-2 font-bold text-white">
+              {format(event.dateTime, 'EEE d MMM', { locale: dateLocale })}
+            </span>
+            <span className="text-lg col-span-1 font-black text-f1-red-light">
+              {format(event.dateTime, 'HH:mm')}
+            </span>
           </div>
         ))}
       </div>
