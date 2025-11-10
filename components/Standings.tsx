@@ -1,5 +1,6 @@
 import { StandingsTransformerResult } from '@/api/ergast/types/transformers';
 import { Trophy } from './Trophy';
+import { useI18n } from '@/lib/i18n';
 
 interface StandingsProps {
   show: boolean;
@@ -7,6 +8,7 @@ interface StandingsProps {
 }
 
 export default function Standings({ show, data }: StandingsProps) {
+  const { t } = useI18n();
   function getWidthClass() {
     const items = ['w-28', 'w-32', 'w-36'];
     return items[Math.floor(Math.random() * items.length)];
@@ -20,7 +22,7 @@ export default function Standings({ show, data }: StandingsProps) {
     >
       <div className="relative mb-12">
         <h2 className="text-5xl md:text-7xl font-black mt-8 mb-4 text-white">
-          Standings
+          {t('standings.title')}
         </h2>
         <div className="mx-auto mt-10 w-48 h-1 bg-f1-red-light rounded"></div>
       </div>
@@ -33,10 +35,10 @@ export default function Standings({ show, data }: StandingsProps) {
             <tr className="border-b-2 border-f1-red-light">
               <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-gray-400"></th>
               <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-widest text-gray-400">
-                Driver
+                {t('standings.driver')}
               </th>
               <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest text-f1-red-light">
-                Points
+                {t('standings.points')}
               </th>
             </tr>
           </thead>

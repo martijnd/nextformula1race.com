@@ -1,0 +1,54 @@
+import { TranslationDict } from '../types';
+
+export const nl: TranslationDict = {
+  common: {
+    madeBy: 'Gemaakt door',
+    addToCalendar: 'Voeg toe aan agenda',
+  },
+  home: {
+    title: 'Wanneer is de volgende F1-race?',
+    description: 'Wanneer is de volgende F1-race?',
+    scheduleCta: 'Schema',
+  },
+  schedule: {
+    seasonTitle: (year: string) => `${year} Seizoensschema`,
+    upcomingTitle: 'Aankomende races',
+    upcomingEmpty: 'Klaar voor dit seizoen.',
+    completedToggleShow: 'Toon afgeronde races',
+    completedToggleHide: 'Verberg afgeronde races',
+    completedTitle: 'Afgeronde races',
+    completedEmpty: 'Nog geen races afgerond.',
+    nextRaceBadge: 'Volgende race',
+    roundX: (round) => `Ronde ${round}`,
+    sprintWeekendNote: '🏁 Sprintweekend • extra actie op zaterdag!',
+    weekendScheduleHeading: 'Weekend-schema (jouw lokale tijd)',
+    event: {
+      fp1: 'Vrije Training 1',
+      fp2: 'Vrije Training 2',
+      fp3: 'Vrije Training 3',
+      qualifying: 'Kwalificatie',
+      sprintQualifying: 'Sprint Kwalificatie',
+      sprint: 'Sprint',
+      race: 'Race',
+    },
+    status: {
+      liveNow: 'Nu live',
+      finished: (distance) => `${distance} geleden afgerond`,
+      startsIn: (distance) => `Start over ${distance}`,
+    },
+  },
+  standings: {
+    title: 'Kampioenschap',
+    driver: 'Coureur',
+    points: 'Punten',
+  },
+  raceTime: {
+    liveNow: 'NU LIVE!',
+    startedAgo: (duration) => `${duration} geleden gestart`,
+    inDuration: (duration) => `Over ${duration}`,
+    sprintWeekend: 'Sprintweekend',
+    noMoreRaces: 'Geen races meer dit seizoen!',
+    seeYouInPrefix: 'Tot ziens in',
+    seeYouInSuffix: '!',
+  },
+};

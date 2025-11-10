@@ -1,0 +1,56 @@
+import { TranslationDict } from '../types';
+
+export const en: TranslationDict = {
+  common: {
+    madeBy: 'Made by',
+    addToCalendar: 'Add to calendar',
+  },
+  home: {
+    title: 'When is the next F1 race?',
+    description: 'When is the next F1 race?',
+    scheduleCta: 'Schedule',
+  },
+  schedule: {
+    seasonTitle: (year: string) => `${year} Season Schedule`,
+    upcomingTitle: 'Upcoming races',
+    upcomingEmpty: 'All done for this season.',
+    completedToggleShow: 'Show completed races',
+    completedToggleHide: 'Hide completed races',
+    completedTitle: 'Completed races',
+    completedEmpty: 'No races completed yet.',
+    nextRaceBadge: 'Next race',
+    roundX: (round) => `Round ${round}`,
+    sprintWeekendNote: '🏁 Sprint weekend • extra action on Saturday!',
+    weekendScheduleHeading: 'Weekend Schedule (Your Local Time)',
+    event: {
+      fp1: 'Free Practice 1',
+      fp2: 'Free Practice 2',
+      fp3: 'Free Practice 3',
+      qualifying: 'Qualifying',
+      sprintQualifying: 'Sprint Qualifying',
+      sprint: 'Sprint',
+      race: 'Race',
+    },
+    status: {
+      liveNow: 'Live now',
+      finished: (distance) => `Finished ${distance} ago`,
+      startsIn: (distance) => `Starts in ${distance}`,
+    },
+  },
+  standings: {
+    title: 'Standings',
+    driver: 'Driver',
+    points: 'Points',
+  },
+  raceTime: {
+    liveNow: 'LIVE RIGHT NOW!',
+    startedAgo: (duration) => `Started ${duration} ago`,
+    inDuration: (duration) => `In ${duration}`,
+    sprintWeekend: 'Sprint weekend',
+    noMoreRaces: 'No more races this season!',
+    seeYouInPrefix: 'See you in',
+    seeYouInSuffix: '!',
+  },
+};
+
+

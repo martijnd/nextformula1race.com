@@ -9,11 +9,13 @@ import { raceTransformer } from '@/api/ergast/transformers';
 import { Schedule } from '@/components/Schedule';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { races } from '@/data/current';
+import { useI18n } from '@/lib/i18n';
 
 const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const target = useRef<HTMLElement>(null);
+  const { t } = useI18n();
   const handleIntersection = useCallback(() => {
     setShowSchedule(true);
   }, []);
@@ -33,8 +35,8 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>When is the next F1 race?</title>
-        <meta name="description" content="When is the next F1 race?" />
+        <title>{t('home.title')}</title>
+        <meta name="description" content={t('home.description')} />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -71,7 +73,7 @@ const Home: NextPage = () => {
             className="absolute bottom-8 z-20 font-bold transition-all duration-300 text-f1-red-light hover:text-f1-red transform hover:scale-110 flex items-center gap-2 group"
             onClick={() => scrollToStandings(target)}
           >
-            <span className="text-lg md:text-xl">Schedule</span>
+            <span className="text-lg md:text-xl">{t('home.scheduleCta')}</span>
             <svg
               className="w-5 h-5 md:w-6 md:h-6 animate-bounce group-hover:animate-none transition-transform group-hover:translate-y-1"
               fill="none"

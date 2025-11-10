@@ -23,6 +23,7 @@ import {
   EXTERNAL_URLS,
   DEFAULT_TIMEZONE,
 } from '@/constants';
+import { useI18n } from '@/lib/i18n';
 
 interface RaceTimeProps {
   data: RacesTransformerResult;
@@ -32,6 +33,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceType>(RegularRaceType.Race);
+  const { t, dateLocale } = useI18n();
 
   useEffect(() => {
     // Safely read from localStorage (SSR-safe)
@@ -152,6 +154,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
     }),
     {
       delimiter: ', ',
+      locale: dateLocale,
     }
   );
 
@@ -167,7 +170,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
         >
           <span className="relative z-10 flex items-center gap-3">
             <span className="h-4 w-4 md:h-6 md:w-6 rounded-full bg-f1-red-light animate-pulse"></span>
-            LIVE RIGHT NOW!
+            {t('raceTime.liveNow')}
           </span>
         </a>
       );
@@ -176,15 +179,17 @@ export default function RaceTime({ data }: RaceTimeProps) {
     if (isBefore(nextF1RaceDateTime, currentTime)) {
       return (
         <span className="text-f1-red-light opacity-40">
-          Started {duration} ago
+          {t('raceTime.startedAgo', duration)}
         </span>
       );
     }
 
-    return <span>In {duration}</span>;
+    return <span>{t('raceTime.inDuration', duration)}</span>;
   }
 
-  const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm');
+  const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm', {
+    locale: dateLocale,
+  });
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -192,7 +197,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
         <div className="flex justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border-2 border-f1-red bg-f1-red/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-f1-red-light shadow-lg backdrop-blur-sm animate-pulse-slow">
             <span className="h-2 w-2 rounded-full bg-f1-red-light animate-pulse"></span>
-            Sprint weekend
+            {t('raceTime.sprintWeekend')}
           </span>
         </div>
       )}
@@ -257,10 +262,11 @@ interface RaceTypeButtonProps {
 }
 
 function CalendarButton({ onClick }: { onClick: () => void }) {
+  const { t } = useI18n();
   return (
     <button
       onClick={onClick}
-      title="Add to calendar"
+      title={t('common.addToCalendar')}
       className="p-2 rounded-lg hover:bg-f1-red/20 transition-colors duration-200 hover:scale-110 transform"
     >
       <svg
@@ -308,6 +314,7 @@ function NoRaceDisplay({
   currentTime: Date;
   season: string;
 }) {
+  const { t } = useI18n();
   const currentYear = currentTime.getFullYear();
   const stillInCurrentSeasonYear = season === currentYear.toString();
   // If we're still in 2022 and referencing 2023 season, add 1 to the current year
@@ -319,11 +326,12 @@ function NoRaceDisplay({
   return (
     <>
       <h1 className="text-5xl md:text-7xl font-black text-f1-red-light">
-        No more races this season!
+        {t('raceTime.noMoreRaces')}
       </h1>
       <h2 className="mt-4 text-xl md:text-3xl font-semibold text-gray-300">
-        See you in{' '}
-        <span className="text-f1-red-light font-black">{nextYearsSeason}</span>!
+        {t('raceTime.seeYouInPrefix')}{' '}
+        <span className="text-f1-red-light font-black">{nextYearsSeason}</span>
+        {t('raceTime.seeYouInSuffix')}
       </h2>
     </>
   );

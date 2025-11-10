@@ -7,6 +7,7 @@ import format from 'date-fns/format';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useState } from 'react';
 import { RegularRace, SprintRace } from '@/classes/race';
+import { useI18n } from '@/lib/i18n';
 
 const RACE_NAME_MAP: Record<string, string> = {
   albert_park: 'Melbourne',
@@ -45,6 +46,7 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
   const [showPastRaces, setShowPastRaces] = useState(false);
   const [expandedRaceId, setExpandedRaceId] = useState<string | null>(null);
   const [now] = useState(() => new Date());
+  const { t, dateLocale } = useI18n();
 
   const nextRace = remaining[0] ?? null;
   const upcomingRaces = nextRace ? remaining.slice(1) : remaining;
@@ -52,6 +54,11 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
   const onRaceClick = (raceId: string) => {
     setExpandedRaceId(expandedRaceId === raceId ? null : raceId);
   };
+
+  const seasonYear =
+    remaining[0]?.season ||
+    past[0]?.season ||
+    new Date().getFullYear().toString();
 
   return (
     <div
@@ -61,7 +68,7 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
     >
       <div className="relative mb-12">
         <h2 className="text-center text-4xl md:text-6xl font-black text-white">
-          2025 Season Schedule
+          {t('schedule.seasonTitle', seasonYear)}
         </h2>
         <div className="mx-auto mt-10 w-48 h-1 bg-f1-red-light rounded"></div>
       </div>
@@ -69,8 +76,8 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
       {nextRace && <NextRaceCard race={nextRace} now={now} />}
 
       <RaceGrid
-        title="Upcoming races"
-        emptyLabel="All done for this season."
+        title={t('schedule.upcomingTitle')}
+        emptyLabel={t('schedule.upcomingEmpty')}
         races={upcomingRaces}
         now={now}
         expandedRaceId={expandedRaceId}
@@ -85,7 +92,9 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
             className="mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-f1-black px-5 py-2.5 text-sm font-bold text-gray-300 transition-all hover:border-f1-red hover:text-f1-red-light hover:shadow-lg"
             aria-expanded={showPastRaces}
           >
-            {showPastRaces ? 'Hide completed races' : 'Show completed races'}
+            {showPastRaces
+              ? t('schedule.completedToggleHide')
+              : t('schedule.completedToggleShow')}
             <svg
               className={`w-4 h-4 transition-transform duration-300 ${
                 showPastRaces ? 'rotate-180' : ''
@@ -104,8 +113,8 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
           </button>
           {showPastRaces && (
             <RaceGrid
-              title="Completed races"
-              emptyLabel="No races completed yet."
+              title={t('schedule.completedTitle')}
+              emptyLabel={t('schedule.completedEmpty')}
               races={[...past].reverse()}
               now={now}
               expandedRaceId={expandedRaceId}
@@ -122,7 +131,8 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
 type RaceLike = RegularRace | SprintRace;
 
 function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
-  const descriptor = buildRaceDescriptor(race, now);
+  const { t, dateLocale } = useI18n();
+  const descriptor = buildRaceDescriptor(race, now, t, dateLocale);
 
   return (
     <div className="mx-auto mt-10 w-full max-w-4xl rounded-2xl border-2 border-f1-red bg-gradient-to-br from-f1-red/20 via-f1-black to-f1-gray/30 p-8 shadow-2xl shadow-f1-red/20 backdrop-blur-sm relative overflow-hidden">
@@ -130,13 +140,13 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
       <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
           <span className="inline-flex items-center rounded-full bg-f1-red px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-lg">
-            Next race
+            {t('schedule.nextRaceBadge')}
           </span>
           <h3 className="mt-4 text-3xl font-black text-white md:text-4xl">
             {descriptor.name}
           </h3>
           <p className="mt-2 text-sm font-bold uppercase tracking-wider text-gray-400">
-            Round {race.round} • {descriptor.country}
+            {t('schedule.roundX', race.round)} • {descriptor.country}
           </p>
         </div>
         <div className="text-right">
@@ -165,7 +175,7 @@ function NextRaceCard({ race, now }: { race: RaceLike; now: Date }) {
       {descriptor.isSprint && (
         <div className="mt-6 pt-6 border-t-2 border-f1-red/30">
           <p className="text-sm font-bold text-f1-red-light uppercase tracking-wide">
-            🏁 Sprint weekend • extra action on Saturday!
+            {t('schedule.sprintWeekendNote')}
           </p>
         </div>
       )}
@@ -242,7 +252,8 @@ function RaceCard({
   onClick,
   isUpcoming,
 }: RaceCardProps) {
-  const descriptor = buildRaceDescriptor(race, now);
+  const { t, dateLocale } = useI18n();
+  const descriptor = buildRaceDescriptor(race, now, t, dateLocale);
 
   return (
     <div className="overflow-hidden rounded-xl border-2 border-f1-gray bg-f1-black/50 backdrop-blur-sm shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl relative">
@@ -278,7 +289,7 @@ function RaceCard({
                 {descriptor.name}
               </h4>
               <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-gray-400 mt-1">
-                Round {race.round}
+                {t('schedule.roundX', race.round)}
               </p>
             </div>
             {/* Desktop chevron - hidden on mobile */}
@@ -339,7 +350,7 @@ function RaceCard({
             </span>
             {descriptor.isSprint && (
               <span className="rounded-lg bg-f1-red/20 px-2 md:px-3 py-1 md:py-1.5 text-f1-red-light uppercase tracking-wide">
-                Sprint
+                {t('schedule.event.sprint')}
               </span>
             )}
           </div>
@@ -386,25 +397,38 @@ function StatusPill({
   );
 }
 
-function buildRaceDescriptor(race: RaceLike, now: Date) {
+function buildRaceDescriptor(
+  race: RaceLike,
+  now: Date,
+  t: (key: string, ...args: any[]) => string,
+  dateLocale: Locale
+) {
   const isSprint = race instanceof SprintRace;
   const mainRaceType = isSprint ? SprintRaceType.Race : RegularRaceType.Race;
   const isLive = race.isCurrentlyLive(mainRaceType, now);
   const hasHappened = race.hasHappened(now);
 
   const status = isLive
-    ? { label: 'Live now', tone: 'live' as const }
+    ? { label: t('schedule.status.liveNow'), tone: 'live' as const }
     : hasHappened
     ? {
-        label: `Finished ${formatDistanceToNow(race.dateTime, {
-          addSuffix: true,
-        })}`,
+        label: t(
+          'schedule.status.finished',
+          formatDistanceToNow(race.dateTime, {
+            addSuffix: false,
+            locale: dateLocale,
+          })
+        ),
         tone: 'completed' as const,
       }
     : {
-        label: `Starts ${formatDistanceToNow(race.dateTime, {
-          addSuffix: true,
-        })}`,
+        label: t(
+          'schedule.status.startsIn',
+          formatDistanceToNow(race.dateTime, {
+            addSuffix: false,
+            locale: dateLocale,
+          })
+        ),
         tone: 'upcoming' as const,
       };
 
@@ -413,7 +437,7 @@ function buildRaceDescriptor(race: RaceLike, now: Date) {
     country: race.Circuit.Location.country,
     locality: race.Circuit.Location.locality,
     circuit: race.Circuit.circuitName,
-    date: format(race.dateTime, 'eee d MMM • HH:mm'),
+    date: format(race.dateTime, 'eeee d MMMM • HH:mm', { locale: dateLocale }),
     status,
     isSprint,
   };
@@ -429,21 +453,25 @@ interface RaceEventsListProps {
 
 function RaceEventsList({ race }: RaceEventsListProps) {
   const isSprint = race instanceof SprintRace;
+  const { t, dateLocale } = useI18n();
 
   const events: Array<{ name: string; event: RaceEvent }> = isSprint
     ? [
-        { name: 'Free Practice 1', event: race.FirstPractice },
-        { name: 'Sprint Qualifying', event: race.SprintQualifying },
-        { name: 'Sprint', event: race.Sprint },
-        { name: 'Qualifying', event: race.Qualifying },
-        { name: 'Race', event: race },
+        { name: t('schedule.event.fp1'), event: race.FirstPractice },
+        {
+          name: t('schedule.event.sprintQualifying'),
+          event: race.SprintQualifying,
+        },
+        { name: t('schedule.event.sprint'), event: race.Sprint },
+        { name: t('schedule.event.qualifying'), event: race.Qualifying },
+        { name: t('schedule.event.race'), event: race },
       ]
     : [
-        { name: 'Free Practice 1', event: race.FirstPractice },
-        { name: 'Free Practice 2', event: race.SecondPractice },
-        { name: 'Free Practice 3', event: race.ThirdPractice },
-        { name: 'Qualifying', event: race.Qualifying },
-        { name: 'Race', event: race },
+        { name: t('schedule.event.fp1'), event: race.FirstPractice },
+        { name: t('schedule.event.fp2'), event: race.SecondPractice },
+        { name: t('schedule.event.fp3'), event: race.ThirdPractice },
+        { name: t('schedule.event.qualifying'), event: race.Qualifying },
+        { name: t('schedule.event.race'), event: race },
       ];
 
   // Sort events chronologically (earliest first)
@@ -455,7 +483,7 @@ function RaceEventsList({ race }: RaceEventsListProps) {
     <div className="w-full">
       <h5 className="mb-4 text-sm font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
         <span className="h-0.5 w-6 bg-f1-red-light"></span>
-        Weekend Schedule (Your Local Time)
+        {t('schedule.weekendScheduleHeading')}
       </h5>
       <div className="space-y-2">
         {sortedEvents.map(({ name, event }) => (
@@ -468,7 +496,7 @@ function RaceEventsList({ race }: RaceEventsListProps) {
             </span>
             <div className="text-right flex items-center gap-3">
               <span className="text-sm font-bold text-white">
-                {format(event.dateTime, 'EEE d MMM')}
+                {format(event.dateTime, 'EEE d MMM', { locale: dateLocale })}
               </span>
               <span className="text-lg font-black text-f1-red-light">
                 {format(event.dateTime, 'HH:mm')}
