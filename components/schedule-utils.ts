@@ -38,7 +38,7 @@ const RACE_NAME_MAP: Record<string, string> = {
 export type RaceLike = RegularRace | SprintRace;
 
 export function getRaceName(race: RaceLike) {
-  return RACE_NAME_MAP[race.Circuit.circuitId] ?? race.Circuit.Location.country;
+  return RACE_NAME_MAP[race.circuit.id] ?? race.circuit.location.country;
 }
 
 export function buildRaceDescriptor(
@@ -78,9 +78,9 @@ export function buildRaceDescriptor(
 
   return {
     name: `${getRaceName(race)} Grand Prix`,
-    country: race.Circuit.Location.country,
-    locality: race.Circuit.Location.locality,
-    circuit: race.Circuit.circuitName,
+    country: race.circuit.location.country,
+    locality: race.circuit.location.locality,
+    circuit: race.circuit.circuitName,
     date: format(race.dateTime, 'eeee d MMMM • HH:mm', { locale: dateLocale }),
     status,
     isSprint,

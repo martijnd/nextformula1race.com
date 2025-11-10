@@ -22,7 +22,7 @@ export function TopFinishers({ race }: TopFinishersProps) {
   useEffect(() => {
     async function fetchFinishers() {
       // Create a unique cache key for this race
-      const cacheKey = `${race.season}-${race.round}-${race.Circuit.Location.locality}`;
+      const cacheKey = `${race.season}-${race.round}-${race.circuit.location.locality}`;
 
       // Check cache first
       if (topFinishersCache.has(cacheKey)) {
@@ -40,8 +40,8 @@ export function TopFinishers({ race }: TopFinishersProps) {
         }
         const finishers = await getTop3Finishers(
           race.dateTime,
-          race.Circuit.Location.locality,
-          race.Circuit.Location.country,
+          race.circuit.location.locality,
+          race.circuit.location.country,
           year
         );
 

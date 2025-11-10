@@ -14,20 +14,20 @@ export function RaceEventsList({ race }: RaceEventsListProps) {
 
   const events: Array<{ name: string; event: RaceEvent }> = isSprint
     ? [
-        { name: t('schedule.event.fp1'), event: race.FirstPractice },
+        { name: t('schedule.event.fp1'), event: race.firstPractice },
         {
           name: t('schedule.event.sprintQualifying'),
-          event: race.SprintQualifying,
+          event: race.sprintQualifying,
         },
-        { name: t('schedule.event.sprint'), event: race.Sprint },
-        { name: t('schedule.event.qualifying'), event: race.Qualifying },
+        { name: t('schedule.event.sprint'), event: race.sprint },
+        { name: t('schedule.event.qualifying'), event: race.qualifying },
         { name: t('schedule.event.race'), event: race },
       ]
     : [
-        { name: t('schedule.event.fp1'), event: race.FirstPractice },
-        { name: t('schedule.event.fp2'), event: race.SecondPractice },
-        { name: t('schedule.event.fp3'), event: race.ThirdPractice },
-        { name: t('schedule.event.qualifying'), event: race.Qualifying },
+        { name: t('schedule.event.fp1'), event: race.firstPractice },
+        { name: t('schedule.event.fp2'), event: race.secondPractice },
+        { name: t('schedule.event.fp3'), event: race.thirdPractice },
+        { name: t('schedule.event.qualifying'), event: race.qualifying },
         { name: t('schedule.event.race'), event: race },
       ];
 

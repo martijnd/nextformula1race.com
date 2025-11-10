@@ -22,7 +22,7 @@ export function RemainingFinishers({ race }: RemainingFinishersProps) {
   useEffect(() => {
     async function fetchFinishers() {
       // Create a unique cache key for this race
-      const cacheKey = `${race.season}-${race.round}-${race.Circuit.Location.locality}-remaining`;
+      const cacheKey = `${race.season}-${race.round}-${race.circuit.location.locality}-remaining`;
 
       // Check cache first
       if (remainingFinishersCache.has(cacheKey)) {
@@ -40,8 +40,8 @@ export function RemainingFinishers({ race }: RemainingFinishersProps) {
         }
         const finishers = await getRemainingFinishers(
           race.dateTime,
-          race.Circuit.Location.locality,
-          race.Circuit.Location.country,
+          race.circuit.location.locality,
+          race.circuit.location.country,
           year
         );
 

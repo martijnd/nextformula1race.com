@@ -4,19 +4,17 @@ import Footer from '@/components/Footer';
 import RaceTime from '@/components/RaceTime';
 import { useObserver } from '@/hooks/observer';
 import { usePathname } from 'next/navigation';
-import { RefObject, useEffect, useRef, useState, useCallback } from 'react';
-import { raceTransformer } from '@/api/ergast/transformers';
+import { RefObject, useRef, useState, useCallback } from 'react';
 import { Schedule } from '@/components/Schedule';
 import ChampionshipStandings from '@/components/ChampionshipStandings';
-import { RacesResponse } from '@/api/ergast/types/races';
-import { races } from '@/data/current';
+import { CURRENT_SEASON, races } from '@/data/current';
 import { useI18n } from '@/lib/i18n';
 import Script from 'next/script';
+import { RegularRace, SprintRace } from '@/classes/race';
 
 export default function HomePage() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [showChampionship, setShowChampionship] = useState(false);
-  const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const target = useRef<HTMLElement | null>(null);
   const championshipTarget = useRef<HTMLElement | null>(null);
   const { t, locale } = useI18n();
@@ -31,10 +29,6 @@ export default function HomePage() {
   useObserver(target, handleIntersection);
   useObserver(championshipTarget, handleChampionshipIntersection);
 
-  useEffect(() => {
-    setRaceData(races);
-  }, []);
-
   function scrollToStandings(target: RefObject<HTMLElement | null>) {
     target.current?.scrollIntoView({
       behavior: 'smooth',
@@ -47,9 +41,13 @@ export default function HomePage() {
   const currentLocale = locale || 'en';
 
   // Get next race info for structured data
-  const nextRace = raceData
-    ? raceTransformer(raceData).races.find((race) => !race.hasHappened())
-    : null;
+  const raceData = {
+    season: CURRENT_SEASON,
+    races: races.map((race) =>
+      'sprint' in race ? new SprintRace(race) : new RegularRace(race)
+    ),
+  };
+  const nextRace = raceData.races.find((race) => !race.hasHappened()) || null;
 
   return (
     <>
@@ -57,7 +55,7 @@ export default function HomePage() {
       <main className="text-gray-200">
         <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8 min-h-screen flex flex-col">
           <div className="relative z-10 flex-1 flex flex-col justify-center items-center">
-            {raceData && <RaceTime data={raceTransformer(raceData)} />}
+            <RaceTime data={raceData} />
           </div>
           <button
             className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 font-bold transition-all duration-300 text-f1-red-light hover:text-f1-red hover:scale-110 flex items-center gap-2 group"
@@ -84,31 +82,22 @@ export default function HomePage() {
           className="bg-f1-black f1-stripe px-4 md:px-6 lg:px-8"
           ref={target}
         >
-          {raceData && (
-            <Schedule
-              show={showSchedule}
-              remaining={raceTransformer(raceData).races.filter(
-                (race) => !race.hasHappened()
-              )}
-              past={raceTransformer(raceData).races.filter((race) =>
-                race.hasHappened()
-              )}
-            />
-          )}
+          <Schedule
+            show={showSchedule}
+            remaining={raceData.races.filter((race) => !race.hasHappened())}
+            past={raceData.races.filter((race) => race.hasHappened())}
+          />
         </section>
 
         <section
           className="bg-f1-black f1-stripe px-4 md:px-6 lg:px-8 py-12"
           ref={championshipTarget}
         >
-          {raceData && (() => {
-            const season = parseInt(raceTransformer(raceData).season);
+          {(() => {
+            const season = parseInt(raceData.season);
             if (isNaN(season)) return null;
             return (
-              <ChampionshipStandings
-                show={showChampionship}
-                year={season}
-              />
+              <ChampionshipStandings show={showChampionship} year={season} />
             );
           })()}
         </section>
@@ -140,11 +129,11 @@ export default function HomePage() {
                 startDate: nextRace.dateTime.toISOString(),
                 location: {
                   '@type': 'Place',
-                  name: nextRace.Circuit.circuitName,
+                  name: nextRace.circuit.circuitName,
                   address: {
                     '@type': 'PostalAddress',
-                    addressLocality: nextRace.Circuit.Location.locality,
-                    addressCountry: nextRace.Circuit.Location.country,
+                    addressLocality: nextRace.circuit.location.locality,
+                    addressCountry: nextRace.circuit.location.country,
                   },
                 },
               },
@@ -155,4 +144,3 @@ export default function HomePage() {
     </>
   );
 }
-

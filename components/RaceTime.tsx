@@ -93,24 +93,24 @@ export default function RaceTime({ data }: RaceTimeProps) {
   ): RaceEvent | undefined {
     if (!race) return undefined;
 
-    if ('Sprint' in race) {
+    if ('sprint' in race) {
       // Sprint weekend
       const sprintEvents: Partial<Record<SprintRaceType, RaceEvent>> = {
         [SprintRaceType.Race]: race,
-        [SprintRaceType.Qualy]: race.Qualifying,
-        [SprintRaceType.FP1]: race.FirstPractice,
-        [SprintRaceType.SprintQualy]: race.SprintQualifying,
-        [SprintRaceType.Sprint]: race.Sprint,
+        [SprintRaceType.Qualy]: race.qualifying,
+        [SprintRaceType.FP1]: race.firstPractice,
+        [SprintRaceType.SprintQualy]: race.sprintQualifying,
+        [SprintRaceType.Sprint]: race.sprint,
       };
       return sprintEvents[raceType as SprintRaceType];
     } else {
       // Regular weekend
       const regularEvents: Partial<Record<RegularRaceType, RaceEvent>> = {
         [RegularRaceType.Race]: race,
-        [RegularRaceType.Qualy]: race.Qualifying,
-        [RegularRaceType.FP1]: race.FirstPractice,
-        [RegularRaceType.FP2]: race.SecondPractice,
-        [RegularRaceType.FP3]: race.ThirdPractice,
+        [RegularRaceType.Qualy]: race.qualifying,
+        [RegularRaceType.FP1]: race.firstPractice,
+        [RegularRaceType.FP2]: race.secondPractice,
+        [RegularRaceType.FP3]: race.thirdPractice,
       };
       return regularEvents[raceType as RegularRaceType];
     }
@@ -148,7 +148,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
   }
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
-  const isSprintWeekend = 'Sprint' in nextF1Race;
+  const isSprintWeekend = 'sprint' in nextF1Race;
 
   const duration = formatDuration(
     intervalToDuration({
@@ -233,18 +233,22 @@ export default function RaceTime({ data }: RaceTimeProps) {
       <h3 className="hover:opacity-90 transition-opacity duration-300 text-lg md:text-2xl lg:text-3xl font-semibold text-gray-300">
         <span className="font-black text-white">{nextF1Race.raceName}</span>
         <span className="mx-2">•</span>
-        <a
-          className="hover:text-f1-red-light transition-colors duration-200 font-medium"
-          target="_blank"
-          rel="noreferrer"
-          href={nextF1Race.Circuit.url}
-        >
-          {nextF1Race.Circuit.circuitName}
-        </a>
+        {nextF1Race.circuit.url ? (
+          <a
+            className="hover:text-f1-red-light transition-colors duration-200 font-medium"
+            target="_blank"
+            rel="noreferrer"
+            href={nextF1Race.circuit.url}
+          >
+            {nextF1Race.circuit.circuitName}
+          </a>
+        ) : (
+          <span className="font-medium">{nextF1Race.circuit.circuitName}</span>
+        )}
       </h3>
       <div className="flex justify-center items-center gap-2 flex-wrap pt-4">
         {Object.values(
-          'Sprint' in nextF1Race ? SprintRaceType : RegularRaceType
+          'sprint' in nextF1Race ? SprintRaceType : RegularRaceType
         ).map((type) => (
           <RaceTypeButton
             key={type}
@@ -264,7 +268,7 @@ function setupCalendarButton(
   nextF1RaceDateTime: Date
 ) {
   atcb_action({
-    name: `F1 ${nextF1Race.Circuit.Location.country} GP ${raceType}`,
+    name: `F1 ${nextF1Race.circuit.location.country} GP ${raceType}`,
     startDate: format(nextF1RaceDateTime, 'Y-MM-dd'),
     startTime: format(nextF1RaceDateTime, 'HH:mm'),
     endDate: format(nextF1RaceDateTime, 'Y-MM-dd'),
@@ -274,6 +278,6 @@ function setupCalendarButton(
     ),
     options: ['Google', 'Apple', 'Microsoft365', 'Outlook.com', 'iCal'],
     timeZone: DEFAULT_TIMEZONE,
-    iCalFileName: `F1 ${nextF1Race.Circuit.Location.country} GP ${raceType}`,
+    iCalFileName: `F1 ${nextF1Race.circuit.location.country} GP ${raceType}`,
   });
 }
