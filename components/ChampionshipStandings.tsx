@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import {
   getChampionshipStandings,
   type ChampionshipStandings,
@@ -6,7 +7,7 @@ import {
   type ConstructorStanding,
 } from '@/api/openf1';
 import { useI18n } from '@/lib/i18n';
-import { Trophy } from './Trophy';
+import { Position } from './Position';
 
 interface ChampionshipStandingsProps {
   show: boolean;
@@ -83,15 +84,15 @@ export default function ChampionshipStandings({
 
       {standings && !loading && !error && (
         <div className="space-y-12">
-          <DriverStandingsTable standings={standings.drivers} />
-          <ConstructorStandingsTable standings={standings.constructors} />
+          <DriverStandingsTable drivers={standings.drivers} />
+          <ConstructorStandingsTable constructors={standings.constructors} />
         </div>
       )}
     </div>
   );
 }
 
-function DriverStandingsTable({ standings }: { standings: DriverStanding[] }) {
+function DriverStandingsTable({ drivers }: { drivers: DriverStanding[] }) {
   const { t } = useI18n();
 
   return (
@@ -118,57 +119,48 @@ function DriverStandingsTable({ standings }: { standings: DriverStanding[] }) {
             </tr>
           </thead>
           <tbody className="bg-f1-black/50">
-            {standings.map((standing) => (
+            {drivers.map((driver) => (
               <tr
-                key={`${standing.driverName}-${standing.position}`}
+                key={`${driver.driverName}-${driver.position}`}
                 className={`border-b border-f1-gray transition-colors hover:bg-f1-red/10 ${
-                  standing.position === 1
+                  driver.position === 1
                     ? 'bg-gradient-to-r from-yellow-900/10 to-transparent'
                     : ''
                 }`}
               >
                 <td className="px-6 py-4 w-12">
-                  <span
-                    className={`text-lg font-black ${
-                      standing.position === 1
-                        ? 'text-f1-red-light'
-                        : standing.position === 2
-                        ? 'text-gray-400'
-                        : standing.position === 3
-                        ? 'text-orange-400'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {standing.position}
-                  </span>
+                  <Position position={driver.position} />
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    {standing.position === 1 && (
-                      <Trophy color="text-yellow-400" />
-                    )}
-                    {standing.position === 2 && (
-                      <Trophy color="text-gray-500" />
-                    )}
-                    {standing.position === 3 && (
-                      <Trophy color="text-orange-500" />
+                    {driver.headshotUrl && (
+                      <div className="relative w-8 h-8 flex-shrink-0">
+                        <Image
+                          src={driver.headshotUrl}
+                          alt={driver.driverName}
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover border-2 border-f1-gray"
+                          unoptimized
+                        />
+                      </div>
                     )}
                     <span className="font-bold text-white">
-                      {standing.driverName}
+                      {driver.driverName}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className="text-sm font-bold"
-                    style={{ color: `#${standing.teamColour}` }}
+                    style={{ color: `#${driver.teamColour}` }}
                   >
-                    {standing.teamName}
+                    {driver.teamName}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <span className="text-lg font-black text-white">
-                    {standing.points}
+                    {driver.points}
                   </span>
                 </td>
               </tr>
@@ -181,9 +173,9 @@ function DriverStandingsTable({ standings }: { standings: DriverStanding[] }) {
 }
 
 function ConstructorStandingsTable({
-  standings,
+  constructors,
 }: {
-  standings: ConstructorStanding[];
+  constructors: ConstructorStanding[];
 }) {
   const { t } = useI18n();
 
@@ -208,52 +200,29 @@ function ConstructorStandingsTable({
             </tr>
           </thead>
           <tbody className="bg-f1-black/50">
-            {standings.map((standing) => (
+            {constructors.map((constructor) => (
               <tr
-                key={standing.teamName}
+                key={constructor.teamName}
                 className={`border-b border-f1-gray transition-colors hover:bg-f1-red/10 ${
-                  standing.position === 1
+                  constructor.position === 1
                     ? 'bg-gradient-to-r from-yellow-900/10 to-transparent'
                     : ''
                 }`}
               >
                 <td className="px-6 py-4 w-12">
-                  <span
-                    className={`text-lg font-black ${
-                      standing.position === 1
-                        ? 'text-f1-red-light'
-                        : standing.position === 2
-                        ? 'text-gray-400'
-                        : standing.position === 3
-                        ? 'text-orange-400'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {standing.position}
-                  </span>
+                  <Position position={constructor.position} />
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    {standing.position === 1 && (
-                      <Trophy color="text-yellow-400" />
-                    )}
-                    {standing.position === 2 && (
-                      <Trophy color="text-gray-500" />
-                    )}
-                    {standing.position === 3 && (
-                      <Trophy color="text-orange-500" />
-                    )}
-                    <span
-                      className="font-bold text-lg"
-                      style={{ color: `#${standing.teamColour}` }}
-                    >
-                      {standing.teamName}
-                    </span>
-                  </div>
+                  <span
+                    className="font-bold text-lg"
+                    style={{ color: `#${constructor.teamColour}` }}
+                  >
+                    {constructor.teamName}
+                  </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <span className="text-lg font-black text-white">
-                    {standing.points}
+                    {constructor.points}
                   </span>
                 </td>
               </tr>

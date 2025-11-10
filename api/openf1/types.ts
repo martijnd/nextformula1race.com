@@ -179,7 +179,7 @@ export interface SessionResult {
   dns?: boolean;
   dsq?: boolean;
   duration?: number;
-  gap_to_leader?: number | '+1 LAP';
+  gap_to_leader?: number | string;
 }
 
 export interface Overtake {

@@ -539,9 +539,7 @@ export async function getRemainingFinishers(
           teamColour: driver?.team_colour || '000000',
           points: result.points,
           timeOrStatus: result.gap_to_leader
-            ? result.gap_to_leader === '+1 LAP'
-              ? '+1 LAP'
-              : `+${formatGap(result.gap_to_leader)}`
+            ? `${formatGap(result.gap_to_leader)}`
             : result.dnf || result.dns || result.dsq
             ? 'DNF'
             : null,
@@ -560,7 +558,10 @@ export async function getRemainingFinishers(
 /**
  * Helper function to format gap in seconds to readable format
  */
-function formatGap(seconds: number): string {
+function formatGap(seconds: number | string): string {
+  if (typeof seconds === 'string') {
+    return seconds;
+  }
   if (seconds < 60) {
     return `${seconds.toFixed(3)}s`;
   }
@@ -588,6 +589,7 @@ export interface DriverStanding {
   teamName: string;
   teamColour: string;
   points: number;
+  headshotUrl?: string;
 }
 
 export interface ConstructorStanding {
@@ -665,6 +667,7 @@ export async function getChampionshipStandings(
         teamName: string;
         teamColour: string;
         points: number;
+        headshotUrl?: string;
       }
     >();
     const constructorPointsMap = new Map<
@@ -736,6 +739,7 @@ export async function getChampionshipStandings(
           const teamName = driver.team_name || 'Unknown';
           const normalizedTeamName = normalizeTeamName(teamName);
           const teamColour = driver.team_colour || '000000';
+          const headshotUrl = driver.headshot_url;
 
           // Update driver points (match by normalized name)
           const existingDriver = driverPointsMap.get(normalizedName);
@@ -745,6 +749,10 @@ export async function getChampionshipStandings(
             if (!existingDriver.driverNumber) {
               existingDriver.driverNumber = result.driver_number;
             }
+            // Update headshot URL if we have it now
+            if (headshotUrl && !existingDriver.headshotUrl) {
+              existingDriver.headshotUrl = headshotUrl;
+            }
           } else {
             // New driver not in hardcoded standings
             driverPointsMap.set(normalizedName, {
@@ -753,6 +761,7 @@ export async function getChampionshipStandings(
               teamName,
               teamColour,
               points: result.points,
+              headshotUrl,
             });
           }
 
@@ -792,6 +801,38 @@ export async function getChampionshipStandings(
       }
     }
 
+    // Try to fetch headshots for hardcoded drivers that don't have them yet
+    // Use the most recent session to get current headshots
+    if (sortedSessions.length > 0) {
+      try {
+        const mostRecentSession = sortedSessions[sortedSessions.length - 1];
+        const recentDrivers = await getDrivers({
+          session_key: mostRecentSession.session_key,
+        });
+        const driverHeadshotMap = new Map(
+          recentDrivers.map((d) => [
+            normalizeDriverName(d.full_name),
+            d.headshot_url,
+          ])
+        );
+
+        // Update headshots for drivers that don't have them
+        const driverEntries = Array.from(driverPointsMap.entries());
+        for (const [normalizedName, driverData] of driverEntries) {
+          if (!driverData.headshotUrl) {
+            const headshotUrl = driverHeadshotMap.get(normalizedName);
+            if (headshotUrl) {
+              driverData.headshotUrl = headshotUrl;
+            }
+          }
+        }
+      } catch (error) {
+        // If fetching headshots fails, continue without them
+        // eslint-disable-next-line no-console
+        console.warn('Failed to fetch driver headshots:', error);
+      }
+    }
+
     // Convert maps to arrays and sort by points (descending)
     const driverStandings: DriverStanding[] = Array.from(
       driverPointsMap.values()
@@ -803,6 +844,7 @@ export async function getChampionshipStandings(
         teamName: data.teamName,
         teamColour: data.teamColour,
         points: data.points,
+        headshotUrl: data.headshotUrl,
       }))
       .sort((a, b) => b.points - a.points)
       .map((standing, index) => ({
