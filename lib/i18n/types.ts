@@ -37,6 +37,7 @@ export type TranslationDict = {
       startsIn: (distance: string) => string;
     };
     topFinishers: string;
+    remainingFinishers: string;
   };
   standings: {
     title: string;

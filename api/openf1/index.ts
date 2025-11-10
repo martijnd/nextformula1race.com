@@ -399,8 +399,12 @@ export async function getTop3Finishers(
     // Sort all results by position ascending (1st, 2nd, 3rd, etc.)
     // Position 1 = winner, 2 = second place, 3 = third place
     // Filter out any invalid positions (should be >= 1)
-    const validResults = allResults.filter((r) => r.position != null && r.position >= 1);
-    const sortedResults = [...validResults].sort((a, b) => a.position - b.position);
+    const validResults = allResults.filter(
+      (r) => r.position != null && r.position >= 1
+    );
+    const sortedResults = [...validResults].sort(
+      (a, b) => a.position - b.position
+    );
 
     // Get top 3 positions (positions 1, 2, 3) - these are the winners
     // Make sure we're getting the FIRST 3 positions, not the last
@@ -422,8 +426,8 @@ export async function getTop3Finishers(
     const driverMap = new Map(drivers.map((d) => [d.driver_number, d]));
 
     // Format the results (top 3) - already sorted by position
-    const formattedResults: FormattedRaceResult[] = top3Results
-      .map((result) => {
+    const formattedResults: FormattedRaceResult[] = top3Results.map(
+      (result) => {
         const driver = driverMap.get(result.driver_number);
 
         return {
@@ -439,12 +443,124 @@ export async function getTop3Finishers(
             ? 'DNF'
             : null,
         };
-      });
+      }
+    );
 
     return formattedResults;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error fetching top 3 finishers:', error);
+    return null;
+  }
+}
+
+/**
+ * Get all race results (positions 4-20) for a race by matching date and location
+ */
+export async function getRemainingFinishers(
+  raceDate: Date,
+  location: string,
+  country: string,
+  year: number
+): Promise<FormattedRaceResult[] | null> {
+  try {
+    // Get all race sessions for the year (with caching)
+    let sessions = sessionsCache.get(year);
+    if (!sessions) {
+      sessions = await getSessions({
+        year,
+        session_name: 'Race',
+      });
+      sessionsCache.set(year, sessions);
+    }
+
+    // Find matching session by date and location
+    const raceDateStr = raceDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const matchingSession = sessions.find((session) => {
+      const sessionDate = new Date(session.date_start)
+        .toISOString()
+        .split('T')[0];
+
+      // More flexible location matching
+      const locationLower = location.toLowerCase();
+      const countryLower = country.toLowerCase();
+      const sessionLocationLower = session.location.toLowerCase();
+      const sessionCountryLower = session.country_name.toLowerCase();
+
+      const locationMatch =
+        sessionLocationLower === locationLower ||
+        sessionCountryLower === countryLower ||
+        sessionLocationLower.includes(locationLower) ||
+        locationLower.includes(sessionLocationLower) ||
+        sessionCountryLower.includes(countryLower) ||
+        countryLower.includes(sessionCountryLower);
+
+      return sessionDate === raceDateStr && locationMatch;
+    });
+
+    if (!matchingSession) {
+      return null;
+    }
+
+    // Get all session results
+    const allResults = await getSessionResults({
+      session_key: matchingSession.session_key,
+    });
+
+    if (!allResults || allResults.length === 0) {
+      return null;
+    }
+
+    // Sort all results by position ascending
+    const validResults = allResults.filter(
+      (r) => r.position != null && r.position >= 1
+    );
+    const sortedResults = [...validResults].sort(
+      (a, b) => a.position - b.position
+    );
+
+    // Get positions 4-20 (remaining finishers)
+    const remainingResults = sortedResults
+      .filter((r) => r.position >= 4 && r.position <= 20)
+      .sort((a, b) => a.position - b.position);
+
+    if (remainingResults.length === 0) {
+      return null;
+    }
+
+    // Get driver information for this session
+    const drivers = await getDrivers({
+      session_key: matchingSession.session_key,
+    });
+
+    // Create a driver map for quick lookup
+    const driverMap = new Map(drivers.map((d) => [d.driver_number, d]));
+
+    // Format the results
+    const formattedResults: FormattedRaceResult[] = remainingResults.map(
+      (result) => {
+        const driver = driverMap.get(result.driver_number);
+
+        return {
+          position: result.position,
+          driverNumber: result.driver_number,
+          driverName: driver?.full_name || `Driver #${result.driver_number}`,
+          teamName: driver?.team_name || 'Unknown',
+          teamColour: driver?.team_colour || '000000',
+          points: result.points,
+          timeOrStatus: result.gap_to_leader
+            ? `+${formatGap(result.gap_to_leader)}`
+            : result.dnf || result.dns || result.dsq
+            ? 'DNF'
+            : null,
+        };
+      }
+    );
+
+    return formattedResults;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching remaining finishers:', error);
     return null;
   }
 }
