@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react';
 
 export function useObserver<T extends Element>(
-  target: RefObject<T>,
+  target: RefObject<T | null>,
   callback: (entry: IntersectionObserverEntry) => void
 ) {
   const observerRef = useRef<IntersectionObserver | null>(null);

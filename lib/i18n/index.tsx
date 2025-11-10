@@ -1,5 +1,7 @@
+'use client';
+
 import { createContext, ReactNode, useContext, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import { en } from './dictionaries/en';
 import { nl } from './dictionaries/nl';
 import { AppLocale, TranslationDict, Translator } from './types';
@@ -26,13 +28,19 @@ const DATEFNS_LOCALES: Record<AppLocale, Locale> = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+export function I18nProvider({
+  children,
+  locale,
+}: {
+  children: ReactNode;
+  locale: AppLocale;
+}) {
   const router = useRouter();
-  const routerLocale = (router.locale as AppLocale) || 'en';
+  const pathname = usePathname();
 
   const value = useMemo<I18nContextValue>(() => {
-    const dict = I18N_DICTIONARIES[routerLocale] ?? en;
-    const dateLocale = DATEFNS_LOCALES[routerLocale] ?? dfEn;
+    const dict = I18N_DICTIONARIES[locale] ?? en;
+    const dateLocale = DATEFNS_LOCALES[locale] ?? dfEn;
 
     const t: Translator = (key, ...args) => {
       const segments = key.split('.');
@@ -52,17 +60,20 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     };
 
     const switchLocale = (nextLocale: AppLocale) => {
-      router.push(router.asPath, router.asPath, { locale: nextLocale });
+      // Replace the locale in the pathname
+      const pathWithoutLocale = pathname?.replace(/^\/[^/]+/, '') || '/';
+      const newPath = `/${nextLocale}${pathWithoutLocale}`;
+      router.push(newPath);
     };
 
     return {
-      locale: routerLocale,
+      locale,
       t,
       dateLocale,
       switchLocale,
       dict,
     };
-  }, [router, routerLocale]);
+  }, [locale, router, pathname]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

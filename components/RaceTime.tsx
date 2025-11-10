@@ -58,7 +58,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
     }
 
     // Set up interval for countdown updates
-    const intervalId = setInterval(() => {
+    const intervalId = window.setInterval(() => {
       setCurrentTime(new Date());
     }, ONE_SECOND);
 
@@ -66,7 +66,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
     // Cleanup interval on unmount
     return () => {
-      clearInterval(intervalId);
+      window.clearInterval(intervalId);
     };
   }, []);
 
@@ -190,7 +190,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
     return <span>{t('raceTime.inDuration', duration)}</span>;
   }
 
-  const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM Y, HH:mm', {
+  const formattedRaceTime = format(nextF1RaceDateTime, 'd MMMM y, HH:mm', {
     locale: dateLocale,
   });
 

@@ -1,4 +1,4 @@
-import format from 'date-fns/format';
+import { format } from 'date-fns/format';
 import { SprintRace } from '@/classes/race';
 import { RaceEvent } from '@/classes/race-event';
 import { useI18n } from '@/lib/i18n';

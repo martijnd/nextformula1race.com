@@ -2,8 +2,8 @@ import {
   RegularRaceType,
   SprintRaceType,
 } from '@/classes/race-event';
-import format from 'date-fns/format';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { format } from 'date-fns/format';
+import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { RegularRace, SprintRace } from '@/classes/race';
 import type { Locale } from 'date-fns';
 import type { Translator } from '@/lib/i18n/types';
