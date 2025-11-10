@@ -2,13 +2,7 @@ import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { en } from './dictionaries/en';
 import { nl } from './dictionaries/nl';
-import {
-  AppLocale,
-  TranslationArgs,
-  TranslationDict,
-  TranslationKey,
-  Translator,
-} from './types';
+import { AppLocale, TranslationDict, Translator } from './types';
 import type { Locale } from 'date-fns';
 import { enGB as dfEn, nl as dfNl } from 'date-fns/locale';
 
