@@ -70,7 +70,13 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
             # Set up PATH to include npm global binaries
-            export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
+            export PATH="$PATH:/usr/local/bin:$HOME/.local/bin:/usr/bin"
+
+            # Find pnpm and pm2 locations
+            PNPM_CMD=$(which pnpm 2>/dev/null || echo "pnpm")
+            PM2_CMD=$(which pm2 2>/dev/null || echo "pm2")
+
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
 
             # Extract in home directory first (where we have permissions)
             mkdir -p ~/deploy_temp
@@ -78,37 +84,68 @@ jobs:
             tar -xzf ~/deploy.tar.gz
             rm -f ~/deploy.tar.gz
 
-            # Ensure deployment directory exists and has correct permissions
-            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
-            mkdir -p "$DEPLOY_PATH"/logs
+            # Install dependencies in temp directory
+            echo "Installing dependencies..."
+            $PNPM_CMD install --prod --frozen-lockfile || {
+              echo "Error: pnpm not found or failed. Please ensure pnpm is installed and in PATH."
+              exit 1
+            }
+
+            # Check if we can write to deployment directory
+            if [ ! -w "$DEPLOY_PATH" ] && [ ! -w "$(dirname "$DEPLOY_PATH")" ]; then
+              echo "ERROR: Cannot write to deployment directory: $DEPLOY_PATH"
+              echo "Please ensure the deploy user owns this directory:"
+              echo "  sudo chown -R deploy:deploy $DEPLOY_PATH"
+              echo "  sudo chmod -R 755 $DEPLOY_PATH"
+              exit 1
+            fi
+
+            # Ensure deployment directory exists
+            mkdir -p "$DEPLOY_PATH"/logs 2>/dev/null || {
+              echo "Warning: Could not create logs directory, continuing..."
+            }
 
             # Backup current deployment if it exists
-            if [ -d "$DEPLOY_PATH/live" ] && [ "$(ls -A $DEPLOY_PATH/live 2>/dev/null)" ]; then
-              rm -rf "$DEPLOY_PATH/old" || true
-              mv "$DEPLOY_PATH/live" "$DEPLOY_PATH/old" || true
+            if [ -d "$DEPLOY_PATH/live" ] && [ -w "$DEPLOY_PATH" ]; then
+              rm -rf "$DEPLOY_PATH/old" 2>/dev/null || true
+              mv "$DEPLOY_PATH/live" "$DEPLOY_PATH/old" 2>/dev/null || true
             fi
 
             # Create new deployment directory
-            mkdir -p "$DEPLOY_PATH/current"
+            mkdir -p "$DEPLOY_PATH/current" 2>/dev/null || {
+              echo "ERROR: Cannot create deployment directory. Check permissions."
+              exit 1
+            }
 
-            # Move extracted files to deployment directory
-            mv ~/deploy_temp/* "$DEPLOY_PATH/current/"
+            # Copy extracted files to deployment directory
+            cp -r ~/deploy_temp/* "$DEPLOY_PATH/current/" || {
+              echo "ERROR: Cannot copy files to deployment directory. Check permissions."
+              exit 1
+            }
             rm -rf ~/deploy_temp
 
-            # Install dependencies (use full path or ensure pnpm is in PATH)
-            cd "$DEPLOY_PATH/current"
-            /usr/local/bin/pnpm install --prod --frozen-lockfile || pnpm install --prod --frozen-lockfile
-
             # Atomic swap: move current to live
-            mv "$DEPLOY_PATH/current" "$DEPLOY_PATH/live"
+            mv "$DEPLOY_PATH/current" "$DEPLOY_PATH/live" || {
+              echo "ERROR: Cannot move current to live. Check permissions."
+              exit 1
+            }
 
-            # Restart the application with PM2 (use full path)
-            cd "$DEPLOY_PATH/live"
-            /usr/local/bin/pm2 delete nextformula1race 2>/dev/null || pm2 delete nextformula1race 2>/dev/null || true
-            /usr/local/bin/pm2 start ecosystem.config.js || pm2 start ecosystem.config.js
+            # Restart the application with PM2
+            cd "$DEPLOY_PATH/live" || {
+              echo "ERROR: Cannot access live directory."
+              exit 1
+            }
+
+            $PM2_CMD delete nextformula1race 2>/dev/null || true
+            $PM2_CMD start ecosystem.config.js || {
+              echo "Error: PM2 failed to start. Check PM2 installation and ecosystem.config.js"
+              exit 1
+            }
 
             # Save PM2 process list
-            /usr/local/bin/pm2 save || pm2 save || true
+            $PM2_CMD save || true
 
             # Cleanup old deployment
-            rm -rf "$DEPLOY_PATH/old" || true
+            rm -rf "$DEPLOY_PATH/old" 2>/dev/null || true
+
+            echo "Deployment completed successfully!"
