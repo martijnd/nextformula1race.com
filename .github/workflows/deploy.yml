@@ -69,47 +69,46 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
-            # Move archive from home directory to deployment path
-            mv ~/deploy.tar.gz ${{ secrets.DEPLOY_PATH }}/deploy.tar.gz
+            # Set up PATH to include npm global binaries
+            export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
 
-            cd ${{ secrets.DEPLOY_PATH }}
+            # Extract in home directory first (where we have permissions)
+            mkdir -p ~/deploy_temp
+            cd ~/deploy_temp
+            tar -xzf ~/deploy.tar.gz
+            rm -f ~/deploy.tar.gz
 
-            # Create logs directory if it doesn't exist
-            mkdir -p logs
+            # Ensure deployment directory exists and has correct permissions
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+            mkdir -p "$DEPLOY_PATH"/logs
 
-            # Backup current deployment
-            if [ -d "current" ] && [ "$(ls -A current 2>/dev/null)" ]; then
-              rm -rf backup
-              mv current backup || true
+            # Backup current deployment if it exists
+            if [ -d "$DEPLOY_PATH/live" ] && [ "$(ls -A $DEPLOY_PATH/live 2>/dev/null)" ]; then
+              rm -rf "$DEPLOY_PATH/old" || true
+              mv "$DEPLOY_PATH/live" "$DEPLOY_PATH/old" || true
             fi
 
             # Create new deployment directory
-            mkdir -p current
+            mkdir -p "$DEPLOY_PATH/current"
 
-            # Extract new files
-            tar -xzf deploy.tar.gz -C current
-            rm -f deploy.tar.gz
+            # Move extracted files to deployment directory
+            mv ~/deploy_temp/* "$DEPLOY_PATH/current/"
+            rm -rf ~/deploy_temp
 
-            # Install dependencies
-            cd current
-            pnpm install --prod --frozen-lockfile
+            # Install dependencies (use full path or ensure pnpm is in PATH)
+            cd "$DEPLOY_PATH/current"
+            /usr/local/bin/pnpm install --prod --frozen-lockfile || pnpm install --prod --frozen-lockfile
 
-            # Atomic swap: move old files out and new files in
-            cd ${{ secrets.DEPLOY_PATH }}
-            if [ -d "live" ]; then
-              rm -rf old
-              mv live old
-            fi
-            mv current live
+            # Atomic swap: move current to live
+            mv "$DEPLOY_PATH/current" "$DEPLOY_PATH/live"
 
-            # Restart the application with PM2
-            cd live
-            pm2 delete nextformula1race || true
-            pm2 start ecosystem.config.js
+            # Restart the application with PM2 (use full path)
+            cd "$DEPLOY_PATH/live"
+            /usr/local/bin/pm2 delete nextformula1race 2>/dev/null || pm2 delete nextformula1race 2>/dev/null || true
+            /usr/local/bin/pm2 start ecosystem.config.js || pm2 start ecosystem.config.js
 
             # Save PM2 process list
-            pm2 save || true
+            /usr/local/bin/pm2 save || pm2 save || true
 
             # Cleanup old deployment
-            cd ${{ secrets.DEPLOY_PATH }}
-            rm -rf old backup
+            rm -rf "$DEPLOY_PATH/old" || true
