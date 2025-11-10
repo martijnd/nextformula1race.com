@@ -59,7 +59,8 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           source: 'deploy.tar.gz'
-          target: ${{ secrets.DEPLOY_PATH }}
+          target: ${{ secrets.DEPLOY_PATH }}/deploy.tar.gz
+          rm: false
 
       - name: Extract and deploy files
         uses: appleboy/ssh-action@master
@@ -83,7 +84,7 @@ jobs:
             # Create new deployment directory
             mkdir -p current
 
-            # Extract new files
+            # Extract new files (file is already in DEPLOY_PATH)
             tar -xzf deploy.tar.gz -C current
             rm -f deploy.tar.gz
 
