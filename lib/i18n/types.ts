@@ -63,6 +63,26 @@ export type TranslationDict = {
     seeYouInPrefix: string;
     seeYouInSuffix: string;
   };
+  error: {
+    '404': {
+      title: string;
+      heading: string;
+      message: string;
+      backHome: string;
+    };
+    '500': {
+      title: string;
+      heading: string;
+      message: string;
+      backHome: string;
+    };
+    generic: {
+      title: string;
+      heading: string;
+      message: string;
+      backHome: string;
+    };
+  };
 };
 
 // ---- Type-safe translation key utilities ----

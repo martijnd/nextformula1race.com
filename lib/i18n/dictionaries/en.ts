@@ -63,4 +63,24 @@ export const en: TranslationDict = {
     seeYouInPrefix: 'See you in',
     seeYouInSuffix: '!',
   },
+  error: {
+    '404': {
+      title: '404 - Page Not Found',
+      heading: 'Page Not Found',
+      message: "Sorry, we couldn't find the page you're looking for.",
+      backHome: 'Back to Home',
+    },
+    '500': {
+      title: '500 - Server Error',
+      heading: 'Something went wrong',
+      message: 'An error occurred on our end. Please try again later.',
+      backHome: 'Back to Home',
+    },
+    generic: {
+      title: 'Error',
+      heading: 'Something went wrong',
+      message: 'An unexpected error occurred.',
+      backHome: 'Back to Home',
+    },
+  },
 };

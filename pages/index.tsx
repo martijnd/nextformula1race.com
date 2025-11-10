@@ -3,6 +3,7 @@ import RaceTime from '@/components/RaceTime';
 import { useObserver } from '@/hooks/observer';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { RefObject, useEffect, useRef, useState, useCallback } from 'react';
 import { raceTransformer } from '@/api/ergast/transformers';
 
@@ -18,7 +19,8 @@ const Home: NextPage = () => {
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const target = useRef<HTMLElement>(null);
   const championshipTarget = useRef<HTMLElement>(null);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const router = useRouter();
   const handleIntersection = useCallback(() => {
     setShowSchedule(true);
   }, []);
@@ -39,11 +41,50 @@ const Home: NextPage = () => {
     });
   }
 
+  // Build canonical URL
+  const siteUrl = 'https://nextformula1race.com';
+  const canonicalUrl = `${siteUrl}${
+    router.asPath === '/' ? '' : router.asPath
+  }`;
+  const currentLocale = locale || 'en';
+
+  // Get next race info for structured data
+  const nextRace = raceData
+    ? raceTransformer(raceData).races.find((race) => !race.hasHappened())
+    : null;
+
   return (
     <>
       <Head>
         <title>{t('home.title')}</title>
         <meta name="description" content={t('home.description')} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={t('home.title')} />
+        <meta property="og:description" content={t('home.description')} />
+        <meta property="og:site_name" content="Next Formula 1 Race" />
+        <meta
+          property="og:locale"
+          content={currentLocale === 'nl' ? 'nl_NL' : 'en_US'}
+        />
+        {currentLocale === 'nl' && (
+          <meta property="og:locale:alternate" content="en_US" />
+        )}
+        {currentLocale === 'en' && (
+          <meta property="og:locale:alternate" content="nl_NL" />
+        )}
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={t('home.title')} />
+        <meta name="twitter:description" content={t('home.description')} />
+
+        {/* Favicons */}
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -69,6 +110,45 @@ const Home: NextPage = () => {
         />
         <meta name="msapplication-TileColor" content="#15151E" />
         <meta name="theme-color" content="#15151E" />
+
+        {/* Structured Data (JSON-LD) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Next Formula 1 Race',
+              description: t('home.description'),
+              url: siteUrl,
+              inLanguage: currentLocale,
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: `${siteUrl}/?q={search_term_string}`,
+                },
+                'query-input': 'required name=search_term_string',
+              },
+              ...(nextRace && {
+                mainEntity: {
+                  '@type': 'SportsEvent',
+                  name: nextRace.raceName,
+                  startDate: nextRace.dateTime.toISOString(),
+                  location: {
+                    '@type': 'Place',
+                    name: nextRace.Circuit.circuitName,
+                    address: {
+                      '@type': 'PostalAddress',
+                      addressLocality: nextRace.Circuit.Location.locality,
+                      addressCountry: nextRace.Circuit.Location.country,
+                    },
+                  },
+                },
+              }),
+            }),
+          }}
+        />
       </Head>
       <main className="text-gray-200">
         <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8">

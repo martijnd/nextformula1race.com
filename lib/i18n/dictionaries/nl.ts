@@ -63,4 +63,24 @@ export const nl: TranslationDict = {
     seeYouInPrefix: 'Tot ziens in',
     seeYouInSuffix: '!',
   },
+  error: {
+    '404': {
+      title: '404 - Pagina niet gevonden',
+      heading: 'Pagina niet gevonden',
+      message: 'Sorry, we kunnen de pagina die je zoekt niet vinden.',
+      backHome: 'Terug naar Home',
+    },
+    '500': {
+      title: '500 - Serverfout',
+      heading: 'Er is iets misgegaan',
+      message: 'Er is een fout opgetreden. Probeer het later opnieuw.',
+      backHome: 'Terug naar Home',
+    },
+    generic: {
+      title: 'Fout',
+      heading: 'Er is iets misgegaan',
+      message: 'Er is een onverwachte fout opgetreden.',
+      backHome: 'Terug naar Home',
+    },
+  },
 };
