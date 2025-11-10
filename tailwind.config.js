@@ -4,7 +4,6 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -30,8 +29,6 @@ module.exports = {
       backgroundImage: {
         checkered:
           'repeating-linear-gradient(45deg, #000 0, #000 20px, #fff 20px, #fff 40px)',
-        'checkered-dark':
-          'repeating-linear-gradient(45deg, #15151E 0, #15151E 20px, #2a2a35 20px, #2a2a35 40px)',
         'racing-stripe':
           'linear-gradient(90deg, transparent 0%, rgba(225, 6, 0, 0.1) 50%, transparent 100%)',
       },

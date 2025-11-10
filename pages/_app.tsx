@@ -6,11 +6,6 @@ import { I18nProvider } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    // Force dark mode
-    document.documentElement.classList.add('dark');
-  }, []);
-
   return (
     <I18nProvider>
       <LanguageSwitcher />
