@@ -438,7 +438,9 @@ export async function getTop3Finishers(
           teamColour: driver?.team_colour || '000000',
           points: result.points,
           timeOrStatus: result.gap_to_leader
-            ? `+${formatGap(result.gap_to_leader)}`
+            ? result.gap_to_leader === '+1 LAP'
+              ? '+1 LAP'
+              : `+${formatGap(result.gap_to_leader)}`
             : result.dnf || result.dns || result.dsq
             ? 'DNF'
             : null,
@@ -512,21 +514,9 @@ export async function getRemainingFinishers(
     }
 
     // Sort all results by position ascending
-    const validResults = allResults.filter(
-      (r) => r.position != null && r.position >= 1
-    );
-    const sortedResults = [...validResults].sort(
-      (a, b) => a.position - b.position
-    );
-
-    // Get positions 4-20 (remaining finishers)
-    const remainingResults = sortedResults
-      .filter((r) => r.position >= 4 && r.position <= 20)
-      .sort((a, b) => a.position - b.position);
-
-    if (remainingResults.length === 0) {
-      return null;
-    }
+    // Get all positions >= 4 (remaining finishers after top 3)
+    // Don't limit to 20, as there might be more drivers or DNF drivers
+    const remainingResults = allResults.slice(3);
 
     // Get driver information for this session
     const drivers = await getDrivers({
@@ -549,7 +539,9 @@ export async function getRemainingFinishers(
           teamColour: driver?.team_colour || '000000',
           points: result.points,
           timeOrStatus: result.gap_to_leader
-            ? `+${formatGap(result.gap_to_leader)}`
+            ? result.gap_to_leader === '+1 LAP'
+              ? '+1 LAP'
+              : `+${formatGap(result.gap_to_leader)}`
             : result.dnf || result.dns || result.dsq
             ? 'DNF'
             : null,

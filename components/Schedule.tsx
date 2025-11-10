@@ -743,7 +743,7 @@ function RemainingFinishers({ race }: RemainingFinishersProps) {
       <div className="space-y-2">
         {remainingFinishers.map((finisher) => (
           <div
-            key={finisher.position}
+            key={finisher.driverNumber}
             className="grid grid-cols-12 gap-3 items-center rounded-lg border-2 border-f1-gray bg-f1-black/50 px-4 py-3 transition-all hover:border-f1-red hover:shadow-md"
           >
             <div className="col-span-2 row-span-2 md:row-span-1 md:col-span-1 text-sm font-black text-gray-400 flex items-center justify-center">
@@ -757,7 +757,7 @@ function RemainingFinishers({ race }: RemainingFinishersProps) {
                 {finisher.teamName}
               </span>
             </div>
-            <div className="col-span-5 md:col-span-1 text-xs font-medium text-gray-500 text-right">
+            <div className="col-span-5 md:col-span-2 text-xs font-medium text-gray-500 text-right">
               {finisher.timeOrStatus || '—'}
             </div>
           </div>
