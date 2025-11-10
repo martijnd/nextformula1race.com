@@ -433,7 +433,9 @@ export async function getTop3Finishers(
         return {
           position: result.position,
           driverNumber: result.driver_number,
-          driverName: driver?.full_name || `Driver #${result.driver_number}`,
+          driverName: driver?.full_name
+            ? formatDriverName(driver.full_name)
+            : `Driver #${result.driver_number}`,
           teamName: driver?.team_name || 'Unknown',
           teamColour: driver?.team_colour || '000000',
           points: result.points,
@@ -513,10 +515,18 @@ export async function getRemainingFinishers(
       return null;
     }
 
-    // Sort all results by position ascending
+    // Sort all results by position ascending (1st, 2nd, 3rd, etc.)
+    // Filter out any invalid positions (should be >= 1)
+    const validResults = allResults.filter(
+      (r) => r.position != null && r.position >= 1
+    );
+    const sortedResults = [...validResults].sort(
+      (a, b) => a.position - b.position
+    );
+
     // Get all positions >= 4 (remaining finishers after top 3)
     // Don't limit to 20, as there might be more drivers or DNF drivers
-    const remainingResults = allResults.slice(3);
+    const remainingResults = sortedResults.slice(3);
 
     // Get driver information for this session
     const drivers = await getDrivers({
@@ -534,7 +544,9 @@ export async function getRemainingFinishers(
         return {
           position: result.position,
           driverNumber: result.driver_number,
-          driverName: driver?.full_name || `Driver #${result.driver_number}`,
+          driverName: driver?.full_name
+            ? formatDriverName(driver.full_name)
+            : `Driver #${result.driver_number}`,
           teamName: driver?.team_name || 'Unknown',
           teamColour: driver?.team_colour || '000000',
           points: result.points,
@@ -624,6 +636,19 @@ function normalizeTeamName(name: string): string {
 }
 
 /**
+ * Format driver name with proper capitalization (first letter of each word capitalized)
+ */
+function formatDriverName(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => {
+      if (word.length === 0) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ');
+}
+
+/**
  * Calculate championship standings from all completed races in a season
  * Uses hardcoded standings up to a cutoff date, then calculates points from races after that date
  */
@@ -679,7 +704,7 @@ export async function getChampionshipStandings(
     for (const standing of HARDCODED_DRIVER_STANDINGS) {
       const normalizedName = normalizeDriverName(standing.driverName);
       driverPointsMap.set(normalizedName, {
-        name: standing.driverName,
+        name: formatDriverName(standing.driverName),
         teamName: standing.teamName,
         teamColour: standing.teamColour,
         points: standing.points,
@@ -756,7 +781,7 @@ export async function getChampionshipStandings(
           } else {
             // New driver not in hardcoded standings
             driverPointsMap.set(normalizedName, {
-              name: driverName,
+              name: formatDriverName(driverName),
               driverNumber: result.driver_number,
               teamName,
               teamColour,
@@ -950,7 +975,9 @@ export async function getRaceResults(
         return {
           position: result.position,
           driverNumber: result.driver_number,
-          driverName: driver?.full_name || `Driver #${result.driver_number}`,
+          driverName: driver?.full_name
+            ? formatDriverName(driver.full_name)
+            : `Driver #${result.driver_number}`,
           teamName: driver?.team_name || 'Unknown',
           teamColour: driver?.team_colour || '000000',
           points: result.points,

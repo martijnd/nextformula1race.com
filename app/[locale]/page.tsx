@@ -101,12 +101,16 @@ export default function HomePage() {
           className="bg-f1-black f1-stripe px-4 md:px-6 lg:px-8 py-12"
           ref={championshipTarget}
         >
-          {raceData && (
-            <ChampionshipStandings
-              show={showChampionship}
-              year={parseInt(raceTransformer(raceData).season)}
-            />
-          )}
+          {raceData && (() => {
+            const season = parseInt(raceTransformer(raceData).season);
+            if (isNaN(season)) return null;
+            return (
+              <ChampionshipStandings
+                show={showChampionship}
+                year={season}
+              />
+            );
+          })()}
         </section>
       </main>
       <Footer />

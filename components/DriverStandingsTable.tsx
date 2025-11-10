@@ -48,6 +48,9 @@ export function DriverStandingsTable({ drivers }: DriverStandingsTableProps) {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
+                    <span className="font-bold text-white">
+                      {driver.driverName}
+                    </span>
                     {driver.headshotUrl && (
                       <div className="relative w-8 h-8 flex-shrink-0">
                         <Image
@@ -60,9 +63,6 @@ export function DriverStandingsTable({ drivers }: DriverStandingsTableProps) {
                         />
                       </div>
                     )}
-                    <span className="font-bold text-white">
-                      {driver.driverName}
-                    </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">

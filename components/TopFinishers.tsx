@@ -35,6 +35,9 @@ export function TopFinishers({ race }: TopFinishersProps) {
       setError(null);
       try {
         const year = parseInt(race.season);
+        if (isNaN(year)) {
+          throw new Error('Invalid season year');
+        }
         const finishers = await getTop3Finishers(
           race.dateTime,
           race.Circuit.Location.locality,

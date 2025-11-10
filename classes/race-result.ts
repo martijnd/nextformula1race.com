@@ -33,9 +33,10 @@ export class RaceResult extends RaceEvent {
   }
 
   getPosition(position: number) {
-    return this.Results.find(
-      (result) => parseInt(result.position) === position
-    );
+    return this.Results.find((result) => {
+      const resultPosition = parseInt(result.position);
+      return !isNaN(resultPosition) && resultPosition === position;
+    });
   }
 
   getDriverAtPosition(position: number) {

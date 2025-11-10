@@ -35,6 +35,9 @@ export function RemainingFinishers({ race }: RemainingFinishersProps) {
       setError(null);
       try {
         const year = parseInt(race.season);
+        if (isNaN(year)) {
+          throw new Error('Invalid season year');
+        }
         const finishers = await getRemainingFinishers(
           race.dateTime,
           race.Circuit.Location.locality,
