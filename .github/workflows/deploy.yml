@@ -50,20 +50,15 @@ jobs:
             hooks \
             api \
             ecosystem.config.js
-          # Rename to avoid scp-action auto-extraction
-          mv deploy.tar.gz deploy.archive
 
-      - name: Upload archive to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          source: deploy.archive
-          target: ${{ secrets.DEPLOY_PATH }}/
-          rm: false
-          strip_components: 0
+      - name: Setup SSH and copy archive
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          scp -i ~/.ssh/deploy_key -P ${{ secrets.DEPLOY_PORT || 22 }} -o StrictHostKeyChecking=no deploy.tar.gz ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/deploy.tar.gz
+          rm -f ~/.ssh/deploy_key
 
       - name: Extract and deploy files
         uses: appleboy/ssh-action@master
@@ -87,8 +82,7 @@ jobs:
             # Create new deployment directory
             mkdir -p current
 
-            # Extract new files (rename back to .tar.gz for extraction)
-            mv deploy.archive deploy.tar.gz
+            # Extract new files
             tar -xzf deploy.tar.gz -C current
             rm -f deploy.tar.gz
 
