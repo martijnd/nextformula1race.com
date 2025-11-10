@@ -44,6 +44,16 @@ export const nl: TranslationDict = {
     driver: 'Coureur',
     points: 'Punten',
   },
+  championship: {
+    title: 'Coureurs- & Constructeurskampioenschap',
+    drivers: 'Coureurskampioenschap',
+    constructors: 'Constructeurskampioenschap',
+    driver: 'Coureur',
+    constructor: 'Constructeur',
+    team: 'Team',
+    points: 'Punten',
+    loading: 'Standen laden...',
+  },
   raceTime: {
     liveNow: 'NU LIVE!',
     startedAgo: (duration) => `${duration} geleden gestart`,

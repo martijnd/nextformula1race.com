@@ -579,6 +579,280 @@ export async function getOvertakes(
 }
 
 /**
+ * Championship standings types
+ */
+export interface DriverStanding {
+  position: number;
+  driverName: string;
+  driverNumber: number;
+  teamName: string;
+  teamColour: string;
+  points: number;
+}
+
+export interface ConstructorStanding {
+  position: number;
+  teamName: string;
+  teamColour: string;
+  points: number;
+}
+
+export interface ChampionshipStandings {
+  drivers: DriverStanding[];
+  constructors: ConstructorStanding[];
+}
+
+/**
+ * Normalize driver name for matching (uppercase, remove extra spaces)
+ */
+function normalizeDriverName(name: string): string {
+  return name.toUpperCase().trim().replace(/\s+/g, ' ');
+}
+
+/**
+ * Normalize team name for matching
+ * Handles common variations like "Racing Bulls" vs "Racing Bulls F1 Team"
+ */
+function normalizeTeamName(name: string): string {
+  return name
+    .replace(/\s+F1\s+TEAM\s*/gi, '')
+    .replace(/\s+TEAM\s*/gi, '')
+    .trim()
+    .toUpperCase();
+}
+
+/**
+ * Calculate championship standings from all completed races in a season
+ * Uses hardcoded standings up to a cutoff date, then calculates points from races after that date
+ */
+export async function getChampionshipStandings(
+  year: number
+): Promise<ChampionshipStandings> {
+  try {
+    // Import hardcoded standings
+    const {
+      STANDINGS_CUTOFF_DATE,
+      HARDCODED_DRIVER_STANDINGS,
+      HARDCODED_CONSTRUCTOR_STANDINGS,
+    } = await import('@/constants/standings');
+
+    const cutoffDate = new Date(STANDINGS_CUTOFF_DATE);
+    cutoffDate.setHours(0, 0, 0, 0);
+
+    // Get all race sessions for the year
+    let sessions = sessionsCache.get(year);
+    if (!sessions) {
+      sessions = await getSessions({
+        year,
+        session_name: 'Race',
+      });
+      sessionsCache.set(year, sessions);
+    }
+
+    // Sort sessions by date to process in chronological order
+    const sortedSessions = [...sessions].sort(
+      (a, b) =>
+        new Date(a.date_start).getTime() - new Date(b.date_start).getTime()
+    );
+
+    // Initialize with hardcoded standings
+    // Use driver name as key for matching (since we don't have driver numbers in hardcoded data)
+    const driverPointsMap = new Map<
+      string,
+      {
+        name: string;
+        driverNumber?: number;
+        teamName: string;
+        teamColour: string;
+        points: number;
+      }
+    >();
+    const constructorPointsMap = new Map<
+      string,
+      { colour: string; points: number }
+    >();
+
+    // Load hardcoded driver standings
+    for (const standing of HARDCODED_DRIVER_STANDINGS) {
+      const normalizedName = normalizeDriverName(standing.driverName);
+      driverPointsMap.set(normalizedName, {
+        name: standing.driverName,
+        teamName: standing.teamName,
+        teamColour: standing.teamColour,
+        points: standing.points,
+      });
+    }
+
+    // Load hardcoded constructor standings (use normalized name as key)
+    for (const standing of HARDCODED_CONSTRUCTOR_STANDINGS) {
+      const normalizedTeamName = normalizeTeamName(standing.teamName);
+      constructorPointsMap.set(normalizedTeamName, {
+        colour: standing.teamColour,
+        points: standing.points,
+      });
+      // Also store original name mapping for lookup
+      constructorPointsMap.set(standing.teamName, {
+        colour: standing.teamColour,
+        points: standing.points,
+      });
+    }
+
+    // Process each race session (only after cutoff date)
+    for (const session of sortedSessions) {
+      try {
+        const sessionDate = new Date(session.date_start);
+        sessionDate.setHours(0, 0, 0, 0);
+
+        // Skip races before the cutoff date (already included in hardcoded standings)
+        if (sessionDate <= cutoffDate) {
+          continue;
+        }
+
+        // Get session results for this race
+        const results = await getSessionResults({
+          session_key: session.session_key,
+        });
+
+        // Skip races that haven't happened yet (no results)
+        if (!results || results.length === 0) {
+          continue;
+        }
+
+        // Get driver information for this session
+        const drivers = await getDrivers({
+          session_key: session.session_key,
+        });
+
+        // Create a driver map for quick lookup
+        const driverMap = new Map(drivers.map((d) => [d.driver_number, d]));
+
+        // Aggregate points from this race
+        for (const result of results) {
+          const driver = driverMap.get(result.driver_number);
+          if (!driver || result.points === 0) continue;
+
+          const driverName = driver.full_name;
+          const normalizedName = normalizeDriverName(driverName);
+          const teamName = driver.team_name || 'Unknown';
+          const normalizedTeamName = normalizeTeamName(teamName);
+          const teamColour = driver.team_colour || '000000';
+
+          // Update driver points (match by normalized name)
+          const existingDriver = driverPointsMap.get(normalizedName);
+          if (existingDriver) {
+            existingDriver.points += result.points;
+            // Update driver number if we have it now
+            if (!existingDriver.driverNumber) {
+              existingDriver.driverNumber = result.driver_number;
+            }
+          } else {
+            // New driver not in hardcoded standings
+            driverPointsMap.set(normalizedName, {
+              name: driverName,
+              driverNumber: result.driver_number,
+              teamName,
+              teamColour,
+              points: result.points,
+            });
+          }
+
+          // Update constructor points (try normalized name first, then original)
+          const existingConstructor =
+            constructorPointsMap.get(normalizedTeamName) ||
+            constructorPointsMap.get(teamName);
+          if (existingConstructor) {
+            existingConstructor.points += result.points;
+            // Update team colour if we have a better one from API
+            if (teamColour !== '000000') {
+              existingConstructor.colour = teamColour;
+            }
+          } else {
+            // New constructor not in hardcoded standings
+            constructorPointsMap.set(normalizedTeamName, {
+              colour: teamColour,
+              points: result.points,
+            });
+            // Also store with original name for consistency
+            if (normalizedTeamName !== teamName) {
+              constructorPointsMap.set(teamName, {
+                colour: teamColour,
+                points: result.points,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        // Skip races that haven't happened yet or have errors
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Skipping session ${session.session_key} due to error:`,
+          error
+        );
+        continue;
+      }
+    }
+
+    // Convert maps to arrays and sort by points (descending)
+    const driverStandings: DriverStanding[] = Array.from(
+      driverPointsMap.values()
+    )
+      .map((data) => ({
+        position: 0, // Will be set after sorting
+        driverName: data.name,
+        driverNumber: data.driverNumber || 0, // Use 0 if not available
+        teamName: data.teamName,
+        teamColour: data.teamColour,
+        points: data.points,
+      }))
+      .sort((a, b) => b.points - a.points)
+      .map((standing, index) => ({
+        ...standing,
+        position: index + 1,
+      }));
+
+    // For constructors, we need to deduplicate by normalized name
+    // and use the original team name from hardcoded data if available
+    const constructorMap = new Map<string, ConstructorStanding>();
+    const constructorEntries = Array.from(constructorPointsMap.entries());
+    for (const [teamName, data] of constructorEntries) {
+      const normalized = normalizeTeamName(teamName);
+      const existing = constructorMap.get(normalized);
+      if (!existing || existing.points < data.points) {
+        // Prefer original team name from hardcoded data if it exists
+        const originalName =
+          HARDCODED_CONSTRUCTOR_STANDINGS.find(
+            (s) => normalizeTeamName(s.teamName) === normalized
+          )?.teamName || teamName;
+        constructorMap.set(normalized, {
+          position: 0,
+          teamName: originalName,
+          teamColour: data.colour,
+          points: data.points,
+        });
+      }
+    }
+
+    const constructorStandings: ConstructorStanding[] = Array.from(
+      constructorMap.values()
+    )
+      .sort((a, b) => b.points - a.points)
+      .map((standing, index) => ({
+        ...standing,
+        position: index + 1,
+      }));
+
+    return {
+      drivers: driverStandings,
+      constructors: constructorStandings,
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error calculating championship standings:', error);
+    throw error;
+  }
+}
+
+/**
  * Get race results by race name and year
  * Returns top 20 results in a nicely formatted way
  */

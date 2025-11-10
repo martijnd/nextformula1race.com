@@ -7,20 +7,27 @@ import { RefObject, useEffect, useRef, useState, useCallback } from 'react';
 import { raceTransformer } from '@/api/ergast/transformers';
 
 import { Schedule } from '@/components/Schedule';
+import ChampionshipStandings from '@/components/ChampionshipStandings';
 import { RacesResponse } from '@/api/ergast/types/races';
 import { races } from '@/data/current';
 import { useI18n } from '@/lib/i18n';
 
 const Home: NextPage = () => {
   const [showSchedule, setShowSchedule] = useState(false);
+  const [showChampionship, setShowChampionship] = useState(false);
   const [raceData, setRaceData] = useState<RacesResponse | null>(null);
   const target = useRef<HTMLElement>(null);
+  const championshipTarget = useRef<HTMLElement>(null);
   const { t } = useI18n();
   const handleIntersection = useCallback(() => {
     setShowSchedule(true);
   }, []);
+  const handleChampionshipIntersection = useCallback(() => {
+    setShowChampionship(true);
+  }, []);
 
   useObserver(target, handleIntersection);
+  useObserver(championshipTarget, handleChampionshipIntersection);
 
   useEffect(() => {
     setRaceData(races);
@@ -102,6 +109,18 @@ const Home: NextPage = () => {
               past={raceTransformer(raceData).races.filter((race) =>
                 race.hasHappened()
               )}
+            />
+          )}
+        </section>
+
+        <section
+          className="bg-f1-black f1-stripe px-4 md:px-6 lg:px-8 py-12"
+          ref={championshipTarget}
+        >
+          {raceData && (
+            <ChampionshipStandings
+              show={showChampionship}
+              year={parseInt(raceTransformer(raceData).season)}
             />
           )}
         </section>

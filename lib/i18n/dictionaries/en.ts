@@ -44,6 +44,16 @@ export const en: TranslationDict = {
     driver: 'Driver',
     points: 'Points',
   },
+  championship: {
+    title: 'Driver & Constructor Championship Standings',
+    drivers: 'Driver Championship',
+    constructors: 'Constructor Championship',
+    driver: 'Driver',
+    constructor: 'Constructor',
+    team: 'Team',
+    points: 'Points',
+    loading: 'Loading standings...',
+  },
   raceTime: {
     liveNow: 'LIVE RIGHT NOW!',
     startedAgo: (duration) => `Started ${duration} ago`,

@@ -44,6 +44,16 @@ export type TranslationDict = {
     driver: string;
     points: string;
   };
+  championship: {
+    title: string;
+    drivers: string;
+    constructors: string;
+    driver: string;
+    constructor: string;
+    team: string;
+    points: string;
+    loading: string;
+  };
   raceTime: {
     liveNow: string;
     startedAgo: (duration: string) => string;
