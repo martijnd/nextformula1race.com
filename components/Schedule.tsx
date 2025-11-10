@@ -76,7 +76,7 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         <div className="mt-10">
           <button
             onClick={() => setShowPastRaces((value) => !value)}
-            className="mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-f1-black px-5 py-2.5 text-sm font-bold text-gray-300 transition-all hover:border-f1-red hover:text-f1-red-light hover:shadow-lg"
+            className="relative mx-auto flex items-center gap-2 rounded-lg border-2 border-f1-gray bg-f1-black px-5 py-2.5 text-sm font-bold text-gray-300 transition-all hover:border-f1-red hover:text-f1-red-light hover:shadow-lg"
             aria-expanded={showPastRaces}
           >
             {showPastRaces

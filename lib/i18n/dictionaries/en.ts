@@ -21,7 +21,7 @@ export const en: TranslationDict = {
     nextRaceBadge: 'Next race',
     roundX: (round) => `Round ${round}`,
     sprintWeekendNote: '🏁 Sprint weekend • extra action on Saturday!',
-    weekendScheduleHeading: 'Weekend Schedule (Your Local Time)',
+    weekendScheduleHeading: 'Weekend Schedule',
     event: {
       fp1: 'FP1',
       fp2: 'FP2',
