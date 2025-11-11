@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { buildRaceDescriptor, type RaceLike } from './schedule-utils';
 import { StatusPill } from './StatusPill';
@@ -8,20 +9,17 @@ import { RaceEventsList } from './RaceEventsList';
 interface RaceCardProps {
   race: RaceLike;
   now: Date;
-  isExpanded: boolean;
-  onClick: () => void;
   isUpcoming: boolean;
 }
 
-export function RaceCard({
-  race,
-  now,
-  isExpanded,
-  onClick,
-  isUpcoming,
-}: RaceCardProps) {
+export function RaceCard({ race, now, isUpcoming }: RaceCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t, dateLocale } = useI18n();
   const descriptor = buildRaceDescriptor(race, now, t, dateLocale);
+
+  const onClick = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <div className="overflow-hidden rounded-xl border-2 border-f1-gray bg-f1-black/50 backdrop-blur-sm shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl relative">
@@ -144,4 +142,3 @@ export function RaceCard({
     </div>
   );
 }
-

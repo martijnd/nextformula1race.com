@@ -6,8 +6,6 @@ interface RaceGridProps {
   emptyLabel: string;
   races: RaceLike[];
   now: Date;
-  expandedRaceId: string | null;
-  onRaceClick?: (raceId: string) => void;
   isUpcoming: boolean;
 }
 
@@ -16,8 +14,6 @@ export function RaceGrid({
   emptyLabel,
   races,
   now,
-  expandedRaceId,
-  onRaceClick,
   isUpcoming,
 }: RaceGridProps) {
   if (races.length === 0) {
@@ -40,13 +36,7 @@ export function RaceGrid({
           const raceId = `${race.round}-${race.raceName}`;
           return (
             <li key={raceId}>
-              <RaceCard
-                race={race}
-                now={now}
-                isExpanded={expandedRaceId === raceId}
-                onClick={() => onRaceClick?.(raceId)}
-                isUpcoming={isUpcoming}
-              />
+              <RaceCard race={race} now={now} isUpcoming={isUpcoming} />
             </li>
           );
         })}
@@ -54,4 +44,3 @@ export function RaceGrid({
     </div>
   );
 }
-

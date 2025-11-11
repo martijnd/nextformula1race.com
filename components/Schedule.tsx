@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { RegularRace, SprintRace } from '@/classes/race';
 import { useI18n } from '@/lib/i18n';
 import { NextRaceCard } from './NextRaceCard';
@@ -12,35 +12,11 @@ interface ScheduleProps {
 
 export function Schedule({ show, remaining, past }: ScheduleProps) {
   const [showPastRaces, setShowPastRaces] = useState(false);
-  const [expandedRaceId, setExpandedRaceId] = useState<string | null>(null);
-  const [hasAutoExpanded, setHasAutoExpanded] = useState(false);
   const [now] = useState(() => new Date());
   const { t } = useI18n();
 
   const nextRace = remaining[0] ?? null;
   const upcomingRaces = nextRace ? remaining.slice(1) : remaining;
-
-  // Auto-expand the most recent past race when past races are shown
-  const mostRecentPastRace = past.length > 0 ? past[past.length - 1] : null;
-  const mostRecentRaceId = mostRecentPastRace
-    ? `${mostRecentPastRace.round}-${mostRecentPastRace.raceName}`
-    : null;
-
-  // Auto-expand most recent race only once when past races are first shown
-  useEffect(() => {
-    if (showPastRaces && mostRecentRaceId && !hasAutoExpanded) {
-      setExpandedRaceId(mostRecentRaceId);
-      setHasAutoExpanded(true);
-    }
-    // Reset auto-expand flag when past races are hidden
-    if (!showPastRaces) {
-      setHasAutoExpanded(false);
-    }
-  }, [showPastRaces, mostRecentRaceId, hasAutoExpanded]);
-
-  const onRaceClick = (raceId: string) => {
-    setExpandedRaceId(expandedRaceId === raceId ? null : raceId);
-  };
 
   const seasonYear =
     remaining[0]?.season ||
@@ -67,8 +43,6 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
         emptyLabel={t('schedule.upcomingEmpty')}
         races={upcomingRaces}
         now={now}
-        expandedRaceId={expandedRaceId}
-        onRaceClick={onRaceClick}
         isUpcoming={true}
       />
 
@@ -104,8 +78,6 @@ export function Schedule({ show, remaining, past }: ScheduleProps) {
               emptyLabel={t('schedule.completedEmpty')}
               races={[...past].reverse()}
               now={now}
-              expandedRaceId={expandedRaceId}
-              onRaceClick={onRaceClick}
               isUpcoming={false}
             />
           )}
