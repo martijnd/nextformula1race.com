@@ -17,10 +17,6 @@ export function RaceCard({ race, now, isUpcoming }: RaceCardProps) {
   const { t, dateLocale } = useI18n();
   const descriptor = buildRaceDescriptor(race, now, t, dateLocale);
 
-  const onClick = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
   return (
     <div className="overflow-hidden rounded-xl border-2 border-f1-gray bg-f1-black/50 backdrop-blur-sm shadow-md transition-all duration-300 hover:border-f1-red hover:shadow-xl relative">
       {/* Mobile chevron in top right corner */}
@@ -44,7 +40,7 @@ export function RaceCard({ race, now, isUpcoming }: RaceCardProps) {
 
       <div
         className="flex h-full flex-col p-4 md:p-5 cursor-pointer group"
-        onClick={onClick}
+        onClick={() => setIsExpanded((prev) => !prev)}
       >
         {/* Desktop: Stack items vertically, Mobile: Keep current layout */}
         <div className="flex flex-col md:flex-col gap-3 md:gap-4">

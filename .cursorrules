@@ -1,0 +1,11 @@
+# Coding Standards
+
+## Function Declarations
+- Always use the `function` keyword for function declarations, not `const` arrow functions
+- Example: `function myFunction() { ... }` instead of `const myFunction = () => { ... }`
+
+## Event Handlers
+- All event handler props and functions must start with 'on' prefix
+- Examples: `onClick`, `onSubmit`, `onChange`, `onFocus`, etc.
+- This applies to both React event handlers and custom event handler functions
+

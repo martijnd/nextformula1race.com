@@ -42,7 +42,7 @@ export function I18nProvider({
     const dict = I18N_DICTIONARIES[locale] ?? en;
     const dateLocale = DATEFNS_LOCALES[locale] ?? dfEn;
 
-    const t: Translator = (key, ...args) => {
+    function t(key: string, ...args: any[]): string {
       const segments = key.split('.');
       let node: any = dict;
       for (const seg of segments) {
@@ -57,18 +57,18 @@ export function I18nProvider({
         return node(...args);
       }
       return String(node);
-    };
+    }
 
-    const switchLocale = (nextLocale: AppLocale) => {
+    function switchLocale(nextLocale: AppLocale) {
       // Replace the locale in the pathname
       const pathWithoutLocale = pathname?.replace(/^\/[^/]+/, '') || '/';
       const newPath = `/${nextLocale}${pathWithoutLocale}`;
       router.push(newPath);
-    };
+    }
 
     return {
       locale,
-      t,
+      t: t as Translator,
       dateLocale,
       switchLocale,
       dict,

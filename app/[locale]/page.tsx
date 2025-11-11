@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { RefObject, useRef, useState, useCallback } from 'react';
 import { Schedule } from '@/components/Schedule';
 import ChampionshipStandings from '@/components/ChampionshipStandings';
-import { CURRENT_SEASON, races } from '@/data/current';
+import { CURRENT_SEASON, races as raceData } from '@/data/current';
 import { useI18n } from '@/lib/i18n';
 import Script from 'next/script';
 import { RegularRace, SprintRace } from '@/classes/race';
@@ -19,15 +19,21 @@ export default function HomePage() {
   const championshipTarget = useRef<HTMLElement | null>(null);
   const { t, locale } = useI18n();
   const pathname = usePathname();
-  const handleIntersection = useCallback(() => {
+  function onIntersection() {
     setShowSchedule(true);
-  }, []);
-  const handleChampionshipIntersection = useCallback(() => {
+  }
+  function onChampionshipIntersection() {
     setShowChampionship(true);
-  }, []);
+  }
 
-  useObserver(target, handleIntersection);
-  useObserver(championshipTarget, handleChampionshipIntersection);
+  const onIntersectionCallback = useCallback(onIntersection, []);
+  const onChampionshipIntersectionCallback = useCallback(
+    onChampionshipIntersection,
+    []
+  );
+
+  useObserver(target, onIntersectionCallback);
+  useObserver(championshipTarget, onChampionshipIntersectionCallback);
 
   function scrollToStandings(target: RefObject<HTMLElement | null>) {
     target.current?.scrollIntoView({
@@ -37,17 +43,13 @@ export default function HomePage() {
 
   // Build canonical URL
   const siteUrl = 'https://f1.lekkerklooien.nl';
-  const canonicalUrl = `${siteUrl}${pathname}`;
   const currentLocale = locale || 'en';
 
   // Get next race info for structured data
-  const raceData = {
-    season: CURRENT_SEASON,
-    races: races.map((race) =>
-      'sprint' in race ? new SprintRace(race) : new RegularRace(race)
-    ),
-  };
-  const nextRace = raceData.races.find((race) => !race.hasHappened()) || null;
+  const races = raceData.map((race) =>
+    'sprint' in race ? new SprintRace(race) : new RegularRace(race)
+  );
+  const nextRace = races.find((race) => !race.hasHappened()) || null;
 
   return (
     <>
@@ -55,7 +57,7 @@ export default function HomePage() {
       <main className="text-gray-200">
         <section className="relative bg-f1-black f1-stripe px-4 md:px-6 lg:px-8 min-h-screen flex flex-col">
           <div className="relative z-10 flex-1 flex flex-col justify-center items-center">
-            <RaceTime data={raceData} />
+            <RaceTime season={CURRENT_SEASON} races={races} />
           </div>
           <button
             className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 font-bold transition-all duration-300 text-f1-red-light hover:text-f1-red hover:scale-110 flex items-center gap-2 group"
@@ -84,8 +86,8 @@ export default function HomePage() {
         >
           <Schedule
             show={showSchedule}
-            remaining={raceData.races.filter((race) => !race.hasHappened())}
-            past={raceData.races.filter((race) => race.hasHappened())}
+            remaining={races.filter((race) => !race.hasHappened())}
+            past={races.filter((race) => race.hasHappened())}
           />
         </section>
 
@@ -94,7 +96,7 @@ export default function HomePage() {
           ref={championshipTarget}
         >
           {(() => {
-            const season = parseInt(raceData.season);
+            const season = parseInt(CURRENT_SEASON);
             if (isNaN(season)) return null;
             return (
               <ChampionshipStandings show={showChampionship} year={season} />

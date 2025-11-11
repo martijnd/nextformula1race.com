@@ -1,5 +1,4 @@
 import { atcb_action } from 'add-to-calendar-button';
-import { RacesTransformerResult } from '@/api/ergast/types/transformers';
 import {
   format,
   parseISO,
@@ -29,10 +28,11 @@ import { NoRaceDisplay } from './NoRaceDisplay';
 import { RaceTypeButton } from './RaceTypeButton';
 
 interface RaceTimeProps {
-  data: RacesTransformerResult;
+  season: string;
+  races: (RegularRace | SprintRace)[];
 }
 
-export default function RaceTime({ data }: RaceTimeProps) {
+export default function RaceTime({ season, races }: RaceTimeProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [hydrated, setHydrated] = useState(false);
   const [raceType, setRaceType] = useState<RaceType>(RegularRaceType.Race);
@@ -70,17 +70,19 @@ export default function RaceTime({ data }: RaceTimeProps) {
     };
   }, []);
 
-  const onClickRaceType = useCallback((newRaceType: RaceType) => {
+  function onClickRaceType(newRaceType: RaceType) {
     setRaceType(newRaceType);
     try {
       localStorage.setItem(STORAGE_KEYS.RACE_TYPE, newRaceType);
     } catch (error) {
       // localStorage not available - silently fail
     }
-  }, []);
+  }
+
+  const onClickRaceTypeCallback = useCallback(onClickRaceType, []);
 
   // Compute next race and event early (before early returns)
-  const nextF1Race = data?.races?.find((race) => {
+  const nextF1Race = races.find((race) => {
     return (
       !race.hasHappened(currentTime) ||
       race.isCurrentlyLive(raceType, currentTime)
@@ -89,7 +91,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
 
   function getRaceEvent(
     raceType: RaceType,
-    race: RacesTransformerResult['races'][number] | undefined
+    race: RegularRace | SprintRace | undefined
   ): RaceEvent | undefined {
     if (!race) return undefined;
 
@@ -134,12 +136,12 @@ export default function RaceTime({ data }: RaceTimeProps) {
     // Returns null on first render, so the client and server match
     return null;
   }
-  if (!data?.races) {
+  if (!races.length) {
     return <h2></h2>;
   }
 
   if (!nextF1Race) {
-    return <NoRaceDisplay currentTime={currentTime} season={data.season} />;
+    return <NoRaceDisplay currentTime={currentTime} season={season} />;
   }
 
   if (!event) {
@@ -254,7 +256,7 @@ export default function RaceTime({ data }: RaceTimeProps) {
             key={type}
             type={type}
             active={raceType === type}
-            onClick={() => onClickRaceType(type)}
+            onClick={() => onClickRaceTypeCallback(type)}
           />
         ))}
       </div>
