@@ -7,7 +7,8 @@ export const en: TranslationDict = {
   },
   home: {
     title: 'When is the next F1 race?',
-    description: 'Find out when the next Formula 1 race is scheduled. View the complete F1 calendar, race times, championship standings, and add races to your calendar. Stay up to date with the latest F1 schedule.',
+    description:
+      'Find out when the next Formula 1 race is scheduled. View the complete F1 calendar, race times, championship standings, and add races to your calendar. Stay up to date with the latest F1 schedule.',
     scheduleCta: 'Schedule',
   },
   schedule: {
@@ -45,9 +46,9 @@ export const en: TranslationDict = {
     points: 'Points',
   },
   championship: {
-    title: 'Driver & Constructor Championship Standings',
-    drivers: 'Driver Championship',
-    constructors: 'Constructor Championship',
+    title: 'Championship',
+    drivers: 'Drivers',
+    constructors: 'Constructors',
     driver: 'Driver',
     constructor: 'Constructor',
     team: 'Team',

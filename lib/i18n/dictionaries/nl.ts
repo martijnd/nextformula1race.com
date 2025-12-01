@@ -7,7 +7,8 @@ export const nl: TranslationDict = {
   },
   home: {
     title: 'Wanneer is de volgende F1-race?',
-    description: 'Ontdek wanneer de volgende Formula 1 race gepland staat. Bekijk het complete F1-kalender, race tijden, kampioenschap standen en voeg races toe aan je agenda. Blijf op de hoogte van het laatste F1-schema.',
+    description:
+      'Ontdek wanneer de volgende Formula 1 race gepland staat. Bekijk het complete F1-kalender, race tijden, kampioenschap standen en voeg races toe aan je agenda. Blijf op de hoogte van het laatste F1-schema.',
     scheduleCta: 'Schema',
   },
   schedule: {
@@ -26,8 +27,8 @@ export const nl: TranslationDict = {
       fp1: 'FP1',
       fp2: 'FP2',
       fp3: 'FP3',
-      qualifying: 'Kwalificatie',
-      sprintQualifying: 'Sprint Kwalificatie',
+      qualifying: 'Qualy',
+      sprintQualifying: 'Sprint Qualy',
       sprint: 'Sprint',
       race: 'Race',
     },
@@ -45,9 +46,9 @@ export const nl: TranslationDict = {
     points: 'Punten',
   },
   championship: {
-    title: 'Coureurs- & Constructeurskampioenschap',
-    drivers: 'Coureurskampioenschap',
-    constructors: 'Constructeurskampioenschap',
+    title: 'Kampioenschap',
+    drivers: 'Coureurs',
+    constructors: 'Constructeurs',
     driver: 'Coureur',
     constructor: 'Constructeur',
     team: 'Team',

@@ -1,4 +1,4 @@
-import { atcb_action } from 'add-to-calendar-button';
+import { atcb_action as addToCalendarButton } from 'add-to-calendar-button';
 import {
   format,
   parseISO,
@@ -270,8 +270,8 @@ function setupCalendarButton(
   raceType: RaceType,
   nextF1RaceDateTime: Date
 ) {
-  atcb_action({
-    name: `F1 ${nextF1Race.circuit.location.country} GP ${raceType}`,
+  addToCalendarButton({
+    name: `${raceType} - ${nextF1Race.raceName}`,
     startDate: format(nextF1RaceDateTime, 'Y-MM-dd'),
     startTime: format(nextF1RaceDateTime, 'HH:mm'),
     endDate: format(nextF1RaceDateTime, 'Y-MM-dd'),
