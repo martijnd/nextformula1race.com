@@ -151,11 +151,12 @@ export default function RaceTime({ season, races }: RaceTimeProps) {
 
   const nextF1RaceDateTime = parseISO(event.dateTime.toISOString());
   const isSprintWeekend = 'sprint' in nextF1Race;
+  const hasHappened = isBefore(nextF1RaceDateTime, currentTime);
 
   const duration = formatDuration(
     intervalToDuration({
-      start: currentTime,
-      end: nextF1RaceDateTime,
+      start: hasHappened ? nextF1RaceDateTime : currentTime,
+      end: hasHappened ? currentTime : nextF1RaceDateTime,
     }),
     {
       delimiter: ', ',
@@ -181,7 +182,7 @@ export default function RaceTime({ season, races }: RaceTimeProps) {
       );
     }
 
-    if (isBefore(nextF1RaceDateTime, currentTime)) {
+    if (hasHappened) {
       return (
         <span className="text-f1-red-light opacity-40">
           {t('raceTime.startedAgo', duration)}
