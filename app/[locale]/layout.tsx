@@ -78,6 +78,10 @@ export async function generateMetadata({
     icons: {
       icon: [
         {
+          url: '/favicons/favicon.svg',
+          type: 'image/svg+xml',
+        },
+        {
           url: '/favicons/favicon-16x16.png',
           sizes: '16x16',
           type: 'image/png',
@@ -93,7 +97,7 @@ export async function generateMetadata({
         {
           rel: 'mask-icon',
           url: '/favicons/safari-pinned-tab.svg',
-          color: '#5bbad5',
+          color: '#e10600',
         },
       ],
     },
