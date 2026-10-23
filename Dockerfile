@@ -1,5 +1,5 @@
 # Step 1: Use the official Node.js image as a base image
-FROM node:18-alpine AS base
+FROM node:24-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
